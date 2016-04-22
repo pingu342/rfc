@@ -20,7 +20,7 @@ Category: Informational                                       N. Bolyard
             Elliptic Curve Cryptography (ECC) Cipher Suites
                    for Transport Layer Security (TLS)
 
-            TLS$BMQ$NBJ1_0E9f%5%$%U%!!<%9%$!<%H(B
+            TLS用の楕円暗号サイファースイート
 
 Status of This Memo
 
@@ -128,12 +128,12 @@ RFC 4492               ECC Cipher Suites for TLS                May 2006
    approximate comparable key sizes for symmetric- and asymmetric-key
    cryptosystems based on the best-known algorithms for attacking them.
 
-   $BFC$K%b%P%$%k4D6-(B($BNc$($PL5@~(B)$B$K$*$$$F!"BJ1_0E9f(B(ECC)$B$,L%NOE*$J8x3+800E9f2=%7(B
-   $B%9%F%`$H$7$FF,3Q$rI=$7$F$$$k!#8=:_9-$/Ia5Z$7$F$k(BRSA$B$N$h$&$J0E9f2=%7%9%F%`$H(B
-   $BHf3S$7$F!"(BECC$B$O(BRSA$B$h$j$b>/$J$$80D9$GF1Ey$N0BA4$rDs6!$9$k!#$3$l$O0J2<$NI=$N(B
-   $B$H$*$j<($5$l$k!#$3$NI=$O(B[18]$B$K$b$H$E$$$F$$$k!#(B[18]$B$O!"BP>]80$dHsBP>N80$N0E(B
-   $B9f2=%7%9%F%`$r967b$9$k:G$b$h$/CN$i$l$?%"%k%4%j%:%`$K$b$H$E$$$F!"$=$l$i(B($BBP>](B
-   $B80$HHsBP>N80$N0E9f2=%7%9%F%`(B)$B$N80D9$NHf3S$N35;;$rM?$($F$$$k!#(B
+   特にモバイル環境(例えば無線)において、楕円暗号(ECC)が魅力的な公開鍵暗号化シ
+   ステムとして頭角を表している。現在広く普及してるRSAのような暗号化システムと
+   比較して、ECCはRSAよりも少ない鍵長で同等の安全を提供する。これは以下の表の
+   とおり示される。この表は[18]にもとづいている。[18]は、対象鍵や非対称鍵の暗
+   号化システムを攻撃する最もよく知られたアルゴリズムにもとづいて、それら(対象
+   鍵と非対称鍵の暗号化システム)の鍵長の比較の概算を与えている。
 
                     Symmetric  |   ECC   |  DH/DSA/RSA
                    ------------+---------+-------------
@@ -149,26 +149,26 @@ RFC 4492               ECC Cipher Suites for TLS                May 2006
    computational cost that make ECC especially attractive for
    constrained environments.
 
-   $B80D9$,>/$J$$$3$H$O!"EE8;$d%a%b%j!"BS0h!"7W;;%3%9%H$N@aLs$K$D$J$,$k!#$3$N$3(B
-   $B$H$,(BECC$B$r!"FC$K@)Ls$"$k4D6-$GL%NOE*$K$5$;$F$$$k!#(B
+   鍵長が少ないことは、電源やメモリ、帯域、計算コストの節約につながる。このこ
+   とがECCを、特に制約ある環境で魅力的にさせている。
 
    This document describes additions to TLS to support ECC, applicable
    both to TLS Version 1.0 [2] and to TLS Version 1.1 [3].  In
    particular, it defines
 
-   $B$3$N%I%-%e%a%s%H$O(BTLS$B$K(BECC$B$rDI2C$9$k!#(BTLS$B%P!<%8%g%s$O(BTLS 1.0$B!"(BTLS 1.1$B$NN>J}(B
-   $B$KE,MQ$9$k!#6qBNE*$K$O0J2<$N$3$H$rDj5A$9$k!#(B
+   このドキュメントはTLSにECCを追加する。TLSバージョンはTLS 1.0、TLS 1.1の両方
+   に適用する。具体的には以下のことを定義する。
 
    o  the use of the Elliptic Curve Diffie-Hellman (ECDH) key agreement
       scheme with long-term or ephemeral keys to establish the TLS
       premaster secret, and
 
-	  TLS$B$N(Bpremaster secret$B$N3NN)$K$*$$$F!"D94|E*$^$?$O0l;~E*$J80$rMQ$$$k(BECDH$B809g0U%9%-!<%`!#(B
+	  TLSのpremaster secretの確立において、長期的または一時的な鍵を用いるECDH鍵合意スキーム。
 
    o  the use of fixed-ECDH certificates and ECDSA for authentication of
       TLS peers.
 
-	  fixed-ECDH$B>ZL@=q$H!"(BTLS$B%T%"$rG'>Z$9$k(BECDSA$B!#(B
+	  fixed-ECDH証明書と、TLSピアを認証するECDSA。
 
    The remainder of this document is organized as follows.  Section 2
    provides an overview of ECC-based key exchange algorithms for TLS.
@@ -183,16 +183,16 @@ RFC 4492               ECC Cipher Suites for TLS                May 2006
    considerations.  Section 8 describes IANA considerations for the name
    spaces created by this document.  Section 9 gives acknowledgements.
 
-   $B$3$N%I%-%e%a%s%H$N;D$j$O0J2<$N$h$&$K9=@.$5$l$F$$$k!#%;%/%7%g%s(B2$B$O(BECC$B$K4p$E(B
-   $B$$$?(BTLS$BMQ$N808r49%"%k%4%j%:%`$N35MW$r<($9!#%;%/%7%g%s(B 3$B$O%/%i%$%"%s%HG'>Z$N(B
-   $B$?$a$N(BECC$B>ZL@=q$N;HMQ$r<($9!#%/%i%$%"%s%H$,FCDj$N(B $B%+!<%V$H%]%$%s%H(B
-   $B%U%)!<%^%C%H$N;HMQ$r8r>D$9$k$3$H$r2DG=$K$9$k(BTLS$B3HD%$K$D$$$F(B $B%;%/%7%g%s(B4$B$G<((B
-   $B$9!#%;%/%7%g%s(B5$B$O(BECC$B$K4p$E$/%O%s%I%7%'%$%/$KI,MW$J%G!<%?9=B$(B $B$H!"$=$l$i$N(B
-   TLS$B%a%C%;!<%8$X$N%(%s%3!<%G%#%s%0$r<($9!#%;%/%7%g%s(B6$B$O?7$7$$(BECC $B$K4p$E$/%5(B
-   $B%$%U%!!<%9%$!<%H$H!"$3$N;EMM$NA4$F$N<BAu$KBP$7$F?d>)$5$l$k%5%$(B $B%U%!!<%9(B
-   $B%$!<%H$N%5%V%;%C%H$r<($9!#%;%/%7%g%s(B7$B$O%;%-%e%j%F%#$K$D$$$F9M;!$9(B $B$k!#%;%/(B
-   $B%7%g%s(B8$B$O$3$N%I%-%e%a%s%H$GB$$i$l$kL>A06u4V$K$D$$$F(BIANA$B9M;!$r<($9!#%;%/(B
-   $B%7%g%s(B9$B$O3NG'$r<($9!#(B
+   このドキュメントの残りは以下のように構成されている。セクション2はECCに基づ
+   いたTLS用の鍵交換アルゴリズムの概要を示す。セクション 3はクライアント認証の
+   ためのECC証明書の使用を示す。クライアントが特定の カーブとポイント
+   フォーマットの使用を交渉することを可能にするTLS拡張について セクション4で示
+   す。セクション5はECCに基づくハンドシェイクに必要なデータ構造 と、それらの
+   TLSメッセージへのエンコーディングを示す。セクション6は新しいECC に基づくサ
+   イファースイートと、この仕様の全ての実装に対して推奨されるサイ ファース
+   イートのサブセットを示す。セクション7はセキュリティについて考察す る。セク
+   ション8はこのドキュメントで造られる名前空間についてIANA考察を示す。セク
+   ション9は確認を示す。
 
 
 
@@ -206,14 +206,14 @@ RFC 4492               ECC Cipher Suites for TLS                May 2006
    cited in this document, the authors' contact information, and
    statements on intellectual property rights and copyrights.
 
-   $B$3$N8e$K!"K\%I%-%e%a%s%H$G0zMQ$5$l$?5,HOE*$GM-1W$J;29MJ88%!"Cx<T$NO"Mm@h>p(B
-   $BJs!"CNE*:b;:8"$HCx:n8"$N5-=R$,B3$/!#(B
+   この後に、本ドキュメントで引用された規範的で有益な参考文献、著者の連絡先情
+   報、知的財産権と著作権の記述が続く。
 
    Implementation of this specification requires familiarity with TLS
    [2][3], TLS extensions [4], and ECC [5][6][7][11][17].
 
-   $B$3$N;EMM$N<BAu$O!"(BTLS[2][3]$B!"(BTLS$B3HD%(B[4]$B!"(BECC[5][6][7][11][17]$B$N=OCN$rI,MW$H(B
-   $B$9$k!#(B
+   この仕様の実装は、TLS[2][3]、TLS拡張[4]、ECC[5][6][7][11][17]の熟知を必要と
+   する。
 
    The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT",
    "SHOULD", "SHOULD NOT", "RECOMMENDED", "MAY", and "OPTIONAL" in this
@@ -230,19 +230,19 @@ RFC 4492               ECC Cipher Suites for TLS                May 2006
    vectors is independent of the key exchange algorithm and not impacted
    by the introduction of ECC.
 
-   $B$3$N%I%-%e%a%s%H$O(BECC$B$K4p$E$/?7$7$$(B5$B$D$N(BTLS$BMQ808r49%"%k%4%j%:%`$rDs<($9$k!#(B
-   $B$=$l$i$OA4$F(BTLS premaster secret$B$N7W;;$K(BECDH$B$r;HMQ$9$k!#$=$7$F$=$l$i$NM#0l(B
-   $B$NAj0c$O!"(BECDH$B80(B($BD94|E*$^$?$O0l;~E*(B)$B$N%i%$%U%?%$%`$G$"$k!#(Bpremaster secret
-   $B$+$i$N(BTLS master secret$B$NF3=P$H!"$=$l$KB3$/%P%k%/0E9f2=(B/MAC$B805Z$S=i4|%Y%/%H(B
-   $B%k$N@8@.$O!"808r49%"%k%4%j%:%`$H$OFHN)$7$F$*$j!"(BECC$B$NDs<($K$h$k1F6A$r<u$1$J(B
-   $B$$!#(B
+   このドキュメントはECCに基づく新しい5つのTLS用鍵交換アルゴリズムを提示する。
+   それらは全てTLS premaster secretの計算にECDHを使用する。そしてそれらの唯一
+   の相違は、ECDH鍵(長期的または一時的)のライフタイムである。premaster secret
+   からのTLS master secretの導出と、それに続くバルク暗号化/MAC鍵及び初期ベクト
+   ルの生成は、鍵交換アルゴリズムとは独立しており、ECCの提示による影響を受けな
+   い。
 
    The table below summarizes the new key exchange algorithms, which
    mimic DH_DSS, DHE_DSS, DH_RSA, DHE_RSA, and DH_anon (see [2] and
    [3]), respectively.
 
-   $B<!$NI=$O!"?7$7$$808r49%"%k%4%j%:%`$NMWLs$G$"$k!#$=$l$>$l!"(BDH_DSS$B!"(BDHE_DSS$B!"(B
-   DH_RSA$B!"(BDHE_RSA$B!"(BDH_anon ([2]$B$H(B[3]$B$r8+$h(B) $B$K$h$/;w$F$$$k!#(B
+   次の表は、新しい鍵交換アルゴリズムの要約である。それぞれ、DH_DSS、DHE_DSS、
+   DH_RSA、DHE_RSA、DH_anon ([2]と[3]を見よ) によく似ている。
 
           Key
           Exchange
@@ -277,10 +277,10 @@ RFC 4492               ECC Cipher Suites for TLS                May 2006
    incurred by a server is higher for ECDHE_RSA than for the traditional
    RSA key exchange, which does not provide forward secrecy.
 
-   ECDHE_ECDSA$B$H(BECDHE_RSA$B$N808r49$OA0J}HkF?@-$rDs6!$9$k!#(BECDHE_RSA$B$G$O!"(B
-   $B%5!<%P!<$O4{B8$N(BRSA$B>ZL@=q$r:FMxMQ2DG=$G$"$j!"%/%i%$%"%s%H$NBJ1_6J@~$NSO9%$K(B
-   $BMF0W$K=`5r$G$-$k!#$7$+$7!"(BECDHE_RSA$B$K$*$$$F%5!<%P!<$,Ho$k7W;;%3%9%H$O!"A0J}(B
-   $BHkF?@-$rDs6!$7$J$$=>Mh$N(BRSA$B808r49$h$j$b9b$$!#(B
+   ECDHE_ECDSAとECDHE_RSAの鍵交換は前方秘匿性を提供する。ECDHE_RSAでは、
+   サーバーは既存のRSA証明書を再利用可能であり、クライアントの楕円曲線の嗜好に
+   容易に準拠できる。しかし、ECDHE_RSAにおいてサーバーが被る計算コストは、前方
+   秘匿性を提供しない従来のRSA鍵交換よりも高い。
 
    The ECDH_RSA mechanism requires a server to acquire an ECC
    certificate, but the certificate issuer can still use an existing RSA
@@ -290,20 +290,20 @@ RFC 4492               ECC Cipher Suites for TLS                May 2006
    certification authority and is best suited for constrained devices
    unable to support RSA.
 
-   ECDH_RSA$B$G$O%5!<%P!<$O(BECC$B>ZL@=q$N<hF@$rI,MW$H$9$k!#$7$+$7>ZL@=qH/9T<T$O=pL>(B
-   $B$K4{B8$N(BRSA$B80$r;HMQ2DG=$G$"$k!#$3$l$K$h$j!"(BTLS$B%/%i%$%"%s%H$K$h$j<u$1F~$l$i(B
-   $B$l$??.Mj$G$-$kG'>Z6I$N80$r99?7$9$kI,MW$,$J$/$J$k!#(BECDH_ECDSA$B$G$O%5!<%P!<$O(B
-   $BG'>Z6I$HF1MM$K(BECC$B80$rI,MW$H$9$k!#(BRSA$B$r%5%]!<%H$G$-$J$$@)Ls$5$l$?%G%P%$%9$K(B
-   $B:G$bE,$7$F$$$k!#(B
+   ECDH_RSAではサーバーはECC証明書の取得を必要とする。しかし証明書発行者は署名
+   に既存のRSA鍵を使用可能である。これにより、TLSクライアントにより受け入れら
+   れた信頼できる認証局の鍵を更新する必要がなくなる。ECDH_ECDSAではサーバーは
+   認証局と同様にECC鍵を必要とする。RSAをサポートできない制約されたデバイスに
+   最も適している。
 
    The anonymous key exchange algorithm does not provide authentication
    of the server or the client.  Like other anonymous TLS key exchanges,
    it is subject to man-in-the-middle attacks.  Implementations of this
    algorithm SHOULD provide authentication by other means.
 
-   $BF?L>$N808r49%"%k%4%j%:%`$O%5!<%P!<$d%/%i%$%"%s%H$NG'>Z$rDs6!$7$J$$!#B>$NF?(B
-   $BL>$J(BTLS$B808r49$N$h$&$K!"$=$l$OCf4V<T967b$K$5$i$5$l$k!#$3$N%"%k%4%j%:%`$N<BAu(B
-   $B$OB>$NJ}K!$K$h$kG'>Z$rDs6!$9$Y$-$G$"$k!#(B
+   匿名の鍵交換アルゴリズムはサーバーやクライアントの認証を提供しない。他の匿
+   名なTLS鍵交換のように、それは中間者攻撃にさらされる。このアルゴリズムの実装
+   は他の方法による認証を提供すべきである。
 
    Note that there is no structural difference between ECDH and ECDSA
    keys.  A certificate issuer may use X.509 v3 keyUsage and
@@ -312,10 +312,10 @@ RFC 4492               ECC Cipher Suites for TLS                May 2006
    ECDH-capable if its use in ECDH is permitted.  ECDSA-capable is
    defined similarly.
 
-   ECDH$B$H(BECDSA$B$G$O80$N9=B$$K0c$$$OL5$$!#>ZL@=qH/9T<T$O!"(BECC$B8x3+80$rFCDj$N7W;;(B
-   [15]$B$N$_$K@)8B$9$k$?$a$K!"(BX.509 v3 keyUsage$B$H(BextendedKeyUsage$B3HD%$r;HMQ2DG=(B
-   $B$G$"$k!#$3$N%I%-%e%a%s%H$G$O!"(BECDH$B$G$N;HMQ$,5v2D$5$l$F$$$k(BECC$B80$r(B
-   ECDH-capable$B!"(BECDSA$B$G$N;HMQ$,5v2D$5$l$F$$$k(BECC$B80$r(BECDSA-cabable$B$H5-:\$9$k!#(B
+   ECDHとECDSAでは鍵の構造に違いは無い。証明書発行者は、ECC公開鍵を特定の計算
+   [15]のみに制限するために、X.509 v3 keyUsageとextendedKeyUsage拡張を使用可能
+   である。このドキュメントでは、ECDHでの使用が許可されているECC鍵を
+   ECDH-capable、ECDSAでの使用が許可されているECC鍵をECDSA-cabableと記載する。
 
               Client                                        Server
               ------                                        ------
@@ -362,30 +362,30 @@ RFC 4492               ECC Cipher Suites for TLS                May 2006
    Figure 1) until Section 3 and of the optional ECC-specific extensions
    (which impact the Hello messages) until Section 4.
 
-   $B?^(B1$B$O(BTLS$B80$r3NN)$9$k%W%m%H%3%k$G;HMQ$5$l$kA4%a%C%;!<%8(B ($B%U%k%O%s(B $B%I%7%'%$(B
-   $B%/(B)$B$r<($7$F$$$k!#(BECC$B$NDI2C$O(BCientHello$B!"(BSercerHello$B!"%5!<%P!<$N(B
-   Certificate $B%a%C%;!<%8!"(BServerKeyExchange$B!"(BClientKeyExchange$B!"(B
-   CertificateRequest$B!"%/%i(B $B%$%"%s%H$N(BCertificate$B%a%C%;!<%8!"(BCertificateVerify
-   $B$KD>@\1F6A$9$k!#<!$K!"(BECC $B808r49%"%k%4%j%:%`$G$N!"$3$l$i$N%a%C%;!<%8$NFbMF(B
-   $B$H=hM}$K$D$$$F>\:Y$r5-=R$9$k!#@bL@$N$7$d$9$5$N$?$a!"%;%/%7%g%s(B3$B$^$G%/%i%$%"(B
-   $B%s%HG'>Z$H$=$l$K4XO"$9$k%a%C%;!<%8(B ($B?^(B1$B$G(B+$B$,DI2C$b$N(B) $B$N@bL@$rJ]N1$9$k!#%*(B
-   $B%W%7%g%J%k$J(BECC$B8GM-$N3HD%(B (Hello$B%a%C%;!<%8$K1F6A$9$k$b$N(B) $B$K$D$$$F$N@bL@$r(B
-   $B%;%/%7%g%s(B4$B$^$GJ]N1$9$k!#(B
+   図1はTLS鍵を確立するプロトコルで使用される全メッセージ (フルハン ドシェイ
+   ク)を示している。ECCの追加はCientHello、SercerHello、サーバーの
+   Certificate メッセージ、ServerKeyExchange、ClientKeyExchange、
+   CertificateRequest、クラ イアントのCertificateメッセージ、CertificateVerify
+   に直接影響する。次に、ECC 鍵交換アルゴリズムでの、これらのメッセージの内容
+   と処理について詳細を記述する。説明のしやすさのため、セクション3までクライア
+   ント認証とそれに関連するメッセージ (図1で+が追加もの) の説明を保留する。オ
+   プショナルなECC固有の拡張 (Helloメッセージに影響するもの) についての説明を
+   セクション4まで保留する。
 
 2.1.  ECDH_ECDSA
 
    In ECDH_ECDSA, the server's certificate MUST contain an ECDH-capable
    public key and be signed with ECDSA.
 
-   ECDH_ECDSA$B$G$O!"%5!<%P!<$N>ZL@=q$O(BECDH-capable$B$J8x3+80$r4^$^$J$1$l$P$J$i$J(B
-   $B$$!#$=$7$F(BECDSA$B$G=pL>$5$l$J$1$l$P$J$i$J$$!#(B
+   ECDH_ECDSAでは、サーバーの証明書はECDH-capableな公開鍵を含まなければならな
+   い。そしてECDSAで署名されなければならない。
 
    A ServerKeyExchange MUST NOT be sent (the server's certificate
    contains all the necessary keying information required by the client
    to arrive at the premaster secret).
 
-   ServerKeyExchange$B$OAw?.$5$l$F$O$J$i$J$$!#(B($B%/%i%$%"%s%H$,(Bpremaster secret$B$K(B
-   $BE~C#$9$k$?$a$KI,MW$JA4$F$N80>pJs$,%5!<%P!<$N>ZL@=q$K4^$^$l$F$$$k(B)
+   ServerKeyExchangeは送信されてはならない。(クライアントがpremaster secretに
+   到達するために必要な全ての鍵情報がサーバーの証明書に含まれている)
 
    The client generates an ECDH key pair on the same curve as the
    server's long-term public key and sends its public key in the
@@ -393,48 +393,48 @@ RFC 4492               ECC Cipher Suites for TLS                May 2006
    algorithm ECDSA_fixed_ECDH or RSA_fixed_ECDH, in which case the
    modifications from Section 3.2 or Section 3.3 apply).
 
-   $B%/%i%$%"%s%H$O(BECDH$B80%Z%"$r%5!<%P!<$ND94|E*$J8x3+80$HF1$86J@~>e$G@8@.$7!"8x(B
-   $B3+80$r(BClientKeyExchange$B%a%C%;!<%8$GAw?.$9$k(B ($B%;%/%7%g%s(B3.2$B$^$?$O%;%/%7%g%s(B
-   3.3 $B$+$i$NJQ99$rE,MQ$9$k>l9g$G!"(BECDSA_fixed_ECDH$B$^$?$O(B RSA_fixed_ECDH$B$N%/%i(B
-   $B%$%"%s%HG'>Z%"%k%4%j%:%`$r;HMQ$9$k>l9g$r=|$/(B)$B!#(B
+   クライアントはECDH鍵ペアをサーバーの長期的な公開鍵と同じ曲線上で生成し、公
+   開鍵をClientKeyExchangeメッセージで送信する (セクション3.2またはセクション
+   3.3 からの変更を適用する場合で、ECDSA_fixed_ECDHまたは RSA_fixed_ECDHのクラ
+   イアント認証アルゴリズムを使用する場合を除く)。
 
    Both client and server perform an ECDH operation and use the
    resultant shared secret as the premaster secret.  All ECDH
    calculations are performed as specified in Section 5.10.
 
-   $B%/%i%$%"%s%H$H%5!<%P!<$NN>J}$,!"(BECDH$B$N<j=g$r9T$$!"$=$N7k2L$H$7$F6&M-$5$l$?(B
-   $BHkL)$G$"$k(Bpremaster secret$B$r;HMQ$9$k!#A4$F$N(BECDH$B7W;;$O%;%/%7%g%s(B5.10$B$G5,Dj(B
-   $B$5$l$k$H$*$j9T$o$l$k!#(B
+   クライアントとサーバーの両方が、ECDHの手順を行い、その結果として共有された
+   秘密であるpremaster secretを使用する。全てのECDH計算はセクション5.10で規定
+   されるとおり行われる。
 
 2.2.  ECDHE_ECDSA
 
    In ECDHE_ECDSA, the server's certificate MUST contain an ECDSA-
    capable public key and be signed with ECDSA.
 
-   ECDHE_ECDSA$B$G$O!"%5!<%P!<$N>ZL@=q$O(BECDSA-capable$B$J8x3+80$r4^$^$J$1$l$P$J$i(B
-   $B$J$$!#$=$7$F(BECDSA$B$G=pL>$5$l$J$1$l$P$J$i$J$$!#(B
+   ECDHE_ECDSAでは、サーバーの証明書はECDSA-capableな公開鍵を含まなければなら
+   ない。そしてECDSAで署名されなければならない。
 
    The server sends its ephemeral ECDH public key and a specification of
    the corresponding curve in the ServerKeyExchange message.  These
    parameters MUST be signed with ECDSA using the private key
    corresponding to the public key in the server's Certificate.
 
-   $B%5!<%P!<$O!"0l;~E*$J(BECDH$B8x3+80$H!"BP1~$9$k6J@~$N;EMM$r(BServerKeyExchange
-   $B%a%C%;!<%8$K$FAw?.$9$k!#$3$l$i$N%Q%i%a!<%?!<$O!"%5!<%P!<$N>ZL@=q$K4^$^$l$k(B
-   $B8x3+80$KBP1~$9$kHkL)80$r;HMQ$7$F!"(BECDSA$B$G=pL>$5$l$J$1$l$P$J$i$J$$!#(B
+   サーバーは、一時的なECDH公開鍵と、対応する曲線の仕様をServerKeyExchange
+   メッセージにて送信する。これらのパラメーターは、サーバーの証明書に含まれる
+   公開鍵に対応する秘密鍵を使用して、ECDSAで署名されなければならない。
 
    The client generates an ECDH key pair on the same curve as the
    server's ephemeral ECDH key and sends its public key in the
    ClientKeyExchange message.
 
-   $B%/%i%$%"%s%H$O%5!<%P!<$N0l;~E*$J(BECDH$B80$HF1$86J@~>l$G(BECDH$B80%Z%"$r@8@.$7!"$=(B
-   $B$N8x3+80$r(BClientKeyExchange$B%a%C%;!<%8$GAw?.$9$k!#(B
+   クライアントはサーバーの一時的なECDH鍵と同じ曲線場でECDH鍵ペアを生成し、そ
+   の公開鍵をClientKeyExchangeメッセージで送信する。
 
    Both client and server perform an ECDH operation (Section 5.10) and
    use the resultant shared secret as the premaster secret.
 
-   $B%/%i%$%"%s%H$H%5!<%P!<$O(BECDH$B$N<j=g$r9T$$(B ($B%;%/%7%g%s(B5.10)$B!"$=$N7k2L$H$7$F6&(B
-   $BM-$5$l$?HkL)$G$"$k(Bpremaster secret$B$r;HMQ$9$k!#(B
+   クライアントとサーバーはECDHの手順を行い (セクション5.10)、その結果として共
+   有された秘密であるpremaster secretを使用する。
 
 
 
