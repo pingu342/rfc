@@ -20,7 +20,7 @@ Category: Informational                                       N. Bolyard
             Elliptic Curve Cryptography (ECC) Cipher Suites
                    for Transport Layer Security (TLS)
 
-            TLS用の楕円暗号サイファースイート
+            TLS用の楕円曲線暗号サイファースイート
 
 Status of This Memo
 
@@ -40,6 +40,11 @@ Abstract
    Diffie-Hellman (ECDH) key agreement in a TLS handshake and the use of
    Elliptic Curve Digital Signature Algorithm (ECDSA) as a new
    authentication mechanism.
+
+   このドキュメントは楕円曲線暗号 (ECC) に基づく新しいTLS用の鍵交換アルゴリズ
+   ムを記述する。特に、TLSハンドシェイクでの楕円曲線Diffie-Hellman (ECDH) 鍵合
+   意の使用および新しい認証メカニズムである楕円曲線デジタル署名アルゴリズム
+   (ECDSA) の使用を規定する。
 
 
 
@@ -128,12 +133,12 @@ RFC 4492               ECC Cipher Suites for TLS                May 2006
    approximate comparable key sizes for symmetric- and asymmetric-key
    cryptosystems based on the best-known algorithms for attacking them.
 
-   特にモバイル環境(例えば無線)において、楕円暗号(ECC)が魅力的な公開鍵暗号化シ
-   ステムとして頭角を表している。現在広く普及してるRSAのような暗号化システムと
-   比較して、ECCはRSAよりも少ない鍵長で同等の安全を提供する。これは以下の表の
-   とおり示される。この表は[18]にもとづいている。[18]は、対象鍵や非対称鍵の暗
-   号化システムを攻撃する最もよく知られたアルゴリズムにもとづいて、それら(対象
-   鍵と非対称鍵の暗号化システム)の鍵長の比較の概算を与えている。
+   特にモバイル環境(例えば無線)において、楕円曲線暗号(ECC)が魅力的な公開鍵暗号
+   化システムとして頭角を表している。現在広く普及してるRSAのような暗号化シス
+   テムと比較して、ECCはRSAよりも少ない鍵長で同等の安全を提供する。これは以下
+   の表のとおり示される。この表は[18]にもとづいている。[18]は、対象鍵や非対称
+   鍵の暗号化システムを攻撃する最もよく知られたアルゴリズムにもとづいて、それ
+   ら(対象鍵と非対称鍵の暗号化システム)の鍵長の比較の概算を与えている。
 
                     Symmetric  |   ECC   |  DH/DSA/RSA
                    ------------+---------+-------------
@@ -402,7 +407,7 @@ RFC 4492               ECC Cipher Suites for TLS                May 2006
    resultant shared secret as the premaster secret.  All ECDH
    calculations are performed as specified in Section 5.10.
 
-   クライアントとサーバーの両方が、ECDHの手順を行い、その結果として共有された
+   クライアントとサーバーの両方が、ECDHの操作を行い、その結果として共有された
    秘密であるpremaster secretを使用する。全てのECDH計算はセクション5.10で規定
    されるとおり行われる。
 
@@ -427,13 +432,13 @@ RFC 4492               ECC Cipher Suites for TLS                May 2006
    server's ephemeral ECDH key and sends its public key in the
    ClientKeyExchange message.
 
-   クライアントはサーバーの一時的なECDH鍵と同じ曲線場でECDH鍵ペアを生成し、そ
+   クライアントはサーバーの一時的なECDH鍵と同じ曲線上でECDH鍵ペアを生成し、そ
    の公開鍵をClientKeyExchangeメッセージで送信する。
 
    Both client and server perform an ECDH operation (Section 5.10) and
    use the resultant shared secret as the premaster secret.
 
-   クライアントとサーバーはECDHの手順を行い (セクション5.10)、その結果として共
+   クライアントとサーバーはECDHの操作を行い (セクション5.10)、その結果として共
    有された秘密であるpremaster secretを使用する。
 
 
@@ -492,7 +497,7 @@ RFC 4492               ECC Cipher Suites for TLS                May 2006
    resultant shared secret as the premaster secret.  All ECDH
    calculations are performed as specified in Section 5.10.
 
-   クライアントとサーバーはECDHの手順を行い、その結果として共有された秘密であ
+   クライアントとサーバーはECDHの操作を行い、その結果として共有された秘密であ
    るpremaster secretを使用する。ECDH計算のすべてはセクション5.10の規定のとお
    り行われる。
 
@@ -606,9 +611,16 @@ RFC 4492               ECC Cipher Suites for TLS                May 2006
    certificate containing an ECDSA-capable public key and signed with
    ECDSA.
 
+   この認証メカニズムの使用には、クライアントの証明書にECDSA-capableな公開鍵が
+   含まれていなければならない。また証明書は、ECDSAで署名されていなければならな
+   い。
+
    The client proves possession of the private key corresponding to the
    certified key by including a signature in the CertificateVerify
    message as described in Section 5.8.
+
+   セクション5.8で示されるように、クライアントは、CertificateVerifyメッセージ
+   に署名を含めることにより、証明された鍵に対応する秘密鍵の所有を証明する。
 
 
 
@@ -631,6 +643,15 @@ RFC 4492               ECC Cipher Suites for TLS                May 2006
    both servers and clients is computationally more efficient than
    mechanisms providing forward secrecy.
 
+   この認証メカニズムの使用には、クライアントの証明書にはECDH-capableな公開鍵
+   が含まれていなければならない。また証明書は、ECDSAで署名されていなければなら
+   ない。更に、クライアントのECDH鍵は、サーバーの長期的な (証明された) ECDH鍵
+   の楕円曲線と同じ楕円曲線上でなければならない。このことは、このメカニズムの
+   使用をクローズドな環境に制限するかもしれない。クライアントが別の曲線のECC鍵
+   を持っている場合、ECDSA_signまたはnon-ECCメカニズム (例えばRSA) を使用して
+   認証しなければならない。fixed ECDHをサーバーとクライアントの両方で使用する
+   ことは前方秘匿性を持つメカニズムよりも計算的に効率が良い。
+
    When using this authentication mechanism, the client MUST send an
    empty ClientKeyExchange as described in Section 5.7 and MUST NOT send
    the CertificateVerify message.  The ClientKeyExchange is empty since
@@ -641,10 +662,23 @@ RFC 4492               ECC Cipher Suites for TLS                May 2006
    possession of the private key corresponding to the certified public
    key, and the CertificateVerify message is unnecessary.
 
+   この認証メカニズムを使用する場合、クライアントは空のClientKeyExchangeをセ
+   クション5.7の記述のとおりに送信しなければならない。そしてCertificateVerify
+   メッセージを送信してはならない。サーバーがpremaster secretを計算するために
+   必要とするクライアントのECDH公開鍵は、クライアントの証明書内に存るために、
+   ClientKeyExchangeは空である。サーバーのものと同じpremaster secretに到達する
+   クライアントの能力 (Finishedメッセージの交換が成功すること で立証される)
+   が、証明された公開鍵に対応する秘密鍵を所 有していることの証明となり、
+   CertificateVerifyメッセージは必要ない。
+
+
 3.3.  RSA_fixed_ECDH
 
    This authentication mechanism is identical to ECDSA_fixed_ECDH except
    that the client's certificate MUST be signed with RSA.
+
+   この認証メカニズムは、ECDSA_fixed_ECDHと同一である。ただしクライアントの証
+   明書はRSAで署名されなければならない。
 
    Note that while the ECDSA_sign, ECDSA_fixed_ECDH, and RSA_fixed_ECDH
    client authentication mechanisms require the client's certificate to
@@ -657,6 +691,16 @@ RFC 4492               ECC Cipher Suites for TLS                May 2006
    of a server to completely validate a given chain, the server may be
    able to validate the clients certificate by relying on a trust anchor
    that appears as one of the intermediate certificates in the chain.)
+
+   ECDSA_sign、ECDSA_fixed_ECDH、RSA_fixed_ECDHのクライアント認証メカニズム
+   が、特定の署名スキームで署名されたクライアント証明書を必要とする一方、この
+   仕様は、証明書チェーンとは別の部分で使用される署名スキームを制限しない。(多
+   くの場合、そのような制限は有益であり、認証局での署名の慣行において
+   考慮されると期待される。しかし、通常そのような制限は厳格に要求され
+   ない。与えられたチェーンを完全に検証する能力がサーバーに足りなくて
+   も、サーバーは、チェーン内に中間証明書として現れるトラストアン
+   カーを信頼することにより、クライアントの証明書を検証できるだろう。)
+
 
 4.  TLS Extensions for ECC
 
@@ -682,6 +726,17 @@ RFC 4492               ECC Cipher Suites for TLS                May 2006
    enumerates the point formats it can parse by including an extension
    in its ServerHello message.
 
+   2つの新しいTLS拡張がこの仕様で定義される。(i) サポート楕円曲線拡張 (ii) サ
+   ポートポイントフォーマット拡張。これらは使用する特定の曲線とポイント
+   フォーマット (例えば、それぞれ圧縮 vs. 非圧縮)を、新しいセッションを 開始す
+   るハンドシェイクで交渉可能にする。これらの拡張は特に、対応する曲線やポイン
+   トフォーマットの数が制限された制約のあるクライアントに適している。それらは
+   [4]で概略説明され、セクション5でメッセージの詳細が規定された、通常のアプ
+   ローチに従う。クライアントはClientHelloメッセージに適切な拡張を含めることに
+   よって、対応する曲線と解析可能なポイントフォーマットを列挙する。サーバーは
+   同様に、ServerHelloメッセージに拡張を含めることによって、解析可能なポイント
+   フォーマットを列挙する。
+
    A TLS client that proposes ECC cipher suites in its ClientHello
    message SHOULD include these extensions.  Servers implementing ECC
    cipher suites MUST support these extensions, and when a client uses
@@ -692,6 +747,15 @@ RFC 4492               ECC Cipher Suites for TLS                May 2006
    be subsequently aborted due to a client's inability to deal with the
    server's EC key.
 
+   ClientHelloメッセージにECCサイファースイートを提示したTLSクライアントは、こ
+   れらの拡張を含めるべきである。ECCサイファースイートを実装するサーバーは、こ
+   れらの拡張に対応しなければならない。そしてクライアントがこれらの拡張を使用
+   した時、サーバーはクライアントが指定した曲線選択と圧縮のテクニックを順守し
+   てハンドシェイクを完了できない場合は、ECCサイファースイート使用を交渉して
+   はならない。このことは、サーバーのEC鍵に対応する能力がクライアントに無いこ
+   とが原因で、交渉されたECCハンドシェイクが後になってアボートする可能性を除去
+   する。
+
    The client MUST NOT include these extensions in the ClientHello
    message if it does not propose any ECC cipher suites.  A client that
    proposes ECC cipher suites may choose not to include these
@@ -700,11 +764,21 @@ RFC 4492               ECC Cipher Suites for TLS                May 2006
    section also describes the structure and processing of these
    extensions in greater detail.
 
+   クライアントは、ECCサイファースイートを提示しない場合、ClientHelloにこれら
+   の拡張を含めてはならない。ECCサイファースイートを提示したクライアントはこれ
+   らの拡張を含めなくても良い。この場合、サーバーはセクション5のリストで示され
+   る楕円曲線やポイントフォーマットから任意に1つを自由に選択する。そのセク
+   ションはまたこれらの拡張の構造や処理の詳細を記述する。
+
    In the case of session resumption, the server simply ignores the
    Supported Elliptic Curves Extension and the Supported Point Formats
    Extension appearing in the current ClientHello message.  These
    extensions only play a role during handshakes negotiating a new
    session.
+
+   セッション再開の場合、サーバーは、進行中のClientHelloメッセージに現れたサ
+   ポート楕円曲線拡張とサポートポイント フォーマット拡張を無視する。これらの拡
+   張は新しいセッションを交渉するハンド シェイクでのみ役割を果たす。
 
 5.  Data Structures and Computations
 
@@ -717,11 +791,23 @@ RFC 4492               ECC Cipher Suites for TLS                May 2006
    possible values, and structures with multiple formats chosen with a
    select() clause may not indicate all possible cases.
 
+   このセクションは、セクション2,3,4で規定されたECC-basedな鍵交換メカニズムで
+   使用されるデータ構造と計算を規定する。ここで使用される説明用の言語は、
+   TLS[2][3]で使用されるものと同じである。この仕様はTLSを拡張するために、これ
+   らの記述はTLS仕様の中のそれら及びTLSを拡張する他の全てとマージされるべきで
+   ある。このことは、列挙タイプは全ての可能な値を規定しないかもしれないこと、
+   select()で選ばれる複数のフォーマットを持つ構造が、全ての可能な場合 を示さな
+   いかもしれないことを意味する。
+
 5.1.  Client Hello Extensions
 
    This section specifies two TLS extensions that can be included with
    the ClientHello message as described in [4], the Supported Elliptic
    Curves Extension and the Supported Point Formats Extension.
+
+   このセクションは、[4]で記述されるClientHelloメッセージに含めることができる2
+   つのTLS拡張として、サポート楕円曲線拡張、サポートポイントフォーマット拡張を
+   規定する。
 
 
 
@@ -732,18 +818,33 @@ RFC 4492               ECC Cipher Suites for TLS                May 2006
 
    When these extensions are sent:
 
+   いつこの拡張が送信されるか:
+
    The extensions SHOULD be sent along with any ClientHello message that
    proposes ECC cipher suites.
 
+   拡張はECCサイファースイートを提示するClientHelloメッセージで送信されるべき
+   である。
+
    Meaning of these extensions:
+
+   この拡張の意味:
 
    These extensions allow a client to enumerate the elliptic curves it
    supports and/or the point formats it can parse.
 
+   これらの拡張はクライアントが対応する楕円曲線、ポイントフォーマットを列挙す
+   ることを可能とする。
+
    Structure of these extensions:
+
+   これらの拡張の構造:
 
    The general structure of TLS extensions is described in [4], and this
    specification adds two new types to ExtensionType.
+
+   TLS拡張の通常構造は[4]で記述され、この仕様は2つの新しいタイプを
+   ExtensionTypeに追加する。
 
        enum { elliptic_curves(10), ec_point_formats(11) } ExtensionType;
 
