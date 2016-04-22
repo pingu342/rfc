@@ -185,7 +185,7 @@ RFC 4492               ECC Cipher Suites for TLS                May 2006
 
    このドキュメントの残りは以下のように構成されている。セクション2はECCに基づ
    いたTLS用の鍵交換アルゴリズムの概要を示す。セクション 3はクライアント認証の
-   ためのECC証明書の使用を示す。クライアントが特定の カーブとポイント
+   ためのECC証明書の使用を示す。クライアントが特定の曲線とポイント
    フォーマットの使用を交渉することを可能にするTLS拡張について セクション4で示
    す。セクション5はECCに基づくハンドシェイクに必要なデータ構造 と、それらの
    TLSメッセージへのエンコーディングを示す。セクション6は新しいECC に基づくサ
@@ -449,6 +449,9 @@ RFC 4492               ECC Cipher Suites for TLS                May 2006
    This key exchange algorithm is the same as ECDH_ECDSA except that the
    server's certificate MUST be signed with RSA rather than ECDSA.
 
+   鍵交換アルゴリズムはECDH_ECDSAと同じである。ただしサーバーの証明書はECDSAで
+   はなくRSAで署名されなければならない。
+
 2.4.  ECDHE_RSA
 
    This key exchange algorithm is the same as ECDHE_ECDSA except that
@@ -457,23 +460,41 @@ RFC 4492               ECC Cipher Suites for TLS                May 2006
    must be computed with the corresponding RSA private key.  The server
    certificate MUST be signed with RSA.
 
+   この鍵交換アルゴリズムはECDHE_ECDSAと同じである。ただしサーバーの証明書は
+   RSA公開鍵を含まなければならない。またそれに対応するRSA秘密鍵が、
+   ServerKeyExchangeメッセージの署名の計算に使用されなければならない。
+   サーバー証明証はRSAで署名されなければならない。
+
 2.5.  ECDH_anon
 
    In ECDH_anon, the server's Certificate, the CertificateRequest, the
    client's Certificate, and the CertificateVerify messages MUST NOT be
    sent.
 
+   ECDH_anonでは、サーバーのCertificate、CertificateRequest、クライアントの
+   Certificate、CertificateVerifyのメッセージは送信されてはならない。
+
    The server MUST send an ephemeral ECDH public key and a specification
    of the corresponding curve in the ServerKeyExchange message.  These
    parameters MUST NOT be signed.
+
+   サーバーは一時的な公開鍵と対応する曲線の仕様をServerKeyExchangeメッセージで
+   送らなければならない。これらのパラメーターは署名されてはならない。
 
    The client generates an ECDH key pair on the same curve as the
    server's ephemeral ECDH key and sends its public key in the
    ClientKeyExchange message.
 
+   クライアントは、サーバーの一時的なECDH鍵と同じ曲線上で、ECDH鍵ペアを生成す
+   る。そしてその公開鍵をClientKeyExchangeメッセージで送信する。
+
    Both client and server perform an ECDH operation and use the
    resultant shared secret as the premaster secret.  All ECDH
    calculations are performed as specified in Section 5.10.
+
+   クライアントとサーバーはECDHの手順を行い、その結果として共有された秘密であ
+   るpremaster secretを使用する。ECDH計算のすべてはセクション5.10の規定のとお
+   り行われる。
 
    Note that while the ECDH_ECDSA, ECDHE_ECDSA, ECDH_RSA, and ECDHE_RSA
    key exchange algorithms require the server's certificate to be signed
@@ -488,6 +509,16 @@ RFC 4492               ECC Cipher Suites for TLS                May 2006
    able to validate the server's certificate by relying on a trusted
    certification authority whose certificate appears as one of the
    intermediate certificates in the chain.)
+
+   ECDH_ECDSA、ECDHE_ECDSA、ECDS_RSA、ECDHE_RSAの鍵交換アルゴリズムでは、
+   サーバーの証明書が特定の署名スキームで署名される一方、この仕様 (同様な
+   ケースとして[2][3]におけるDH_DSS、 DHE_DSS、DH_RSA、DHE_RSA) では、証明書
+   チェーンとは別の部分で使用される署名スキームによる制限を課さない (多くの場
+   合、そのような制限は有益であり、認証局での署名の慣行において考慮さ
+   れると期待される。しかし、通常そのような制限は厳格に要求されない。与えられ
+   たチェーンを完全に検証する能力がクライアントに足りなくても、クライアント
+   は、チェーン内に中間証明書として現れる証明書を 持つ信頼された認証局を信
+   頼することにより、サーバーの証明書を検証できるだろう。)。
 
 
 
@@ -513,6 +544,16 @@ RFC 4492               ECC Cipher Suites for TLS                May 2006
    use of a long-term ECDH client key would jeopardize the forward
    secrecy property of these algorithms.
 
+   このドキュメントはECDSA_sign、ECDSA_fixed_ECDH、RSA_fixed_ECDHという名前の3
+   つの新しいクライアント認証メカニズムを定義する。それぞれ関係するクライアン
+   ト証明 書のタイ プにちなんで名付けられた。ECDSA_signは、TLS [2][3]で定義さ
+   れてい るその他の 非匿名 (non-ECC) な鍵交換アルゴリズムと同様に、セクション
+   2 に記 述される非匿 名なECC鍵交換アルゴリズムのいずれかで使用可能である。
+   ECDSA_fixed_ECDHと RSA_fixed_ECDHは、ECDH_ECDSAとECDH_RSAで使用可能である。
+   ECDHE_ECDSAと ECDHE_RSAでそれらを使用することは禁止される。なぜなら長期的な
+   ECDHクライア ント鍵の使用は、ことらのアルゴリズムの前方秘匿性の性質を脅かす
+   からである。
+
    The server can request ECC-based client authentication by including
    one or more of these certificate types in its CertificateRequest
    message.  The server must not include any certificate types that are
@@ -521,11 +562,23 @@ RFC 4492               ECC Cipher Suites for TLS                May 2006
    methods suggested by the server and is willing to use it for
    authentication.
 
+   サーバーはECC-basedなクライアント認証を要求できる。このためには
+   これら証明書タイプの1つ以上をCertificateRequestに含める。サーバーは交渉した
+   鍵交換アルゴリズムでは禁止されている証明書タイプを含めてはならない。クライ
+   アントは、サーバーが提示したメソッドのいずれかにふさわしい証明書を保有して
+   いるかどうか確認し、それを認証に使用する。
+
    If these conditions are not met, the client should send a client
    Certificate message containing no certificates.  In this case, the
    ClientKeyExchange should be sent as described in Section 2, and the
    CertificateVerify should not be sent.  If the server requires client
    authentication, it may respond with a fatal handshake failure alert.
+
+   もしこれらの条件が満たさなければ、クライアントは証明書を含まないCertificate
+   メッセージを送信しなければならない。この場合、ClientKeyEchangeはセクション2
+   に記述されたように送信されるべきである。そしてCertificateVerifyは送信される
+   べきではない。もしサーバーがクライアント認証を要求するなら、ハンドシェイク
+   失敗の応答をしてよい。
 
    If the client has an appropriate certificate and is willing to use it
    for authentication, it must send that certificate in the client's
@@ -534,9 +587,18 @@ RFC 4492               ECC Cipher Suites for TLS                May 2006
    determining an appropriate certificate and proving possession is
    different for each authentication mechanism and described below.
 
+   もしクライアントが適切な証明書を持ち、それを認証に使用するなら、その証明書
+   をクライアントのCertificateメッセージで送信しなければならない (セクション
+   5.6のように) 。そして証明された鍵に対応する秘密鍵の保有を証明する (訳註：た
+   ぶんCertificateVerifyに秘密鍵で署名することによって)。適切な証明書を決定す
+   るプロセス及び保有の証明は、認証メカニズムごとに異なる。以下に記述する。
+
    NOTE: It is permissible for a server to request (and the client to
    send) a client certificate of a different type than the server
    certificate.
+
+   注意：サーバー証明書と異るタイプのクライアント証明書をサーバーが要求するこ
+   と (そしてクライアントが送信すること) は許容される。
 
 3.1.  ECDSA_sign
 
