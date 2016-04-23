@@ -168,7 +168,7 @@ RFC 4492               ECC Cipher Suites for TLS                May 2006
       scheme with long-term or ephemeral keys to establish the TLS
       premaster secret, and
 
-	  TLSのpremaster secretの確立において、長期的または一時的な鍵を用いるECDH鍵合意スキーム。
+	  TLSのpremaster secretの確立に、長期的または一時的な鍵を用いるECDH鍵合意スキーム。
 
    o  the use of fixed-ECDH certificates and ECDSA for authentication of
       TLS peers.
@@ -188,16 +188,16 @@ RFC 4492               ECC Cipher Suites for TLS                May 2006
    considerations.  Section 8 describes IANA considerations for the name
    spaces created by this document.  Section 9 gives acknowledgements.
 
-   このドキュメントの残りは以下のように構成されている。セクション2はECCに基づ
-   いたTLS用の鍵交換アルゴリズムの概要を示す。セクション 3はクライアント認証の
+   このドキュメントの残りは次のとおり構成されている。セクション2はECCに基づ い
+   たTLS用の鍵交換アルゴリズムの概要を示す。セクション 3はクライアント認証の
    ためのECC証明書の使用を示す。クライアントが特定の曲線とポイント
-   フォーマットの使用を交渉することを可能にするTLS拡張について セクション4で示
-   す。セクション5はECCに基づくハンドシェイクに必要なデータ構造 と、それらの
-   TLSメッセージへのエンコーディングを示す。セクション6は新しいECC に基づくサ
-   イファースイートと、この仕様の全ての実装に対して推奨されるサイ ファース
-   イートのサブセットを示す。セクション7はセキュリティについて考察す る。セク
-   ション8はこのドキュメントで造られる名前空間についてIANA考察を示す。セク
-   ション9は確認を示す。
+   フォーマットの使用を交渉することを可能にするTLS拡張をセクション4で示す。セ
+   クション5はECCに基づくハンドシェイクに必要なデータ構造と、それらの TLS
+   メッセージへのエンコーディングを示す。セクション6は新しいECC に基づくサイ
+   ファースイートと、この仕様の全ての実装に対して推奨されるサイファースイート
+   のサブセットを示す。セクション7はセキュリティについて考察する。セクション8
+   はこのドキュメントで造られる名前空間についてIANA考察を示す。セクション9は
+   確認を示す。
 
 
 
@@ -1999,6 +1999,9 @@ RFC 4492               ECC Cipher Suites for TLS                May 2006
    The table below defines new ECC cipher suites that use the key
    exchange algorithms specified in Section 2.
 
+   以下の表は、セクション2で基底された鍵交換アルゴリズムを使用する新しいECCサ
+   イファースイートを定義する。
+
      CipherSuite TLS_ECDH_ECDSA_WITH_NULL_SHA           = { 0xC0, 0x01 }
      CipherSuite TLS_ECDH_ECDSA_WITH_RC4_128_SHA        = { 0xC0, 0x02 }
      CipherSuite TLS_ECDH_ECDSA_WITH_3DES_EDE_CBC_SHA   = { 0xC0, 0x03 }
@@ -2045,6 +2048,11 @@ RFC 4492               ECC Cipher Suites for TLS                May 2006
    (other than AES ciphers) and hash algorithms are defined in [2] and
    [3].  AES ciphers are defined in [19].
 
+   これらのサイファースイートのそれぞれに対する鍵交換メソッド、サイファー、
+   ハッシュアルゴリズムは、名前を検査することで容易に決定できる。サイファー
+   (AESサイファー以外) と、ハッシュアルゴリズムは [2][3]で定義されている。AES
+   サイファーは[19]で定義されている。
+
    Server implementations SHOULD support all of the following cipher
    suites, and client implementations SHOULD support at least one of
    them: TLS_ECDH_ECDSA_WITH_3DES_EDE_CBC_SHA,
@@ -2052,18 +2060,30 @@ RFC 4492               ECC Cipher Suites for TLS                May 2006
    TLS_ECDHE_RSA_WITH_3DES_EDE_CBC_SHA, and
    TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA.
 
+   サーバー実装は以下のサイファースイートを全てに対応すべきである。そして クラ
+   イアント実装は少なくとも1つに対応すべきである。
+
 7.  Security Considerations
 
    Security issues are discussed throughout this memo.
+
+   セキュリティの問題はこのメモ全体に渡って議論された。
 
    For TLS handshakes using ECC cipher suites, the security
    considerations in appendices D.2 and D.3 of [2] and [3] apply
    accordingly.
 
+   ECCサイファースイートを使用するTLSハンドシェイクに対して、[2][3]の付録D.2
+   D.3のセキュリティ考察がそれぞれ当てはまる。
+
    Security discussions specific to ECC can be found in [6] and [7].
    One important issue that implementers and users must consider is
    elliptic curve selection.  Guidance on selecting an appropriate
    elliptic curve size is given in Table 1.
+
+   ECCのセキュリティ考察は[6][7]で見つけられる。実装者とユーザーが熟考しなけれ
+   ばならない重要な1つに、楕円曲線選択の問題がある。適切な楕円曲線サイズを選択
+   するガイドラインは表1で与えられる。
 
    Beyond elliptic curve size, the main issue is elliptic curve
    structure.  As a general principle, it is more conservative to use
@@ -2081,6 +2101,18 @@ RFC 4492               ECC Cipher Suites for TLS                May 2006
    curves, and these classes are excluded from the ECC standards that
    this document references [6], [7].
 
+   <作業中>
+   楕円曲線サイズを超える中心的な問題は楕円曲線の構造である。一般原則として、
+   できるだけ少ない代数構造で楕円曲線を使用することがより保守的である。
+   従って、ランダムな曲線は、Kblitz曲線のような特別な曲線よりも保守的である。
+   ランダムなpを持つF_pの曲線は、特別なフォームのpを持つF_pの曲線よりも保守的
+   である。(そして、ランダムなpを持つF_pの曲線は、標数2で同様なサイズの複数な体か
+   ら選択 の余地が無いようなF_2^mの曲線よりも保守的だと考えられる。) しかし、
+   代数構造はまた実装効率にも通じる。それ故に、実装者とユーザーは、効率と保守
+   のバランスを取る必要がある。コンクリート攻撃は、超特異曲線のような非常に少
+   ない特別な曲線のクラスに対してのみ知られており、これらのクラスは、このド
+   キュメントが参照する[6][7]のECC標準からは除外されている。
+
    Another issue is the potential for catastrophic failures when a
    single elliptic curve is widely used.  In this case, an attack on the
    elliptic curve might result in the compromise of a large number of
@@ -2088,6 +2120,11 @@ RFC 4492               ECC Cipher Suites for TLS                May 2006
    and interoperability improvements associated with widely-used curves.
    Substantial additional information on elliptic curve choice can be
    found in [5], [6], [7], and [11].
+
+   もう1つの問題は、単一の楕円曲線が広く使用されたときの壊滅的な不具合の可能性
+   である。この場合、楕円曲線への攻撃が、多くの鍵を危殆化させるかもしれない。
+   この懸念は、広く使用される曲線に関連する効率性と相互運用性の改良 をバランス
+   させる必要があるかもしれない。
 
 
 
@@ -2110,6 +2147,19 @@ RFC 4492               ECC Cipher Suites for TLS                May 2006
    with ECDSA_sign used for client authentication if necessary.  Here
    again the security benefits of forward secrecy may need to be
    balanced against the improved efficiency offered by other options.
+
+   また、実装者とユーザーは前方秘匿性の必要性を検討しなければならない。前方秘
+   匿性は、サーバーとクライアントに属する、静的で証明された鍵が危殆化されたと
+   しても、セッション鍵は危殆化されない性質をいう。ECDHE_ECDSAとECDHE_RSAの鍵
+   交換アルゴリズムでは、万一サーバー鍵が危殆化した場合には前方秘匿性が提供さ
+   れる一方、ECDH_ECDSAとECDH_RSAではそうではない。同様に、もしクライアントが
+   静的で証明された鍵を提供している場合、ECDSA_signクライアント認証では、万一
+   クライアント鍵が危殆化した場合に前方秘匿性が提供される一方、
+   ECDSA_fixed_ECDHと RSA_fixed_ECDHではそうではない。従って、完全な前方秘匿性
+   を獲得するには、ECDHE_ECDSAまたはECDHE_RSAが鍵交換に、ECDSA_signがクライア
+   ント認証にもし必要なら使用されなければならない。ここで、前方秘匿性のセ
+   キュリティ上の利点 は、その他のオプションが提供する効率性の向上とバランス
+   させる必要があるかもしれない。
 
 8.  IANA Considerations
 
