@@ -582,8 +582,8 @@ RFC 4492               ECC Cipher Suites for TLS                May 2006
    もしこれらの条件が満たさなければ、クライアントは証明書を含まないCertificate
    メッセージを送信しなければならない。この場合、ClientKeyEchangeはセクション2
    に記述されたように送信されるべきである。そしてCertificateVerifyは送信される
-   べきではない。もしサーバーがクライアント認証を要求するなら、ハンドシェイク
-   失敗の応答をしてよい。
+   べきではない。もしサーバーがクライアント認証を要求するなら、致命的ハンド
+   シェイク 失敗アラートの応答をしてよい。
 
    If the client has an appropriate certificate and is willing to use it
    for authentication, it must send that certificate in the client's
@@ -853,12 +853,31 @@ RFC 4492               ECC Cipher Suites for TLS                May 2006
       extension, the opaque extension_data field contains
       EllipticCurveList.  See Section 5.1.1 for details.
 
+														クライアントが対応する
+														楕円曲線のセットを示
+														す。この拡張のため、
+														不透明なextension_data
+														フィールドに
+														EllipticCurveListを含
+														める。
+
    ec_point_formats (Supported Point Formats Extension):   Indicates the
       set of point formats that the client can parse.  For this
       extension, the opaque extension_data field contains
       ECPointFormatList.  See Section 5.1.2 for details.
 
+														クライアントが解析可能
+														なポイントフォーマット
+														のセットを示す。この拡
+														張のため、不透明な
+														extension_dataフィール
+														ドに、
+														ECPointFormalListを含
+														める。
+
    Actions of the sender:
+
+   送信側の動作
 
    A client that proposes ECC cipher suites in its ClientHello message
    appends these extensions (along with any others), enumerating the
@@ -868,7 +887,16 @@ RFC 4492               ECC Cipher Suites for TLS                May 2006
    Extension is indeed sent, it MUST contain the value 0 (uncompressed)
    as one of the items in the list of point formats.
 
+   ClientHelloメッセージでECCサイファースイートを提示するクライアントは、これ
+   らの拡張を (他の拡張と共に) 付け加え、サポートする曲線と、解析可能なポイン
+   トフォーマットを列挙する。クライアントはサポート楕円曲線拡張と、サポートポ
+   イントフォーマット拡張の両方を送信するべきである。もしサポートポイント
+   フォーマット拡張が実際に送信されるなら、ポイントフォーマットのリストに項目
+   の1つとして値0 (非圧 縮) を含めなければならない。
+
    Actions of the receiver:
+
+   受信側の動作
 
    A server that receives a ClientHello containing one or both of these
    extensions MUST use the client's enumerated capabilities to guide its
@@ -876,6 +904,12 @@ RFC 4492               ECC Cipher Suites for TLS                May 2006
    cipher suites must be negotiated only if the server can successfully
    complete the handshake while using the curves and point formats
    supported by the client (cf. Sections 5.3 and 5.4).
+
+   これらの拡張の両方または片方を含んだClientHelloを受信したサーバーは、適切な
+   サイファースイートを選択を導くため、クライアントが列挙した能力を使用しなけ
+   ればならない。クライアントが対応する曲線とポイントフォーマットを使用しつ
+   つ、サーバーが正常にハンドシェイクを完了できる場合にのみ、提示されたECCサイ
+   ファースイートの1つが交渉されなければならない。
 
 
 
@@ -892,6 +926,10 @@ RFC 4492               ECC Cipher Suites for TLS                May 2006
    the ephemeral ECDH key in the ServerKeyExchange message.  The server
    must consider the extensions in both cases.
 
+   注意: ECDHE-ECDSA鍵交換に加わるサーバーは、(i) その証明書のECDSA鍵 (ii)
+   ServerKeyExchangeメッセージの一時的なECDH鍵 とは異る曲線を使用してもよい。
+   サーバーは両方のケースの拡張を考慮しなければならない。
+
    If a server does not understand the Supported Elliptic Curves
    Extension, does not understand the Supported Point Formats Extension,
    or is unable to complete the ECC handshake while restricting itself
@@ -900,6 +938,14 @@ RFC 4492               ECC Cipher Suites for TLS                May 2006
    are proposed by the client and supported by the server, this may
    result in a fatal handshake failure alert due to the lack of common
    cipher suites.
+
+   もしサーバーがサポート楕円曲線拡張を理解できない、サポートポイント
+   フォーマット拡張を理解できない、または列挙された曲線とポイントフォーマット
+   にサーバー自身を制限しつつECCハンドシェイクを完了することができないなら、
+   ECCサイファースイートの使用を交渉してはならない。サーガーが対応している他の
+   サイファースイートがクライアントにより提示されているか否かに応じて、共通の
+   サイファースイートの欠如による致命的ハンドシェイク失敗アラートという結果に
+   なってよい。
 
 5.1.1.  Supported Elliptic Curves Extension
 
@@ -928,8 +974,19 @@ RFC 4492               ECC Cipher Suites for TLS                May 2006
       prime and characteristic-2 curves, respectively (the curve
       parameters must be encoded explicitly in ECParameters).
 
+	  該当する名前の付いた曲線または明確に定義された曲線のクラスへの対応を示
+	  す。ここで定義された名前の付いた曲線は、SEC 2 [13]で規定されている。これ
+	  らの多くの曲線は、ANSI X9.62 [7]、FIPS 186-2 [11]でも推奨されていること
+	  に注意せよ。0xFE00から0xFEFFはプライベートな使用に予約されている。0xFE01
+	  と0xFE02はクライアントが任意のprime曲線とcharacteristic-2曲線にそれぞれ
+	  対応し ていることを示す。(ECParametersに曲線パラメーターを明確にエンコードしな
+	  ければならない。)
+
    The NamedCurve name space is maintained by IANA.  See Section 8 for
    information on how new value assignments are added.
+
+   NamedCurve名前空間はIANAで管理される。新しい値の割当がどのように追加される
+   かの情報はセクション8を見よ。
 
         struct {
             NamedCurve elliptic_curve_list<1..2^16-1>
@@ -946,17 +1003,28 @@ RFC 4492               ECC Cipher Suites for TLS                May 2006
    Items in elliptic_curve_list are ordered according to the client's
    preferences (favorite choice first).
 
+   elliptic_curve_listの項目はクライアントの優先度に応じた順である。(本命の選
+   択が先頭)
+
    As an example, a client that only supports secp192r1 (aka NIST P-192;
    value 19 = 0x0013) and secp224r1 (aka NIST P-224; value 21 = 0x0015)
    and prefers to use secp192r1 would include a TLS extension consisting
    of the following octets.  Note that the first two octets indicate the
    extension type (Supported Elliptic Curves Extension):
 
+   例えば、secp192r1 (別名 NIST P-192; 値19 = 0x0013) 、secp224r1 (別名 NIST
+   P-224; 値 21 = 0x0015) のみに対応し、secp192r1の使用を有線するクライアント
+   では、以下のオクテットからなるTLS拡張を含む。最初の2つのオクテットは拡張タ
+   イプ (サポート楕円曲線拡張) を示す:
+
         00 0A 00 06 00 04 00 13 00 15
 
    A client that supports arbitrary explicit characteristic-2 curves
    (value 0xFF02) would include an extension consisting of the following
    octets:
+
+   任意の明確なcharacteristic-2曲線 (値 0xFF02) に対応するクライアントは以下の
+   オクテットからなる拡張を含む。
 
         00 0A 00 04 00 02 FF 02
 
@@ -981,11 +1049,27 @@ RFC 4492               ECC Cipher Suites for TLS                May 2006
    only to characteristic-2 curves.  (These formats are specified in
    [7].)  Values 248 through 255 are reserved for private use.
 
+   上記のECPointFormatの定義には3つのポイントフォーマットが含まれている。この
+   ドキュメントの実装が対応している曲線の全てが非圧縮ポイントフォーマットに対
+   応しなければならない。そしてそれがデフォルトのフォーマットである。圧縮ポイ
+   ントフォーマットはポイントのx座標と、y座標の単一ビットのみを含むことによ
+   って帯域を減らす。このドキュメントの実装はansiX962_compressed_primeと
+   ansiX962_compressed_char2フォーマットに対応してよい。ここで前者は素数
+   曲線にのみ適用し、後者はcharacteristic-2曲線にのみ適用する。(これらの
+   フォーマットは[7]で規定される) 値 248から255はプライベートな使用に予約され
+   ている。
+
    The ECPointFormat name space is maintained by IANA.  See Section 8
    for information on how new value assignments are added.
 
+   ECPointFormat名前空間はIANAが管理する。新しい値の割当がどのように追加される
+   かについての情報はセクション8を見よ。
+
    Items in ec_point_format_list are ordered according to the client's
    preferences (favorite choice first).
+
+   ec_poinrt_format_listの項目はクライアントの優先度に応じた順序である。 (本命
+   の選択が先頭)
 
 
 
@@ -1004,6 +1088,10 @@ RFC 4492               ECC Cipher Suites for TLS                May 2006
    the first two octets indicate the extension type (Supported Point
    Formats Extension):
 
+   非圧縮ポイントフォーマット (値 0) のみ対応するクライアントは、以下のオク
+   テットからなる拡張を含む。最初の2つのオクテットは拡張タイプ (サポートポイン
+   トフォーマット拡張) を示す:
+
         00 0B 00 02 01 00
 
    A client that in the case of prime fields prefers the compressed
@@ -1013,6 +1101,12 @@ RFC 4492               ECC Cipher Suites for TLS                May 2006
    (ansiX962_compressed_char2, value 2), may indicate these preferences
    by including an extension consisting of the following octets:
 
+   クライアントが、素体に非圧縮フォーマット (値 0) よりも圧縮 フォーマット
+   (ansiX962_compressed_prime, 値 1) を好むが、標数2の体 には圧縮フォーマット
+   (ansiX962_compressed_char2, 値 2) よりも非圧縮 フォーマット (値 0) を好む場
+   合、以下のオクテットからなる拡張を含むことによ り、これらの嗜好を示してよ
+   い。
+
         00 0B 00 04 03 01 00 02
 
 5.2.  Server Hello Extension
@@ -1021,13 +1115,24 @@ RFC 4492               ECC Cipher Suites for TLS                May 2006
    ServerHello message as described in [4], the Supported Point Formats
    Extension.
 
+   このセクションは[4]に記述されたServerHelloメッセージに含めることができるTLS
+   拡張であるサポートポイントフォーマット拡張を規定する。
+
    When this extension is sent:
+
+   いつこの拡張が送信されるか:
 
    The Supported Point Formats Extension is included in a ServerHello
    message in response to a ClientHello message containing the Supported
    Point Formats Extension when negotiating an ECC cipher suite.
 
+   サポートポイントフォーマット拡張は、ECCサイファースイートを交渉時、サポート
+   ポイントフォーマット拡張を含んだClientHelloメッセージへの応答である
+   ServerHelloメッセージに含まれる。
+
    Meaning of this extension:
+
+   この拡張の意味:
 
    This extension allows a server to enumerate the point formats it can
    parse (for the curve that will appear in its ServerKeyExchange
@@ -1036,7 +1141,15 @@ RFC 4492               ECC Cipher Suites for TLS                May 2006
    public key that will appear in its Certificate message when using the
    ECDH_ECDSA or ECDH_RSA key exchange algorithm).
 
+   この拡張は、サーバーが解析できるポイントフォーマットを列挙可能にする。
+   (ECDHE_ECDSA、ECDHE_RSA、ECDH_anon鍵交換アルゴリズムを使用時の
+   ServerKeyEchnageメッセージに現れる曲線、またはECDH_ECDSA、ECDH_RSA鍵交換ア
+   ルゴリズムを使用時のCertificateメッセージに現れるサーバーの公開鍵に使用され
+   る曲線のためのポイントフォーマット)
+
    Structure of this extension:
+
+   この拡張の構造:
 
    The server's Supported Point Formats Extension has the same structure
    as the client's Supported Point Formats Extension (see
@@ -1048,6 +1161,14 @@ RFC 4492               ECC Cipher Suites for TLS                May 2006
    may nevertheless be capable of outputting points in compressed
    format).
 
+   サーバーのサポートポイントフォーマット拡張は、クライアントのそれ (セク
+   ション5.1.2を見よ) と同じ構造を持つ。elliptic_curve_list内の項目は、
+   サーバーの優先度に応じた順である (本命が先頭)。クライアントのリストには無い
+   項目をサーバーが含めても良いことに注意せよ。(例えば、サーバーは、クライアン
+   トが圧縮フォーマットを解析できないときでも、同じクライアントが圧縮
+   フォーマットのポイントを出力 できないにしても、このフォーマットのポイントを
+   受信することを選んで良い。)
+
 
 
 Blake-Wilson, et al.         Informational                     [Page 14]
@@ -1057,6 +1178,8 @@ RFC 4492               ECC Cipher Suites for TLS                May 2006
 
    Actions of the sender:
 
+   送信側の動作:
+
    A server that selects an ECC cipher suite in response to a
    ClientHello message including a Supported Point Formats Extension
    appends this extension (along with others) to its ServerHello
@@ -1064,7 +1187,16 @@ RFC 4492               ECC Cipher Suites for TLS                May 2006
    Point Formats Extension, when used, MUST contain the value 0
    (uncompressed) as one of the items in the list of point formats.
 
+   サポートポイントフォーマット拡張を含んだClientHelloメッセージへの応答に、
+   ECCサイファースイートを選ぶサーバーは、この拡張を (他のと一緒に)
+   ServerHelloメッセージに加え、サーバーが解析できるポイントフォーマットを列
+   挙する。サポートポイントフォーマット拡張が使用される時、ポイント
+   フォーマットのリストの項目の1つとして値 0 (非圧縮) を含めなければならな
+   い。
+
    Actions of the receiver:
+
+   受信側の動作:
 
    A client that receives a ServerHello message containing a Supported
    Point Formats Extension MUST respect the server's choice of point
@@ -1073,14 +1205,26 @@ RFC 4492               ECC Cipher Suites for TLS                May 2006
    this is equivalent to an extension allowing only the uncompressed
    point format.
 
+   サポートポイントフォーマット拡張を含んだServerHelloめせを受信するクライアン
+   トは、ハンドシェイクの間、サーバーが選択したポイントフォーマットを尊重しな
+   ければならない。(セクション5.6と5.7を参照) もし、ServerHelloでサ
+   ポートポイントフォーマット拡張を受信しない場合、このことは非圧縮なポイント
+   フォーマットのみを許す拡張と同等である。
+
 5.3.  Server Certificate
 
    When this message is sent:
 
+   いつこのメッセージが送信されるか:
+
    This message is sent in all non-anonymous ECC-based key exchange
    algorithms.
 
+   このメッセージは非匿名な全てのECC-based鍵交換アルゴリズムで送信される。
+
    Meaning of this message:
+
+   このメッセージの意味:
 
    This message is used to authentically convey the server's static
    public key to the client.  The following table shows the server
@@ -1088,9 +1232,17 @@ RFC 4492               ECC Cipher Suites for TLS                May 2006
    public keys MUST be encoded in certificates as described in
    Section 5.9.
 
+   このメッセージは認証のためのサーバーの静的な公開鍵をクライアントへ運ぶため
+   に使用される。以下の表は、鍵交換アルゴリズム毎の適切な証明書タイプを示す。
+   ECC公開鍵はセクション5.9に記述されるように証明書にエンコードされなければな
+   らない。
+
    NOTE: The server's Certificate message is capable of carrying a chain
    of certificates.  The restrictions mentioned in Table 3 apply only to
    the server's certificate (first in the chain).
+
+   注意: サーバーのCertificateメッセージは証明書のチェーンを運ぶことができる。
+   表3で言及された制限は、サーバーの証明書 (チェーンの最初) にのみ適用される。
 
 
 
@@ -1135,9 +1287,13 @@ RFC 4492               ECC Cipher Suites for TLS                May 2006
 
    Structure of this message:
 
+   このメッセージの構造:
+
    Identical to the TLS Certificate format.
 
    Actions of the sender:
+
+   送信側の動作:
 
    The server constructs an appropriate certificate chain and conveys it
    to the client in the Certificate message.  If the client has used a
@@ -1151,6 +1307,17 @@ RFC 4492               ECC Cipher Suites for TLS                May 2006
    MUST respect the client's choice of point formats.  (A server that
    cannot satisfy these requirements MUST NOT choose an ECC cipher suite
    in its ServerHello message.)
+
+   サーバーは適切な証明書チェーンを構築し、それをクライアントへCertificate
+   メッセージで運ぶ。もしクライアントがサポート楕円曲線拡張を使用していたな
+   ら、サーバーの証明書の公開鍵はクライアントが選んだ楕円曲線を尊重しなければ
+   ならない。特に、公開鍵は、クライアントが適切なタイプの明確な曲線への対応を
+   示した場合を除き、名前の付いた曲線 (明確な曲線と同じではない曲線) を採用し
+   なければならない。もしクライアントがサポートポイントフォーマット拡張を使用
+   していたなら、サーバーの公開鍵のポイントと、 (明確な曲線の場合の) 曲線の
+   ベースポイントは、クライア ントが選んだポイントフォーマットを尊重しなければ
+   ならない。(これらの要求を満たすことのできないサーバーは、ServerHello
+   メッセージにおいてECCサイファースイートを選択しれはならない。)
 
 
 
@@ -1169,24 +1336,41 @@ RFC 4492               ECC Cipher Suites for TLS                May 2006
 
    Actions of the receiver:
 
+   受信側の動作:
+
    The client validates the certificate chain, extracts the server's
    public key, and checks that the key type is appropriate for the
    negotiated key exchange algorithm.  (A possible reason for a fatal
    handshake failure is that the client's capabilities for handling
    elliptic curves and point formats are exceeded; cf. Section 5.1.)
 
+   クライアントは証明書チェーンを検証し、サーバーの公開鍵を取り出し、その鍵の
+   タイプが交渉された鍵交換アルゴリズムに対して適切かどうかを確認する。(クライ
+   アントの楕円曲線とポイントフォーマットの操作能力を超えていることは、致命的
+   ハンドシェイク失敗の理由となる可能性がある。セクション5.1を参照。)
+
 5.4.  Server Key Exchange
 
    When this message is sent:
 
+   いつこのメッセージが送信されるか:
+
    This message is sent when using the ECDHE_ECDSA, ECDHE_RSA, and
    ECDH_anon key exchange algorithms.
 
+   このメッセージはECDHE_ECDSA、ECDHE_RSA、ECDH_anonの鍵交換アルゴリズムの使用
+   時に送信される。
+
    Meaning of this message:
+
+   このメッセージの意味:
 
    This message is used to convey the server's ephemeral ECDH public key
    (and the corresponding elliptic curve domain parameters) to the
    client.
+
+   このメッセージはサーバーの一時的なECDH公開鍵 (そしてそれに対応する楕円曲線
+   ドメインパラメーター) をクライアントへ運ぶために使用される。
 
    Structure of this message:
 
@@ -1197,17 +1381,31 @@ RFC 4492               ECC Cipher Suites for TLS                May 2006
       conveyed verbosely, and the underlying finite field is a prime
       field.
 
+	  楕円曲線ドメインパラメーターが長々と運ばれること、基本的な有限体は素体で
+	  あることを示す。
+
    explicit_char2:   Indicates the elliptic curve domain parameters are
       conveyed verbosely, and the underlying finite field is a
       characteristic-2 field.
 
+	  楕円曲線ドメインパラメーターが長々と運ばれること、基本的な有限体は標数2
+	  の体であることを示す。
+
    named_curve:   Indicates that a named curve is used.  This option
       SHOULD be used when applicable.
 
+	  名前の付いた曲線が使用されることを示す。このオプションは適用可能な場合に
+	  使用されるべきである。
+
    Values 248 through 255 are reserved for private use.
+
+   値 248から255はプライベートな使用のため予約されている。
 
    The ECCurveType name space is maintained by IANA.  See Section 8 for
    information on how new value assignments are added.
+
+   ECCurveTypeの名前空間はIANAで管理される。新しい値の割当がどう追加されるかの
+   情報はセクション8を見よ。
 
         struct {
             opaque a <1..2^8-1>;
@@ -1228,6 +1426,10 @@ RFC 4492               ECC Cipher Suites for TLS                May 2006
       field element following the conversion routine in Section 4.3.3 of
       ANSI X9.62 [7].
 
+	  これらのパラメーターは楕円曲線の係数を指定する。各値は、ANSI X9.62 [7]の
+	  セクション4.3.3の変換ルーチン後のフィールド要素のバイト文字列表現を含
+	  む。
+
         struct {
             opaque point <1..2^8-1>;
         } ECPoint;
@@ -1239,13 +1441,23 @@ RFC 4492               ECC Cipher Suites for TLS                May 2006
       client has requested through a Supported Point Formats Extension
       if this extension was used.
 
+	  これは、ANSI X9.62 [7]のセクション4.3.6の変換ルーチン後の楕円曲線ポイン
+	  トのバイト文字列表現である。このバイト文字列は非圧縮または圧縮
+	  フォーマットの楕円曲線ポイントを表現する。もしサポートポイント
+	  フォーマット拡張をクライアントが使用した場合、その拡張でクライアントが要
+	  求したものに適合しなければならない。
+
         enum { ec_basis_trinomial, ec_basis_pentanomial } ECBasisType;
 
    ec_basis_trinomial:   Indicates representation of a characteristic-2
       field using a trinomial basis.
 
+	  3項式の規定を使用した標数2の体の表現を示す。
+
    ec_basis_pentanomial:   Indicates representation of a
       characteristic-2 field using a pentanomial basis.
+
+	  5項式の基底を使用した標数2の体の表現を示す。
 
         struct {
             ECCurveType    curve_type;
@@ -1287,25 +1499,46 @@ RFC 4492               ECC Cipher Suites for TLS                May 2006
    curve_type:   This identifies the type of the elliptic curve domain
       parameters.
 
+   楕円曲線ドメインパラメーターのタイプを示す。
+
    prime_p:   This is the odd prime defining the field Fp.
+
+   これはフィールドFpを特徴付ける基礎数である。
 
    curve:   Specifies the coefficients a and b of the elliptic curve E.
 
+   楕円曲線 E の 係数 a と b を指定する。
+
    base:   Specifies the base point G on the elliptic curve.
 
+   楕円曲線のベースポイント G を指定する。
+
    order:   Specifies the order n of the base point.
+
+   ベースポイントの順序 n を指定する。
 
    cofactor:   Specifies the cofactor h = #E(Fq)/n, where #E(Fq)
       represents the number of points on the elliptic curve E defined
       over the field Fq (either Fp or F2^m).
 
+   余因子 h = #E(Fq)/n を指定する。ここで #E(Fq) は ...
+   <作業中>
+
    m:   This is the degree of the characteristic-2 field F2^m.
+
+   これは標数2の体 F2^m の ...
+   <作業中>
 
    k:   The exponent k for the trinomial basis representation x^m + x^k
       +1.
 
+   3項式の基底の表現 x^m + x^k + 1 における指数 k 。
+
    k1, k2, k3:   The exponents for the pentanomial representation x^m +
       x^k3 + x^k2 + x^k1 + 1 (such that k3 > k2 > k1).
+
+   5項式の表現 x^m + x^k3 + x^k2 + x^k1 + 1 (k3 > k2 > k1 のような) における指
+   数。
 
    namedcurve:   Specifies a recommended set of elliptic curve domain
       parameters.  All those values of NamedCurve are allowed that refer
@@ -1314,6 +1547,12 @@ RFC 4492               ECC Cipher Suites for TLS                May 2006
       (they are only permissible in the ClientHello extension); this
       applies to arbitrary_explicit_prime_curves(0xFF01) and
       arbitrary_explicit_char2_curves(0xFF02).
+
+   推奨する楕円曲線ドメインパラメーターのセットを指定する。NamedCurveの全ての値
+   は、特定の曲線を参照することができる。明確に定義された曲線のクラスへの対応
+   を示す NamedCurveの値は、ここには許可されない。(ClientHello拡張にのみ許可さ
+   れる) このことは arbitrary_explicit_prime_curves(0xFF01) と
+   arbitrary_explicit_char2_curves(0xFF02) に適用する。
 
 
         struct {
@@ -1324,7 +1563,11 @@ RFC 4492               ECC Cipher Suites for TLS                May 2006
    curve_params:   Specifies the elliptic curve domain parameters
       associated with the ECDH public key.
 
+   ECDH公開鍵に割当なれている楕円曲線ドメインパラメーターを指定する。
+
    public:   The ephemeral ECDH public key.
+
+   一時的な公開鍵。
 
 
 
@@ -1337,10 +1580,14 @@ RFC 4492               ECC Cipher Suites for TLS                May 2006
 
    The ServerKeyExchange message is extended as follows.
 
+   ServerKeyExchangeメッセージは次のように拡張される。
+
         enum { ec_diffie_hellman } KeyExchangeAlgorithm;
 
    ec_diffie_hellman:   Indicates the ServerKeyExchange message contains
       an ECDH public key.
+
+   ServerKeyExchangeメッセージはECDH公開鍵を含むことを示す。
 
         select (KeyExchangeAlgorithm) {
             case ec_diffie_hellman:
@@ -1351,10 +1598,14 @@ RFC 4492               ECC Cipher Suites for TLS                May 2006
    params:   Specifies the ECDH public key and associated domain
       parameters.
 
+   ECDH公開鍵とそれに割当なれたドメインパラメーターを指定する。
+
    signed_params:   A hash of the params, with the signature appropriate
       to that hash applied.  The private key corresponding to the
       certified public key in the server's Certificate message is used
       for signing.
+
+   paramsのハッシュ。そのハッシュには適切な署名が適用される。
 
           enum { ecdsa } SignatureAlgorithm;
 
@@ -1380,6 +1631,12 @@ RFC 4492               ECC Cipher Suites for TLS                May 2006
    signed element is encoded as an opaque vector <0..2^16-1>, the
    contents of which are the DER encoding [9] corresponding to the
    following ASN.1 notation [8].
+
+   注意: SignatureAlgorithmは、ECDHE_RSA鍵交換アルゴリズムでは"rsa"、ECDH_anon
+   では"anonymous"である。これらのケースはTLS[2][3]で定義される。
+   ECDHE_ECDSAではSignatureAlgorithmは"ecdsa"である。ECDSA署名はセクション5.10
+   に記載のように生成、検証される。上記のテンプレートでsha_hashのSHAは、状況に
+   応じて適切なSHA1以外のハッシュアルゴリズムを意味する。
 
 
 
@@ -1859,6 +2116,9 @@ RFC 4492               ECC Cipher Suites for TLS                May 2006
    This document describes three new name spaces for use with the TLS
    protocol:
 
+   このドキュメントは3つの新しい名前空間をTLSプロトコルで使用するために記述し
+   ている。
+
    o  NamedCurve (Section 5.1)
 
    o  ECPointFormat (Section 5.1)
@@ -1869,6 +2129,10 @@ RFC 4492               ECC Cipher Suites for TLS                May 2006
    assignments and defines a range of 256 values (NamedCurve) or eight
    values (ECPointFormat and ECCurveType) reserved for Private Use.  Any
    additional assignments require IETF Consensus action [16].
+
+   各名前空間に対し、このドキュメントは初期値の割当を定義し、256個の値の範囲
+   (NamedCurve) また 8個の値 (ECPointFormatとECCurveType) をプライベートな使用
+   のため予約した。追加の割当はIETFの合意を必要とする。[16]
 
 9.  Acknowledgements
 
@@ -2013,6 +2277,9 @@ Appendix A.  Equivalent Curves (Informative)
    equivalent to curves listed in Section 5.1.1.  In the following
    table, multiple names in one row represent aliases for the same
    curve.
+
+   全てのNIST曲線 [11]と、幾つかのANSI曲線 [7]が、セクション5.1.1で示した曲線
+   と同一である。以下の表で、1つの行にある複数の名前は、同じ曲線の別名を表す。
 
              ------------------------------------------
                        Curve names chosen by
