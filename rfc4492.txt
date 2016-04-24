@@ -20,7 +20,7 @@ Category: Informational                                       N. Bolyard
             Elliptic Curve Cryptography (ECC) Cipher Suites
                    for Transport Layer Security (TLS)
 
-            TLS用の楕円曲線暗号サイファースイート
+                 TLS用の楕円曲線暗号サイファースイート
 
 Status of This Memo
 
@@ -168,12 +168,13 @@ RFC 4492               ECC Cipher Suites for TLS                May 2006
       scheme with long-term or ephemeral keys to establish the TLS
       premaster secret, and
 
-	  TLSのpremaster secretの確立に、長期的または一時的な鍵を用いるECDH鍵合意スキーム。
+	  TLSのpremaster secretを確立するための、長期的または一時的な鍵のECDH鍵合
+	  意スキームの使用。
 
    o  the use of fixed-ECDH certificates and ECDSA for authentication of
       TLS peers.
 
-	  fixed-ECDH証明書と、TLSピアを認証するECDSA。
+	  fixed-ECDH証明書と、ECDSAによるTLSピアの認証。
 
    The remainder of this document is organized as follows.  Section 2
    provides an overview of ECC-based key exchange algorithms for TLS.
@@ -188,8 +189,8 @@ RFC 4492               ECC Cipher Suites for TLS                May 2006
    considerations.  Section 8 describes IANA considerations for the name
    spaces created by this document.  Section 9 gives acknowledgements.
 
-   このドキュメントの残りは次のとおり構成されている。セクション2はECCに基づ い
-   たTLS用の鍵交換アルゴリズムの概要を示す。セクション 3はクライアント認証の
+   このドキュメントの残りは次のとおり構成されている。セクション2はECCに基づい
+   たTLS用の鍵交換アルゴリズムの概要を示す。セクション3はクライアント認証の
    ためのECC証明書の使用を示す。クライアントが特定の曲線とポイント
    フォーマットの使用を交渉することを可能にするTLS拡張をセクション4で示す。セ
    クション5はECCに基づくハンドシェイクに必要なデータ構造と、それらの TLS
@@ -284,7 +285,7 @@ RFC 4492               ECC Cipher Suites for TLS                May 2006
 
    ECDHE_ECDSAとECDHE_RSAの鍵交換は前方秘匿性を提供する。ECDHE_RSAでは、
    サーバーは既存のRSA証明書を再利用可能であり、クライアントの楕円曲線の嗜好に
-   容易に準拠できる。しかし、ECDHE_RSAにおいてサーバーが被る計算コストは、前方
+   容易に対応できる。しかし、ECDHE_RSAにおいてサーバーが被る計算コストは、前方
    秘匿性を提供しない従来のRSA鍵交換よりも高い。
 
    The ECDH_RSA mechanism requires a server to acquire an ECC
@@ -296,10 +297,10 @@ RFC 4492               ECC Cipher Suites for TLS                May 2006
    unable to support RSA.
 
    ECDH_RSAではサーバーはECC証明書の取得を必要とする。しかし証明書発行者は署名
-   に既存のRSA鍵を使用可能である。これにより、TLSクライアントにより受け入れら
-   れた信頼できる認証局の鍵を更新する必要がなくなる。ECDH_ECDSAではサーバーは
-   認証局と同様にECC鍵を必要とする。RSAをサポートできない制約されたデバイスに
-   最も適している。
+   に既存のRSA鍵を使用可能である。このことは、TLSクライアントが受け入れている
+   信頼できる認証局の鍵を更新する必要を取り除く。ECDH_ECDSAでは、サーバーは認
+   証局と同様にECC鍵を必要とする。ECDH_ECDSAはRSAをサポートできない制約された
+   デバイスに最も適している。
 
    The anonymous key exchange algorithm does not provide authentication
    of the server or the client.  Like other anonymous TLS key exchanges,
@@ -317,9 +318,9 @@ RFC 4492               ECC Cipher Suites for TLS                May 2006
    ECDH-capable if its use in ECDH is permitted.  ECDSA-capable is
    defined similarly.
 
-   ECDHとECDSAでは鍵の構造に違いは無い。証明書発行者は、ECC公開鍵を特定の計算
-   [15]のみに制限するために、X.509 v3 keyUsageとextendedKeyUsage拡張を使用可能
-   である。このドキュメントでは、ECDHでの使用が許可されているECC鍵を
+   ECDHとECDSAで鍵の構造に違いは無い。証明書発行者は、ECC公開鍵の使用を特定の
+   計算 [15] のみに制限するために、X.509 v3 keyUsage、extendedKeyUsage の拡張
+   を使用してよい。このドキュメントでは、ECDHでの使用が許可されているECC鍵を
    ECDH-capable、ECDSAでの使用が許可されているECC鍵をECDSA-cabableと記載する。
 
               Client                                        Server
@@ -367,15 +368,15 @@ RFC 4492               ECC Cipher Suites for TLS                May 2006
    Figure 1) until Section 3 and of the optional ECC-specific extensions
    (which impact the Hello messages) until Section 4.
 
-   図1はTLS鍵を確立するプロトコルで使用される全メッセージ (フルハン ドシェイ
-   ク)を示している。ECCの追加はCientHello、SercerHello、サーバーの
+   図1はTLS鍵を確立するプロトコルで使用される全メッセージ (フルハンドシェイ
+   ク) を示している。ECCの追加はCientHello、SercerHello、サーバーの
    Certificate メッセージ、ServerKeyExchange、ClientKeyExchange、
    CertificateRequest、クラ イアントのCertificateメッセージ、CertificateVerify
    に直接影響する。次に、ECC 鍵交換アルゴリズムでの、これらのメッセージの内容
-   と処理について詳細を記述する。説明のしやすさのため、セクション3までクライア
-   ント認証とそれに関連するメッセージ (図1で+が追加もの) の説明を保留する。オ
-   プショナルなECC固有の拡張 (Helloメッセージに影響するもの) についての説明を
-   セクション4まで保留する。
+   と処理の詳細を記述する。説明のしやすさのため、セクション3までクライアント
+   認証とそれに関連するメッセージ (図1で+が追加もの) の説明を保留する。オプ
+   ショナルなECC固有の拡張 (Helloメッセージに影響するもの) についての説明を セ
+   クション4まで保留する。
 
 2.1.  ECDH_ECDSA
 
@@ -383,7 +384,7 @@ RFC 4492               ECC Cipher Suites for TLS                May 2006
    public key and be signed with ECDSA.
 
    ECDH_ECDSAでは、サーバーの証明書はECDH-capableな公開鍵を含まなければならな
-   い。そしてECDSAで署名されなければならない。
+   い。そしてそれはECDSAで署名されなければならない。
 
    A ServerKeyExchange MUST NOT be sent (the server's certificate
    contains all the necessary keying information required by the client
@@ -400,8 +401,8 @@ RFC 4492               ECC Cipher Suites for TLS                May 2006
 
    クライアントはECDH鍵ペアをサーバーの長期的な公開鍵と同じ曲線上で生成し、公
    開鍵をClientKeyExchangeメッセージで送信する (セクション3.2またはセクション
-   3.3 からの変更を適用する場合で、ECDSA_fixed_ECDHまたは RSA_fixed_ECDHのクラ
-   イアント認証アルゴリズムを使用する場合を除く)。
+   3.3 の変更が適用される場合で、ECDSA_fixed_ECDHまたはRSA_fixed_ECDHのクラ
+   イアント認証アルゴリズムの使用時を除く)。
 
    Both client and server perform an ECDH operation and use the
    resultant shared secret as the premaster secret.  All ECDH
@@ -417,14 +418,14 @@ RFC 4492               ECC Cipher Suites for TLS                May 2006
    capable public key and be signed with ECDSA.
 
    ECDHE_ECDSAでは、サーバーの証明書はECDSA-capableな公開鍵を含まなければなら
-   ない。そしてECDSAで署名されなければならない。
+   ない。そしてそれはECDSAで署名されなければならない。
 
    The server sends its ephemeral ECDH public key and a specification of
    the corresponding curve in the ServerKeyExchange message.  These
    parameters MUST be signed with ECDSA using the private key
    corresponding to the public key in the server's Certificate.
 
-   サーバーは、一時的なECDH公開鍵と、対応する曲線の仕様をServerKeyExchange
+   サーバーは、一時的なECDH公開鍵と、対応する曲線の仕様を、ServerKeyExchange
    メッセージにて送信する。これらのパラメーターは、サーバーの証明書に含まれる
    公開鍵に対応する秘密鍵を使用して、ECDSAで署名されなければならない。
 
@@ -515,6 +516,7 @@ RFC 4492               ECC Cipher Suites for TLS                May 2006
    certification authority whose certificate appears as one of the
    intermediate certificates in the chain.)
 
+   [作業中]
    ECDH_ECDSA、ECDHE_ECDSA、ECDS_RSA、ECDHE_RSAの鍵交換アルゴリズムでは、
    サーバーの証明書が特定の署名スキームで署名される一方、この仕様 (同様な
    ケースとして[2][3]におけるDH_DSS、 DHE_DSS、DH_RSA、DHE_RSA) では、証明書
@@ -551,13 +553,13 @@ RFC 4492               ECC Cipher Suites for TLS                May 2006
 
    このドキュメントはECDSA_sign、ECDSA_fixed_ECDH、RSA_fixed_ECDHという名前の3
    つの新しいクライアント認証メカニズムを定義する。それぞれ関係するクライアン
-   ト証明 書のタイ プにちなんで名付けられた。ECDSA_signは、TLS [2][3]で定義さ
-   れてい るその他の 非匿名 (non-ECC) な鍵交換アルゴリズムと同様に、セクション
-   2 に記 述される非匿 名なECC鍵交換アルゴリズムのいずれかで使用可能である。
-   ECDSA_fixed_ECDHと RSA_fixed_ECDHは、ECDH_ECDSAとECDH_RSAで使用可能である。
-   ECDHE_ECDSAと ECDHE_RSAでそれらを使用することは禁止される。なぜなら長期的な
-   ECDHクライア ント鍵の使用は、ことらのアルゴリズムの前方秘匿性の性質を脅かす
-   からである。
+   ト証明書のタイプにちなんで名付けられている。ECDSA_signは、TLS [2][3]で定義
+   されているその他の非匿名 (non-ECC) な鍵交換アルゴリズムと同様に、セク
+   ション 2 に記述された非匿名なECC鍵交換アルゴリズムのいずれかで使用可能で
+   ある。ECDSA_fixed_ECDHと RSA_fixed_ECDHは、ECDH_ECDSAとECDH_RSAで使用可能で
+   ある。ECDHE_ECDSAとECDHE_RSAでそれらを使用することは禁止される。なぜなら長
+   期的な ECDHクライアント鍵の使用は、これらのアルゴリズムの前方秘匿性の性質
+   を脅かすからである。
 
    The server can request ECC-based client authentication by including
    one or more of these certificate types in its CertificateRequest
@@ -567,11 +569,11 @@ RFC 4492               ECC Cipher Suites for TLS                May 2006
    methods suggested by the server and is willing to use it for
    authentication.
 
-   サーバーはECC-basedなクライアント認証を要求できる。このためには
-   これら証明書タイプの1つ以上をCertificateRequestに含める。サーバーは交渉した
-   鍵交換アルゴリズムでは禁止されている証明書タイプを含めてはならない。クライ
-   アントは、サーバーが提示したメソッドのいずれかにふさわしい証明書を保有して
-   いるかどうか確認し、それを認証に使用する。
+   サーバーは、これらの証明書タイプの1つ以上をCertificateRequestに含めることに
+   より、ECC-basedなクライアント認証を要求できる。サーバーは、交渉した鍵交換ア
+   ルゴリズムでは禁止されている証明書タイプを含めてはならない。クライアント
+   は、サーバーが提示したメソッドのいずれかにふさわしい証明書を保有しているか
+   どうか確認し、それを認証に使用する。
 
    If these conditions are not met, the client should send a client
    Certificate message containing no certificates.  In this case, the
@@ -583,7 +585,7 @@ RFC 4492               ECC Cipher Suites for TLS                May 2006
    メッセージを送信しなければならない。この場合、ClientKeyEchangeはセクション2
    に記述されたように送信されるべきである。そしてCertificateVerifyは送信される
    べきではない。もしサーバーがクライアント認証を要求するなら、致命的ハンド
-   シェイク 失敗アラートの応答をしてよい。
+   シェイク失敗アラートの応答をしてよい。
 
    If the client has an appropriate certificate and is willing to use it
    for authentication, it must send that certificate in the client's
@@ -594,8 +596,8 @@ RFC 4492               ECC Cipher Suites for TLS                May 2006
 
    もしクライアントが適切な証明書を持ち、それを認証に使用するなら、その証明書
    をクライアントのCertificateメッセージで送信しなければならない (セクション
-   5.6のように) 。そして証明された鍵に対応する秘密鍵の保有を証明する (訳註：た
-   ぶんCertificateVerifyに秘密鍵で署名することによって)。適切な証明書を決定す
+   5.6のように) 。そして証明された鍵に対応する秘密鍵の保有を証明する (訳註：
+   CertificateVerifyに秘密鍵で署名することによって)。適切な証明書を決定す
    るプロセス及び保有の証明は、認証メカニズムごとに異なる。以下に記述する。
 
    NOTE: It is permissible for a server to request (and the client to
@@ -650,7 +652,7 @@ RFC 4492               ECC Cipher Suites for TLS                May 2006
    使用をクローズドな環境に制限するかもしれない。クライアントが別の曲線のECC鍵
    を持っている場合、ECDSA_signまたはnon-ECCメカニズム (例えばRSA) を使用して
    認証しなければならない。fixed ECDHをサーバーとクライアントの両方で使用する
-   ことは前方秘匿性を持つメカニズムよりも計算的に効率が良い。
+   ことは前方秘匿性を提供するメカニズムよりも計算的に効率が良い。
 
    When using this authentication mechanism, the client MUST send an
    empty ClientKeyExchange as described in Section 5.7 and MUST NOT send
@@ -667,8 +669,8 @@ RFC 4492               ECC Cipher Suites for TLS                May 2006
    メッセージを送信してはならない。サーバーがpremaster secretを計算するために
    必要とするクライアントのECDH公開鍵は、クライアントの証明書内に存るために、
    ClientKeyExchangeは空である。サーバーのものと同じpremaster secretに到達する
-   クライアントの能力 (Finishedメッセージの交換が成功すること で立証される)
-   が、証明された公開鍵に対応する秘密鍵を所 有していることの証明となり、
+   クライアントの能力 (Finishedメッセージの交換が成功することで立証される)
+   が、証明された公開鍵に対応する秘密鍵を所有していることの証明となり、
    CertificateVerifyメッセージは必要ない。
 
 
@@ -692,6 +694,7 @@ RFC 4492               ECC Cipher Suites for TLS                May 2006
    able to validate the clients certificate by relying on a trust anchor
    that appears as one of the intermediate certificates in the chain.)
 
+   [作業中]
    ECDSA_sign、ECDSA_fixed_ECDH、RSA_fixed_ECDHのクライアント認証メカニズム
    が、特定の署名スキームで署名されたクライアント証明書を必要とする一方、この
    仕様は、証明書チェーンとは別の部分で使用される署名スキームを制限しない。(多
@@ -727,12 +730,12 @@ RFC 4492               ECC Cipher Suites for TLS                May 2006
    in its ServerHello message.
 
    2つの新しいTLS拡張がこの仕様で定義される。(i) サポート楕円曲線拡張 (ii) サ
-   ポートポイントフォーマット拡張。これらは使用する特定の曲線とポイント
-   フォーマット (例えば、それぞれ圧縮 vs. 非圧縮)を、新しいセッションを 開始す
+   ポートポイントフォーマット拡張。これらは、使用する特定の曲線とポイント
+   フォーマット (例えば、圧縮か非圧縮か) を、新しいセッションを開始す
    るハンドシェイクで交渉可能にする。これらの拡張は特に、対応する曲線やポイン
    トフォーマットの数が制限された制約のあるクライアントに適している。それらは
-   [4]で概略説明され、セクション5でメッセージの詳細が規定された、通常のアプ
-   ローチに従う。クライアントはClientHelloメッセージに適切な拡張を含めることに
+   [4]で概略説明された通常のアプローチと、セクション5で規定されたメッセージの
+   詳細に従う。クライアントは、ClientHelloメッセージに適切な拡張を含めることに
    よって、対応する曲線と解析可能なポイントフォーマットを列挙する。サーバーは
    同様に、ServerHelloメッセージに拡張を含めることによって、解析可能なポイント
    フォーマットを列挙する。
@@ -753,8 +756,8 @@ RFC 4492               ECC Cipher Suites for TLS                May 2006
    した時、サーバーはクライアントが指定した曲線選択と圧縮のテクニックを順守し
    てハンドシェイクを完了できない場合は、ECCサイファースイート使用を交渉して
    はならない。このことは、サーバーのEC鍵に対応する能力がクライアントに無いこ
-   とが原因で、交渉されたECCハンドシェイクが後になってアボートする可能性を除去
-   する。
+   とが原因で、交渉されたECCハンドシェイクが後になってアボートする可能性を取り
+   除く。
 
    The client MUST NOT include these extensions in the ClientHello
    message if it does not propose any ECC cipher suites.  A client that
@@ -767,8 +770,8 @@ RFC 4492               ECC Cipher Suites for TLS                May 2006
    クライアントは、ECCサイファースイートを提示しない場合、ClientHelloにこれら
    の拡張を含めてはならない。ECCサイファースイートを提示したクライアントはこれ
    らの拡張を含めなくても良い。この場合、サーバーはセクション5のリストで示され
-   る楕円曲線やポイントフォーマットから任意に1つを自由に選択する。そのセク
-   ションはまたこれらの拡張の構造や処理の詳細を記述する。
+   る楕円曲線やポイントフォーマットから任意に1つを自由に選択する。またそのセク
+   ションは、これらの拡張の構造や処理の詳細を記述する。
 
    In the case of session resumption, the server simply ignores the
    Supported Elliptic Curves Extension and the Supported Point Formats
@@ -777,8 +780,8 @@ RFC 4492               ECC Cipher Suites for TLS                May 2006
    session.
 
    セッション再開の場合、サーバーは、進行中のClientHelloメッセージに現れたサ
-   ポート楕円曲線拡張とサポートポイント フォーマット拡張を無視する。これらの拡
-   張は新しいセッションを交渉するハンド シェイクでのみ役割を果たす。
+   ポート楕円曲線拡張とサポートポイントフォーマット拡張を無視する。これらの拡
+   張は新しいセッションを交渉するハンドシェイクでのみ役割を果たす。
 
 5.  Data Structures and Computations
 
@@ -793,11 +796,11 @@ RFC 4492               ECC Cipher Suites for TLS                May 2006
 
    このセクションは、セクション2,3,4で規定されたECC-basedな鍵交換メカニズムで
    使用されるデータ構造と計算を規定する。ここで使用される説明用の言語は、
-   TLS[2][3]で使用されるものと同じである。この仕様はTLSを拡張するために、これ
-   らの記述はTLS仕様の中のそれら及びTLSを拡張する他の全てとマージされるべきで
-   ある。このことは、列挙タイプは全ての可能な値を規定しないかもしれないこと、
-   select()で選ばれる複数のフォーマットを持つ構造が、全ての可能な場合 を示さな
-   いかもしれないことを意味する。
+   TLS[2][3]で使用されるものと同じである。この仕様はTLSを拡張するものであるた
+   め、これらの記述は、TLS仕様中のそれら及びTLSを拡張する他の全てとマージされる
+   べきである。このことは、列挙タイプは全ての可能な値を規定しないかもしれない
+   こと、select()で選ばれる複数のフォーマットを持つ構造が、全ての可能な場合を
+   示さないかもしれないことを意味する。
 
 5.1.  Client Hello Extensions
 
@@ -818,7 +821,7 @@ RFC 4492               ECC Cipher Suites for TLS                May 2006
 
    When these extensions are sent:
 
-   いつこの拡張が送信されるか:
+   いつこれらの拡張が送信されるか:
 
    The extensions SHOULD be sent along with any ClientHello message that
    proposes ECC cipher suites.
@@ -828,13 +831,13 @@ RFC 4492               ECC Cipher Suites for TLS                May 2006
 
    Meaning of these extensions:
 
-   この拡張の意味:
+   これらの拡張の意味:
 
    These extensions allow a client to enumerate the elliptic curves it
    supports and/or the point formats it can parse.
 
-   これらの拡張はクライアントが対応する楕円曲線、ポイントフォーマットを列挙す
-   ることを可能とする。
+   これらの拡張は、クライアントが対応する楕円曲線、ポイントフォーマットを列挙
+   することを可能とする。
 
    Structure of these extensions:
 
@@ -889,10 +892,10 @@ RFC 4492               ECC Cipher Suites for TLS                May 2006
 
    ClientHelloメッセージでECCサイファースイートを提示するクライアントは、これ
    らの拡張を (他の拡張と共に) 付け加え、サポートする曲線と、解析可能なポイン
-   トフォーマットを列挙する。クライアントはサポート楕円曲線拡張と、サポートポ
+   トフォーマットを列挙する。クライアントは、サポート楕円曲線拡張とサポートポ
    イントフォーマット拡張の両方を送信するべきである。もしサポートポイント
    フォーマット拡張が実際に送信されるなら、ポイントフォーマットのリストに項目
-   の1つとして値0 (非圧 縮) を含めなければならない。
+   の1つとして値0 (非圧縮) を含めなければならない。
 
    Actions of the receiver:
 
@@ -906,7 +909,7 @@ RFC 4492               ECC Cipher Suites for TLS                May 2006
    supported by the client (cf. Sections 5.3 and 5.4).
 
    これらの拡張の両方または片方を含んだClientHelloを受信したサーバーは、適切な
-   サイファースイートを選択を導くため、クライアントが列挙した能力を使用しなけ
+   サイファースイートの選択を導くため、クライアントが列挙した能力を使用しなけ
    ればならない。クライアントが対応する曲線とポイントフォーマットを使用しつ
    つ、サーバーが正常にハンドシェイクを完了できる場合にのみ、提示されたECCサイ
    ファースイートの1つが交渉されなければならない。
@@ -926,8 +929,8 @@ RFC 4492               ECC Cipher Suites for TLS                May 2006
    the ephemeral ECDH key in the ServerKeyExchange message.  The server
    must consider the extensions in both cases.
 
-   注意: ECDHE-ECDSA鍵交換に加わるサーバーは、(i) その証明書のECDSA鍵 (ii)
-   ServerKeyExchangeメッセージの一時的なECDH鍵 とは異る曲線を使用してもよい。
+   注意: ECDHE-ECDSA鍵交換に加わるサーバーは、(i) その証明書内のECDSA鍵 (ii)
+   ServerKeyExchangeメッセージの一時的なECDH鍵 とに異る曲線を使用してもよい。
    サーバーは両方のケースの拡張を考慮しなければならない。
 
    If a server does not understand the Supported Elliptic Curves
@@ -942,7 +945,7 @@ RFC 4492               ECC Cipher Suites for TLS                May 2006
    もしサーバーがサポート楕円曲線拡張を理解できない、サポートポイント
    フォーマット拡張を理解できない、または列挙された曲線とポイントフォーマット
    にサーバー自身を制限しつつECCハンドシェイクを完了することができないなら、
-   ECCサイファースイートの使用を交渉してはならない。サーガーが対応している他の
+   ECCサイファースイートの使用を交渉してはならない。サーバーが対応している他の
    サイファースイートがクライアントにより提示されているか否かに応じて、共通の
    サイファースイートの欠如による致命的ハンドシェイク失敗アラートという結果に
    なってよい。
@@ -979,7 +982,7 @@ RFC 4492               ECC Cipher Suites for TLS                May 2006
 	  らの多くの曲線は、ANSI X9.62 [7]、FIPS 186-2 [11]でも推奨されていること
 	  に注意せよ。0xFE00から0xFEFFはプライベートな使用に予約されている。0xFE01
 	  と0xFE02はクライアントが任意のprime曲線とcharacteristic-2曲線にそれぞれ
-	  対応し ていることを示す。(ECParametersに曲線パラメーターを明確にエンコードしな
+	  対応していることを示す。(ECParametersに曲線パラメーターを明確にエンコードしな
 	  ければならない。)
 
    The NamedCurve name space is maintained by IANA.  See Section 8 for
@@ -1013,8 +1016,8 @@ RFC 4492               ECC Cipher Suites for TLS                May 2006
    extension type (Supported Elliptic Curves Extension):
 
    例えば、secp192r1 (別名 NIST P-192; 値19 = 0x0013) 、secp224r1 (別名 NIST
-   P-224; 値 21 = 0x0015) のみに対応し、secp192r1の使用を有線するクライアント
-   では、以下のオクテットからなるTLS拡張を含む。最初の2つのオクテットは拡張タ
+   P-224; 値 21 = 0x0015) のみに対応し、secp192r1の使用を優先するクライアント
+   は、以下のオクテットからなるTLS拡張を含める。最初の2つのオクテットは拡張タ
    イプ (サポート楕円曲線拡張) を示す:
 
         00 0A 00 06 00 04 00 13 00 15
@@ -1024,7 +1027,7 @@ RFC 4492               ECC Cipher Suites for TLS                May 2006
    octets:
 
    任意の明確なcharacteristic-2曲線 (値 0xFF02) に対応するクライアントは以下の
-   オクテットからなる拡張を含む。
+   オクテットからなる拡張を含める。
 
         00 0A 00 04 00 02 FF 02
 
@@ -1050,14 +1053,14 @@ RFC 4492               ECC Cipher Suites for TLS                May 2006
    [7].)  Values 248 through 255 are reserved for private use.
 
    上記のECPointFormatの定義には3つのポイントフォーマットが含まれている。この
-   ドキュメントの実装が対応している曲線の全てが非圧縮ポイントフォーマットに対
-   応しなければならない。そしてそれがデフォルトのフォーマットである。圧縮ポイ
-   ントフォーマットはポイントのx座標と、y座標の単一ビットのみを含むことによ
-   って帯域を減らす。このドキュメントの実装はansiX962_compressed_primeと
-   ansiX962_compressed_char2フォーマットに対応してよい。ここで前者は素数
-   曲線にのみ適用し、後者はcharacteristic-2曲線にのみ適用する。(これらの
-   フォーマットは[7]で規定される) 値 248から255はプライベートな使用に予約され
-   ている。
+   ドキュメントの実装は、対応している曲線の全てで非圧縮ポイントフォーマットに
+   対応しなければならない。そしてそれがデフォルトのフォーマットである。圧縮ポ
+   イントフォーマットはポイントのx座標と、y座標の単一ビットのみを含むことによ
+   って帯域を減らす。このドキュメントの実装は、ansiX962_compressed_primeと
+   ansiX962_compressed_char2フォーマットに対応してよい。ここで前者はprime曲線
+   にのみ適用し、後者はcharacteristic-2曲線にのみ適用する。(これらの
+   フォーマットは[7]で規定される) 値 248から255はプライベートな使用に
+   予約され ている。
 
    The ECPointFormat name space is maintained by IANA.  See Section 8
    for information on how new value assignments are added.
@@ -1101,10 +1104,10 @@ RFC 4492               ECC Cipher Suites for TLS                May 2006
    (ansiX962_compressed_char2, value 2), may indicate these preferences
    by including an extension consisting of the following octets:
 
-   クライアントが、素体に非圧縮フォーマット (値 0) よりも圧縮 フォーマット
+   クライアントが、素体に非圧縮フォーマット (値 0) よりも圧縮フォーマット
    (ansiX962_compressed_prime, 値 1) を好むが、標数2の体 には圧縮フォーマット
-   (ansiX962_compressed_char2, 値 2) よりも非圧縮 フォーマット (値 0) を好む場
-   合、以下のオクテットからなる拡張を含むことによ り、これらの嗜好を示してよ
+   (ansiX962_compressed_char2, 値 2) よりも非圧縮フォーマット (値 0) を好む場
+   合、以下のオクテットからなる拡張を含むことにより、これらの嗜好を示してよ
    い。
 
         00 0B 00 04 03 01 00 02
@@ -1166,7 +1169,7 @@ RFC 4492               ECC Cipher Suites for TLS                May 2006
    サーバーの優先度に応じた順である (本命が先頭)。クライアントのリストには無い
    項目をサーバーが含めても良いことに注意せよ。(例えば、サーバーは、クライアン
    トが圧縮フォーマットを解析できないときでも、同じクライアントが圧縮
-   フォーマットのポイントを出力 できないにしても、このフォーマットのポイントを
+   フォーマットのポイントを出力できないにしても、このフォーマットのポイントを
    受信することを選んで良い。)
 
 
@@ -1205,9 +1208,9 @@ RFC 4492               ECC Cipher Suites for TLS                May 2006
    this is equivalent to an extension allowing only the uncompressed
    point format.
 
-   サポートポイントフォーマット拡張を含んだServerHelloめせを受信するクライアン
-   トは、ハンドシェイクの間、サーバーが選択したポイントフォーマットを尊重しな
-   ければならない。(セクション5.6と5.7を参照) もし、ServerHelloでサ
+   サポートポイントフォーマット拡張を含んだServerHelloメッセージを受信するクラ
+   イアントは、ハンドシェイクの間、サーバーが選択したポイントフォーマットを尊
+   重しなければならない。(セクション5.6と5.7を参照) もし、ServerHelloでサ
    ポートポイントフォーマット拡張を受信しない場合、このことは非圧縮なポイント
    フォーマットのみを許す拡張と同等である。
 
