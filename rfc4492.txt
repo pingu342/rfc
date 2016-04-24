@@ -1636,7 +1636,10 @@ RFC 4492               ECC Cipher Suites for TLS                May 2006
    では"anonymous"である。これらのケースはTLS[2][3]で定義される。
    ECDHE_ECDSAではSignatureAlgorithmは"ecdsa"である。ECDSA署名はセクション5.10
    に記載のように生成、検証される。上記のテンプレートでsha_hashのSHAは、状況に
-   応じて適切なSHA1以外のハッシュアルゴリズムを意味する。
+   応じて適切なSHA1以外のハッシュアルゴリズムを意味する。ANSI X9.62の通り、
+   ECDSA署名は整数のペア r と s からなる。デジタル署名された要素は不透明なベク
+   タ <0..2^16-1> としてエンコードされる。以下の ASN.1 注記 [8] に対応した DER
+   エンコーディング [9] であるコンテンツ。
 
 
 
@@ -1655,13 +1658,22 @@ RFC 4492               ECC Cipher Suites for TLS                May 2006
 
    Actions of the sender:
 
+   送信側の動作:
+
    The server selects elliptic curve domain parameters and an ephemeral
    ECDH public key corresponding to these parameters according to the
    ECKAS-DH1 scheme from IEEE 1363 [6].  It conveys this information to
    the client in the ServerKeyExchange message using the format defined
    above.
 
+   サーバーは楕円曲線ドメインパラメーターを選択し、これらのパラメーターに対応
+   した一時的なECDH公開鍵を IEEE 1363 [6] のECKAS-DH1スキームに従って選択す
+   る。この情報は上で定義されたフォーマットを使用してSeverKeyExchange
+   メッセージでクライアントに運ぶ。
+
    Actions of the receiver:
+
+   受信側の動作:
 
    The client verifies the signature (when present) and retrieves the
    server's elliptic curve domain parameters and ephemeral ECDH public
@@ -1670,20 +1682,38 @@ RFC 4492               ECC Cipher Suites for TLS                May 2006
    handling elliptic curves and point formats are exceeded;
    cf. Section 5.1.)
 
+   クライアントは(提示されていれば)署名を検証し、サーバーの楕円曲線ドメインパ
+   ラメーターと一時的なECDH公開鍵をServerKeyExchangeメッセージから取り出す。(クライ
+   アントの楕円曲線とポイントフォーマットの操作能力を超えていることは、致命的
+   ハンドシェイク失敗の理由となる可能性がある。セクション5.1を参照。)
+
 5.5.  Certificate Request
 
    When this message is sent:
 
+   いつこのメッセージが送信されるか:
+
    This message is sent when requesting client authentication.
 
+   このメッセージはクライアント認証を要求するときに送信される。
+
    Meaning of this message:
+
+   このメッセージの意味:
 
    The server uses this message to suggest acceptable client
    authentication methods.
 
+   サーバーはこのメッセージを使用して受け入れ可能なクライアント認証メソッドを
+   提示する。
+
    Structure of this message:
 
+   このメッセージの構造:
+
    The TLS CertificateRequest message is extended as follows.
+
+   TLS CertificateRequestメッセージは次のように拡張される。
 
         enum {
             ecdsa_sign(64), rsa_fixed_ecdh(65),
@@ -1692,6 +1722,9 @@ RFC 4492               ECC Cipher Suites for TLS                May 2006
 
    ecdsa_sign, etc.  Indicates that the server would like to use the
       corresponding client authentication method specified in Section 3.
+
+	  サーバーはセクション3で規定されたクライアント認証メソッドを使用したいこ
+	  とを示す。
 
 
 
@@ -1706,19 +1739,31 @@ RFC 4492               ECC Cipher Suites for TLS                May 2006
 
    Actions of the sender:
 
+   送信側の動作:
+
    The server decides which client authentication methods it would like
    to use, and conveys this information to the client using the format
    defined above.
 
+   サーバーは使用したいクライアント認証メソッドを決定し、この情報を上で定義さ
+   れたフォーマットを使用してクライアントに運ぶ。
+
    Actions of the receiver:
+
+   受信側の動作:
 
    The client determines whether it has a suitable certificate for use
    with any of the requested methods and whether to proceed with client
    authentication.
 
+   クライアントは要求されたメソッドの使用に対応した証明書を持っているかどう
+   か、クライアント認証を開始するかどうかを決定する。
+
 5.6.  Client Certificate
 
    When this message is sent:
+
+   いつこのメッセージが送信されるか:
 
    This message is sent in response to a CertificateRequest when a
    client has a suitable certificate and has decided to proceed with
@@ -1731,7 +1776,17 @@ RFC 4492               ECC Cipher Suites for TLS                May 2006
    only be considered suitable for use with these authentication methods
    if the point is represented in uncompressed point format.)
 
+   [作業中]
+   このメッセージは、クライアントが適切な証明書を持ち、かつクライアント認証を
+   始めると決めたときに、CertificateRequestへの応答として送信される。(もし
+		   サーバーがサポートポイントフォーマット拡張を使用した場合、証明書は
+		   ECDSA_sign、RSA_fixed_ECDH、ECDSA_fixed_ECDHの認証メソッドで使用す
+		   ることに対してのみ適切と見なされる。もし公開鍵ポイントが、クライアン
+		   トが従うサーバーが選んだポイントフォーマットで指定され ...)
+
    Meaning of this message:
+
+   このメッセージの意味:
 
    This message is used to authentically convey the client's static
    public key to the server.  The following table summarizes what client
@@ -1739,9 +1794,19 @@ RFC 4492               ECC Cipher Suites for TLS                May 2006
    authentication mechanisms described in Section 3.  ECC public keys
    must be encoded in certificates as described in Section 5.9.
 
+   このメッセージはクライアントの静的な公開鍵をサーバーに確かに運ぶために使用
+   される。以下の表は、セクション3で記述されるECC-basedなクライアント認証メカ
+   ニズムに対して、なにが適切なクライアント証明書タイプであるかを要約してい
+   る。ECC公開鍵はセクション5.9で記述されたとおり証明書にエンコードされなけれ
+   ばならない。
+
    NOTE: The client's Certificate message is capable of carrying a chain
    of certificates.  The restrictions mentioned in Table 4 apply only to
    the client's certificate (first in the chain).
+
+   注意: クライアントのCertificateメッセージは証明書のチェーンを運ぶことが可能
+   である。表4で言及された制限はクライアントの証明書(チェーンの先頭)にのみ適用
+   される 。
 
 
 
@@ -1768,11 +1833,20 @@ RFC 4492               ECC Cipher Suites for TLS                May 2006
                                   ECDSA-capable public key and
                                   be signed with ECDSA.
 
+								  証明書はECDSA-capableな公開鍵を含まなければ
+								  ならない。またECDSAで署名されなければならな
+								  い。
+
           ECDSA_fixed_ECDH        Certificate MUST contain an
                                   ECDH-capable public key on the
                                   same elliptic curve as the server's
                                   long-term ECDH key.  This certificate
                                   MUST be signed with ECDSA.
+
+								  証明書はサーバーの長期的なECDH鍵と同じ楕円曲
+								  線上のECDH-capableな公開鍵を含まなければなら
+								  ない。この証明書はECDSAで署名されなければな
+								  らない。
 
           RSA_fixed_ECDH          Certificate MUST contain an
                                   ECDH-capable public key on the
@@ -1780,31 +1854,57 @@ RFC 4492               ECC Cipher Suites for TLS                May 2006
                                   long-term ECDH key.  This certificate
                                   MUST be signed with RSA.
 
+								  証明書はサーバーの長期的なECDH鍵と同じ楕円曲
+								  線上のECDH-capableな公開鍵を含まなければなら
+								  ない。この証明書はRSAで署名されなければなら
+								  ない。
+
                      Table 4: Client Certificate Types
 
    Structure of this message:
 
+   このメッセージの構造:
+
    Identical to the TLS client Certificate format.
 
+   TLSクライアントCertificateフォーマットと同じ。
+
    Actions of the sender:
+
+   送信側の動作:
 
    The client constructs an appropriate certificate chain, and conveys
    it to the server in the Certificate message.
 
+   クライアントは適切な証明書チェーンを構築し、それをサーバーへCertificate
+   メッセージで運ぶ。
+
    Actions of the receiver:
+
+   受信側の動作:
 
    The TLS server validates the certificate chain, extracts the client's
    public key, and checks that the key type is appropriate for the
    client authentication method.
 
+   TLSサーバーは証明書チェーンを検証し、クライアントの公開鍵を取り出し、その鍵
+   のタイプがクライアント認証メソッドに対して適切かどうか確認する。
+
 5.7.  Client Key Exchange
 
    When this message is sent:
+
+   いつこのメッセージが送信されるか:
 
    This message is sent in all key exchange algorithms.  If client
    authentication with ECDSA_fixed_ECDH or RSA_fixed_ECDH is used, this
    message is empty.  Otherwise, it contains the client's ephemeral ECDH
    public key.
+
+   このメッセージは全ての鍵交換アルゴリズムで送信される。もし、クライアント認
+   証にECDSA_fixed_ECDH、ESA_fixed_ECDHが使用される場合、このメッセージは空で
+   ある。そうではない場合、クライアントの一時的なECDH公開鍵を含まなければなら
+   ない。
 
 
 
@@ -1818,13 +1918,22 @@ RFC 4492               ECC Cipher Suites for TLS                May 2006
 
    Meaning of the message:
 
+   メッセージの意味:
+
    This message is used to convey ephemeral data relating to the key
    exchange belonging to the client (such as its ephemeral ECDH public
    key).
 
+   このメッセージはクライアントに属する鍵交換に関連する一時的なデータを運ぶ。
+   (例えばクライアントの一時的なECDH公開鍵など)
+
    Structure of this message:
 
+   このメッセージの構造:
+
    The TLS ClientKeyExchange message is extended as follows.
+
+   TLS ClientKeyExchangeメッセージ以下のとおり拡張される。
 
         enum { implicit, explicit } PublicValueEncoding;
 
@@ -1835,6 +1944,12 @@ RFC 4492               ECC Cipher Suites for TLS                May 2006
       in ECC cipher suites except when the client uses the
       ECDSA_fixed_ECDH or RSA_fixed_ECDH client authentication
       mechanism.)
+
+	  ECCサイファースイートに対して、これはクライアントのECDH公開鍵がクライア
+	  ントの証明書に含まれている ("implicit") か、またはClientKeyExchange
+	  メッセージで一時的なECDH公開鍵として提供されるかどうかを示す。ECCサイ
+	  ファースイートでは、クライアン トがECDSA_fixed_ECDH、RSA_fixed_ECDHのク
+	  ライアント認証メカニズムを使用時 以外、これは "ecplicit" である。
 
         struct {
             select (PublicValueEncoding) {
@@ -1850,6 +1965,12 @@ RFC 4492               ECC Cipher Suites for TLS                May 2006
       Formats Extension if this extension was used, and MUST be
       uncompressed if this extension was not used.
 
+	  クライアントの一時的なECDH公開鍵を ECPoint.pointのバイト文字列として含め
+	  る。その楕円曲線ポイントは非圧縮または圧縮のフォーマットどちらかで表現さ
+	  れる。ここで、そのフォーマットは、サーバーがサポートポイントフォーマット
+	  拡張を使用していればその拡張でサーバーが要求したフォーマットに従わなけれ
+	  ばならない。その拡張を使用していなければ非圧縮にしなければならない。
+
         struct {
             select (KeyExchangeAlgorithm) {
                 case ec_diffie_hellman: ClientECDiffieHellmanPublic;
@@ -1858,10 +1979,17 @@ RFC 4492               ECC Cipher Suites for TLS                May 2006
 
    Actions of the sender:
 
+   送信側の動作:
+
    The client selects an ephemeral ECDH public key corresponding to the
    parameters it received from the server according to the ECKAS-DH1
    scheme from IEEE 1363 [6].  It conveys this information to the client
    in the ClientKeyExchange message using the format defined above.
+
+   クライアントは、サーバーから受信したIEEE 1363 [6] のECKAS-DH1スキーム従った
+   パラメーターに応じて、一時的なECDH公開鍵を選択する。この情報は、上で定義さ
+   れた フォーマットを使用してClientKeyExchangeメッセージの中で、クライアント
+   へ運ばれる。
 
 
 
@@ -1874,25 +2002,43 @@ RFC 4492               ECC Cipher Suites for TLS                May 2006
 
    Actions of the receiver:
 
+   受信側の動作:
+
    The server retrieves the client's ephemeral ECDH public key from the
    ClientKeyExchange message and checks that it is on the same elliptic
    curve as the server's ECDH key.
+
+   サーバーはClientKeyExchangeメッセージから一時的なECDH公開鍵を取り出し、
+   それがサーバーのECDH鍵の楕円曲線と同じかどうかを確認する。
 
 5.8.  Certificate Verify
 
    When this message is sent:
 
+   いつこのメッセージが送信されるか:
+
    This message is sent when the client sends a client certificate
    containing a public key usable for digital signatures, e.g., when the
    client is authenticated using the ECDSA_sign mechanism.
 
+   このメッセージは、クライアントが電子署名に使用できる公開鍵を含んだクライア
+   ント証明書を送信した場合に、送信される。例えば、クライアントがECDSA_signメ
+   カニズムで認証された場合。
+
    Meaning of the message:
+
+   メッセージの意味:
 
    This message contains a signature that proves possession of the
    private key corresponding to the public key in the client's
    Certificate message.
 
+   このメッセージは、クライアントのCertificateメッセージ内の公開鍵に対応する秘
+   密鍵の保有を証明する署名を含む。
+
    Structure of this message:
+
+   このメッセージの構造:
 
    The TLS CertificateVerify message and the underlying Signature type
    are defined in [2] and [3], and the latter is extended here in
@@ -1900,6 +2046,12 @@ RFC 4492               ECC Cipher Suites for TLS                May 2006
    CertificateVerify message contains an ECDSA signature computed over
    handshake messages exchanged so far, exactly similar to
    CertificateVerify with other signing algorithms in [2] and [3]:
+
+   TLS CertificateVerifyメッセージと署名タイプは [2]と[3]で定義される。後者は
+   ここのセクション5.4で拡張されている。ecdsaの場合の、CertificateVerify
+   メッセージの署名フィールドは、[2][3]にある他の書名アルゴリズムの
+   CertificateVerifyと完全に同様に、これまでに交換されたハンドシェーク
+   メッセージで計算されたECDSA署名を含む。
 
         CertificateVerify.signature.sha_hash
             SHA(handshake_messages);
@@ -1911,6 +2063,10 @@ RFC 4492               ECC Cipher Suites for TLS                May 2006
    element is encoded as an opaque vector <0..2^16-1>, the contents of
    which are the DER encoding [9] corresponding to the following ASN.1
    notation [8].
+
+   ECDSA署名はセクション5.10の記述のように計算される。上記のテンプレートで
+   sha_hashのSHAは、状況に応じて適切なSHA1以外のハッシュアルゴリズムを意味す
+   る。
 
         Ecdsa-Sig-Value ::= SEQUENCE {
             r       INTEGER,
@@ -1930,17 +2086,29 @@ RFC 4492               ECC Cipher Suites for TLS                May 2006
 
    Actions of the sender:
 
+   送信側の動作:
+
    The client computes its signature over all handshake messages sent or
    received starting at client hello and up to but not including this
    message.  It uses the private key corresponding to its certified
    public key to compute the signature, which is conveyed in the format
    defined above.
 
+   クライアントは、ClientHelloでの開始とこのメッセージを除くこれまでに送受信
+   した全てのハンドシェークメッセージに渡って署名を計算する。上記で定義された
+   フォーマットで運ばれる署名の計算には、証明された公開鍵に対応する秘密鍵を使
+   用する。
+
    Actions of the receiver:
+
+   受信側の動作:
 
    The server extracts the client's signature from the CertificateVerify
    message, and verifies the signature using the public key it received
    in the client's Certificate message.
+
+   サーバーはCertificateVerifyメッセージからクライアントの署名を取り出し、クラ
+   イアントのCertificateメッセージで受信した公開鍵を使って署名を検証する。
 
 5.9.  Elliptic Curve Certificates
 
@@ -1948,6 +2116,11 @@ RFC 4492               ECC Cipher Suites for TLS                May 2006
    MUST comply with [14] or another RFC that replaces or extends it.
    Clients SHOULD use the elliptic curve domain parameters recommended
    in ANSI X9.62 [7], FIPS 186-2 [11], and SEC 2 [13].
+
+   ECC公開鍵を含む X.509 証明書、ECDSAで署名された X.509証明書は、[14] または
+   それを拡張または置き換える他のRFCに準拠しなければならない。クライアントは
+   ANSI X9.62 [7]、FIPS 186-2 [11]、SEC 2 [13] で推奨された楕円曲線ドメインパ
+   ラメーターを使用すべきである。
 
 5.10.  ECDH, ECDSA, and RSA Computations
 
@@ -1960,6 +2133,12 @@ RFC 4492               ECC Cipher Suites for TLS                May 2006
    output by FE2OSP, the Field Element to Octet String Conversion
    Primitive, has constant length for any given field; leading zeros
    found in this octet string MUST NOT be truncated.
+
+   [作業中]
+   全てのECDHの計算 (共通な秘密の計算のみならずパラメーターや鍵の生成も含む)
+   は、premaster secret がオクテット文字列として表されたECDH共通秘密楕円曲線ポイ
+   ントのx座標となるように、key derivation function (KDF) などのアイデン
+   ティティマップを持つ ECKAS-DH1を使用して [6] に従って行われる。
 
    (Note that this use of the identity KDF is a technicality.  The
    complete picture is that ECDH is employed with a non-trivial KDF
@@ -1999,7 +2178,7 @@ RFC 4492               ECC Cipher Suites for TLS                May 2006
    The table below defines new ECC cipher suites that use the key
    exchange algorithms specified in Section 2.
 
-   以下の表は、セクション2で基底された鍵交換アルゴリズムを使用する新しいECCサ
+   以下の表は、セクション2で規定された鍵交換アルゴリズムを使用する新しいECCサ
    イファースイートを定義する。
 
      CipherSuite TLS_ECDH_ECDSA_WITH_NULL_SHA           = { 0xC0, 0x01 }
