@@ -16,7 +16,7 @@ ISSN: 2070-1721                                           P. Saint-Andre
     Recommendations for Secure Use of Transport Layer Security (TLS)
               and Datagram Transport Layer Security (DTLS)
 
-                 TLS$B$H(BDLS$B$N0BA4$JMxMQ$K4X$9$k?d>);v9`(B
+                 TLSとDLSの安全な利用に関する推奨事項
 
 Abstract
 
@@ -29,18 +29,18 @@ Abstract
    improving the security of deployed services that use TLS and DTLS.
    The recommendations are applicable to the majority of use cases.
 
-   TLS$B5Z$S(BDTLS$B$O(BHTTP$B!"(BSMTP$B!"(BIMAP$B!"(BPOP$B!"(BSIP$B!"(BXMPP$B$N$h$&$J%"%W%j%1!<%7%g%s$G$N(B
-   $B%G!<%?8r49$rJ]8n$9$k$?$a$K9-$/;HMQ$5$l$F$$$k!#$3$3?tG/$G!":G$bMxMQ$5$l$F$$(B
-   $B$k%5%$%U%!!<%9%$!<%H$d$=$NF0:n%b!<%I$K$*$$$F!"4v$D$+$N=EBg$J(BTLS$B$X$N967b$,=P(B
-   $B8=$7$?!#$3$N%I%-%e%a%s%H$O!"(BTLS$B$d(BDTLS$B$rMxMQ$7$F$$$k%5!<%S%9$N%;%-%e%j%F%#$r(B
-   $B6/2=$9$k$?$a$N?d>);v9`$rDs6!$9$k!#?d>);v9`$O!"BgB??t$N;HMQ;vNc$KBP$7$FE,MQ(B
-   $B$G$-$k!#(B
+   TLS及びDTLSはHTTP、SMTP、IMAP、POP、SIP、XMPPのようなアプリケーションでの
+   データ交換を保護するために広く使用されている。ここ数年で、最も利用されてい
+   るサイファースイートやその動作モードにおいて、幾つかの重大なTLSへの攻撃が出
+   現した。このドキュメントは、TLSやDTLSを利用しているサービスのセキュリティを
+   強化するための推奨事項を提供する。推奨事項は、大多数の使用事例に対して適用
+   できる。
 
 Status of This Memo
 
    This memo documents an Internet Best Current Practice.
 
-   $B$3$N%a%b$O!"%$%s%?!<%M%C%H$G8=:_$N$H$3$m:GA1$JJ}K!$r<B>Z$9$k!#(B
+   このメモは、インターネットで現在のところ最善な方法を実証する。
 
    This document is a product of the Internet Engineering Task Force
    (IETF).  It represents the consensus of the IETF community.  It has
@@ -48,16 +48,16 @@ Status of This Memo
    Internet Engineering Steering Group (IESG).  Further information on
    BCPs is available in Section 2 of RFC 5741.
 
-   $B$3$N%I%-%e%a%s%H$O(BIETF$B$,:n@.$7$?$b$N$G$"$j!"(BIETF$B$NAm0U$rI=$9!#8x$N%l(B
-   $B%S%e!<$r<u$1!"(BIESG$B$K$h$j=PHGJ*$H$7$F>5G'$5$l$F$$$k!#(BBCPs$B$K4X$9$k>pJs$O(B
-   RFC5741$B$N%;%/%7%g%s(B2$B$K$"$k!#(B
+   このドキュメントはIETFが作成したものであり、IETFの総意を表す。公のレ
+   ビューを受け、IESGにより出版物として承認されている。BCPsに関する情報は
+   RFC5741のセクション2にある。
 
    Information about the current status of this document, any errata,
    and how to provide feedback on it may be obtained at
    http://www.rfc-editor.org/info/rfc7525.
 
-   $B$3$N%I%-%e%a%s%H$N>uBV!"@58mI=!"%U%#!<%I%P%C%/$NJ}K!$O!"(B
-   http://www.rfc-editor.org/info/rfc7525 $B$G<hF@$G$-$k!#(B
+   このドキュメントの状態、正誤表、フィードバックの方法は、
+   http://www.rfc-editor.org/info/rfc7525 で取得できる。
 
 
 
@@ -204,14 +204,14 @@ RFC 7525                   TLS Recommendations                  May 2015
    information about these attacks and will help the reader understand
    the rationale behind the recommendations provided here.
 
-   TLS [RFC5246] $B$H(B DTLS [RFC6347] $B$O(B HTTP$B!"(BSMTP$B!"(BIMAP$B!"(BPOP$B!"(BSIP$B!"(BXMPP $B$N$h$&(B
-   $B$J%"%W%j%1!<%7%g%s%W%m%H%3%k>e$N%G!<%?8r49$rJ]8n$9$k$?$a$K;HMQ$5$l$F$$$k!#(B
-   $B$3$3?tG/$G!":G$b;HMQ$5$l$F$$$k%5%$%U%!!<%9%$!<%H$H$=$NF0:n%b!<%I$KBP$9$k96(B
-   $B7b$r4^$a$?$$$/$D$+$N=EBg$J967b$,=P8=$7$F$$$k!#Nc$($P!":G$b9-$/MxMQ$5$l$F$$(B
-   $B$k(B AES-CBC [RFC3602] $B$d(B RC4 [RFC7465] $B$N0E9f%"%k%4%j%:%`$NN>J}$,!"(BTLS$B$N%3(B
-   $B%s%F%-%9%HFb$G967b$5$l$?!#IUB0$N%I%-%e%a%s%H(B [RFC7457] $B$O$3$l$i$N967b$K$D(B
-   $B$$$F$N>\:Y$J>pJs$rDs6!$7$F$*$j!"$3$3$GDs6!$5$l$k?d>);v9`$rFI<T$,M}2r$9$k<j(B
-   $B=u$1$K$J$k$@$m$&!#(B
+   TLS [RFC5246] と DTLS [RFC6347] は HTTP、SMTP、IMAP、POP、SIP、XMPP のよう
+   なアプリケーションプロトコル上のデータ交換を保護するために使用されている。
+   ここ数年で、最も使用されているサイファースイートとその動作モードに対する攻
+   撃を含めたいくつかの重大な攻撃が出現している。例えば、最も広く利用されてい
+   る AES-CBC [RFC3602] や RC4 [RFC7465] の暗号アルゴリズムの両方が、TLSのコ
+   ンテキスト内で攻撃された。付属のドキュメント [RFC7457] はこれらの攻撃につ
+   いての詳細な情報を提供しており、ここで提供される推奨事項を読者が理解する手
+   助けになるだろう。
 
    Because of these attacks, those who implement and deploy TLS and DTLS
    need updated guidance on how TLS can be used securely.  This document
@@ -224,8 +224,8 @@ RFC 7525                   TLS Recommendations                  May 2015
    add authentication (be it one-way only or mutual), confidentiality,
    and data integrity protection to their communications.
 
-   $B$3$l$i$N967b$N$;$$$G!"(BTLS$B$d(BDTLS$B$r<BAu$7G[CV$7$?<T$O!"(BTLS$B$N0BA4$JMxMQJ}K!$K(B
-   $B$D$$$F$N%,%$%@%s%9$N99?7$rI,MW$H$7$F$$$k!#(B
+   これらの攻撃のせいで、TLSやDTLSを実装し配置した者は、TLSの安全な利用方法に
+   ついてのガイダンスの更新を必要としている。
 
    The recommendations herein take into consideration the security of
    various mechanisms, their technical maturity and interoperability,
@@ -234,10 +234,10 @@ RFC 7525                   TLS Recommendations                  May 2015
    TLS alone or to DTLS alone, each recommendation applies to both TLS
    and DTLS.
 
-   $B$3$3$K$"$k?d>);v9`$O!"MM!9$J%a%+%K%:%`$N%;%-%e%j%F%#$d!"$=$N5;=Q$N@.=O@-!"(B
-   $BAj8_1?MQ@-!"<9I.;~$K$*$1$k<BAu$NIa5ZEY$r9MN8$7$F$$$k!#(BTLS$BC1FH$^$?$O(BDTLS$BC1(B
-   $BFH$KE,MQ$9$k$HL@3N$K4+9p$7$??d>);v9`$r=|$-!"3F?d>);v9`$O(BTLS$B$H(BDTLS$B$NN>J}$K(B
-   $BE,MQ$9$k!#(B
+   ここにある推奨事項は、様々なメカニズムのセキュリティや、その技術の成熟性、
+   相互運用性、執筆時における実装の普及度を考慮している。TLS単独またはDTLS単
+   独に適用すると明確に勧告した推奨事項を除き、各推奨事項はTLSとDTLSの両方に
+   適用する。
 
    It is expected that the TLS 1.3 specification will resolve many of
    the vulnerabilities listed in this document.  A system that deploys
@@ -245,10 +245,10 @@ RFC 7525                   TLS Recommendations                  May 2015
    This document is likely to be updated after TLS 1.3 gets noticeable
    deployment.
 
-   $B$3$N%I%-%e%a%s%H$K<($5$l$kB?$/$N@H<e@-$O!"(BTLS1.3$B;EMM$G2r7h$5$l$k$3$H$,4|BT(B
-   $B$5$l$k!#(BTLS1.3$B$rG[CV$9$k%7%9%F%`$O!"(BTLS1.2$B0JA0$N$h$j$b@H<e@-$,>/$J$/$J$k$Y(B
-   $B$-$G$"$k!#$3$N%I%-%e%a%s%H$O(BTLS1.3$B$KL\N)$C$?E83+$,$"$C$?8e!"$3$N%I%-%e%a%s(B
-   $B%H$O99?7$5$l$k2DG=@-$,9b$$!#(B
+   このドキュメントに示される多くの脆弱性は、TLS1.3仕様で解決されることが期待
+   される。TLS1.3を配置するシステムは、TLS1.2以前のよりも脆弱性が少なくなるべ
+   きである。このドキュメントはTLS1.3に目立った展開があった後、このドキュメン
+   トは更新される可能性が高い。
 
    These are minimum recommendations for the use of TLS in the vast
    majority of implementation and deployment scenarios, with the
@@ -272,12 +272,12 @@ RFC 7525                   TLS Recommendations                  May 2015
    always allowed (e.g., depending on differing evaluations of the
    importance of cryptographic strength vs. computational load).
 
-   $B$3$l$i$O!"G'>Z$NL5$$(BTLS ($B%;%/%7%g%s(B3$B$r8+$h(B) $B$r=|$$$?!"05E]E*B??t$J<BAu$dG[(B
-   $BCV$N%7%J%j%*$NCf$G$N(BTLS$BMxMQ$KBP$9$k:G>.8B$N?d>);v9`$G$"$k!#$3$N%I%-%e%a(B
-   $B%s%H$r;2>H$9$kB>$N;EMM$O!"$h$j87$7$$MW7o$r;}$D$3$H$,$G$-$k!#$=$NMW7o$H$O!"(B
-   $B$=$N%W%m%H%3%k$N(B1$B$D0J>e$NFCD'$K4XO"$9$k$b$N$G$"$k!#FCD'$H$O!"(B($BNc$($PFCDj$N(B
-   $B%"%W%j%1!<%7%g%s%W%m%H%3%k$H6&$KMxMQ$9$k>u67$N$h$&$J(B) $BFCDj$N>u67$K4p$E$/(B
-   $B$b$N$G$"$k!#(B
+   これらは、認証の無いTLS (セクション3を見よ) を除いた、圧倒的多数な実装や配
+   置のシナリオの中でのTLS利用に対する最小限の推奨事項である。このドキュメ
+   ントを参照する他の仕様は、より厳しい要件を持つことができる。その要件とは、
+   そのプロトコルの1つ以上の特徴に関連するものである。特徴とは、(例えば特定の
+   アプリケーションプロトコルと共に利用する状況のような) 特定の状況に基づく
+   ものである。
 
    Community knowledge about the strength of various algorithms and
    feasible attacks can change quickly, and experience shows that a Best
@@ -285,10 +285,10 @@ RFC 7525                   TLS Recommendations                  May 2015
    statement.  Readers are advised to seek out any errata or updates
    that apply to this document.
 
-   $BMM!9$J%"%k%4%j%:%`$N6/EY$d<B9T2DG=$J967b$K$D$$$F$N%3%_%e%K%F%#CN<1$O$9$0$K(B
-   $BJQ2=$7$&$k!#$=$7$F!"%;%-%e%j%F%#$K$D$$$F8=:_:GA1$NJ}K!(B(BCP)$B$O!"%]%$%s%H%$(B
-   $B%s!&%?%$%`$J@<L@$G$"$k$3$H$r7P83$O<($7$F$$$k!#FI<T$K$O$3$N%I%-%e%a%s%H$N@5(B
-   $B8mI=$d99?7$rDI5a$9$k$3$H$r4+9p$9$k!#(B
+   様々なアルゴリズムの強度や実行可能な攻撃についてのコミュニティ知識はすぐに
+   変化しうる。そして、セキュリティについて現在最善の方法(BCP)は、ポイントイ
+   ン・タイムな声明であることを経験は示している。読者にはこのドキュメントの正
+   誤表や更新を追求することを勧告する。
 
 2.  Terminology
 
@@ -305,7 +305,7 @@ RFC 7525                   TLS Recommendations                  May 2015
    TLS.  Recommendations related to cipher suites are discussed in the
    following section.
 
-   $B$3$N%;%/%7%g%s$O(BTLS$B$N0BA4$JMxMQ$KBP$9$k0lHLE*$J?d>);v9`$rDs6!$9$k!#(B
+   このセクションはTLSの安全な利用に対する一般的な推奨事項を提供する。
 
 3.1.  Protocol Versions
 
@@ -316,21 +316,21 @@ RFC 7525                   TLS Recommendations                  May 2015
    following are the recommendations concerning TLS/SSL protocol
    versions:
 
-   SSL/TLS$B$N8E$$%P!<%8%g%s$d0BA4@-$NB-$j$J$$%P!<%8%g%s$NMxMQ$r$d$a$k$3$H!":G?7(B
-   $B$G0BA4@-$N9b$$%P!<%8%g%s$r;HMQ$9$k$3$H$NN>J}$,=EMW$G$"$k!#(BTLS/SSL$B%W%m%H%3%k(B
-   $B%P!<%8%g%s$K4XO"$9$k?d>);v9`$r0J2<$K<($9!#(B
+   SSL/TLSの古いバージョンや安全性の足りないバージョンの利用をやめること、最新
+   で安全性の高いバージョンを使用することの両方が重要である。TLS/SSLプロトコル
+   バージョンに関連する推奨事項を以下に示す。
 
    o  Implementations MUST NOT negotiate SSL version 2.
 
-      SSLv2$B$G8r>D$7$F$O$J$i$J$$!#(B
+      SSLv2で交渉してはならない。
 
       Rationale: Today, SSLv2 is considered insecure [RFC6176].
 
-      $B:,5r!':#F|!"(BSSLv2$B$O0E@~$G$J$$$H$_$J$5$l$F$$$k!#(B[RFC6176]
+      根拠：今日、SSLv2は暗線でないとみなされている。[RFC6176]
 
    o  Implementations MUST NOT negotiate SSL version 3.
 
-      SSLv3$B$G8r>D$7$F$O$J$i$J$$!#(B
+      SSLv3で交渉してはならない。
 
       Rationale: SSLv3 [RFC6101] was an improvement over SSLv2 and
       plugged some significant security holes but did not support strong
@@ -340,12 +340,12 @@ RFC 7525                   TLS Recommendations                  May 2015
       SSLv3 is now widely recognized as fundamentally insecure.  See
       [DEP-SSLv3] for further details.
 
-      $B:,5r!'(BSSLv3 [RFC6101] $B$O(BSSLv2$B$+$i$N2~A1$G$"$j!"=EMW$J%;%-%e%j%F%#!&(B
-      $B%[!<%k$N4v$D$+$rKd$a$?$,!"6/$$%5%$%U%!!<%9%$!<%H$r%5%]!<%H$7$F$$$J$$!#(B
-      SSLv3$B$O!"0BA4>eCWL?E*$J$$$/$D$+$N(BTLS$B3HD%$r%5%]!<%H$7$F$$$J$$(B ($BNc$($P(B
-      renegotiation_info [RFC5746]) $B!#2C$($F!"(BPOODLE$B967b(B [POODLE] $B$N=P8=$G(B
-	  SSLv3$B$O$$$^:,K\E*$KIT0BA4$G$"$k$H9-$/G'<1$5$l$F$$$k!#>\:Y$O(B [DEP-SSLv3]
-	  $B$r8+$h!#(B
+      根拠：SSLv3 [RFC6101] はSSLv2からの改善であり、重要なセキュリティ・
+      ホールの幾つかを埋めたが、強いサイファースイートをサポートしていない。
+      SSLv3は、安全上致命的ないくつかのTLS拡張をサポートしていない (例えば
+      renegotiation_info [RFC5746]) 。加えて、POODLE攻撃 [POODLE] の出現で
+	  SSLv3はいま根本的に不安全であると広く認識されている。詳細は [DEP-SSLv3]
+	  を見よ。
 
 
 
@@ -359,53 +359,53 @@ RFC 7525                   TLS Recommendations                  May 2015
       the only exception is when no higher version is available in the
       negotiation.
 
-	  TLSv1.0 [RFC2246] $B$G8r>D$9$Y$-$G$J$$!#$?$@$7!"$h$j?7$7$$%P!<%8%g%s$rMxMQ(B
-	  $BIT2D$N>l9g$r=|$/!#(B
+	  TLSv1.0 [RFC2246] で交渉すべきでない。ただし、より新しいバージョンを利用
+	  不可の場合を除く。
 
       Rationale: TLS 1.0 (published in 1999) does not support many
       modern, strong cipher suites.  In addition, TLS 1.0 lacks a per-
       record Initialization Vector (IV) for CBC-based cipher suites and
       does not warn against common padding errors.
 
-	  $B:,5r!'(BTLS1.0 (1999$B$K8x3+$5$l$?(B) $B$O!":G?7$G6/$$%5%$%U%!!<%9%$!<%H$r%5(B
-	  $B%]!<%H$7$F$$$J$$!#2C$($F!"(BTLS1.0$B$O!"(BCBC-based$B%5%$%U%!!<%9%$!<%H$KBP$7$F(B
-	  $B%l%3!<%IKh$N(BIV$B$r7g$$$F$$$k!#$^$?6&DL$N%Q%G%#%s%0%(%i!<$r7Y9p$7$J$$!#(B
+	  根拠：TLS1.0 (1999に公開された) は、最新で強いサイファースイートをサ
+	  ポートしていない。加えて、TLS1.0は、CBC-basedサイファースイートに対して
+	  レコード毎のIVを欠いている。また共通のパディングエラーを警告しない。
 
    o  Implementations SHOULD NOT negotiate TLS version 1.1 [RFC4346];
       the only exception is when no higher version is available in the
       negotiation.
 
-	  TLS1.1 [RFC4346] $B$G8r>D$9$Y$-$G$J$$!#$?$@$7!"$h$j?7$7$$%P!<%8%g%s$rMxMQ(B
-	  $BIT2D$N>l9g$r=|$/!#(B
+	  TLS1.1 [RFC4346] で交渉すべきでない。ただし、より新しいバージョンを利用
+	  不可の場合を除く。
 
       Rationale: TLS 1.1 (published in 2006) is a security improvement
       over TLS 1.0 but still does not support certain stronger cipher
       suites.
 
-	  $B:,5r!'(BTLS1.1 (2006$B$K8x3+$5$l$?(B) $B$O(BTLS1.0$B$+$i$N0BA4@-$N8~>e$G$"$k$,!"6/$$(B
-	  $B%5%$%U%!!<%9%$!<%H$KL$$@BP1~$7$F$$$J$$!#(B
+	  根拠：TLS1.1 (2006に公開された) はTLS1.0からの安全性の向上であるが、強い
+	  サイファースイートに未だ対応していない。
 
    o  Implementations MUST support TLS 1.2 [RFC5246] and MUST prefer to
       negotiate TLS version 1.2 over earlier versions of TLS.
 
-	  TLS1.2 [RFC5246] $B$r%5%]!<%H$7$J$1$l$P$J$i$J$$!#$^$?5l%P!<%8%g%s$h$j$b(B
-	  TLS1.2$B$r8r>D$9$k$3$H$r9%$^$J$1$l$P$J$i$J$$!#(B
+	  TLS1.2 [RFC5246] をサポートしなければならない。また旧バージョンよりも
+	  TLS1.2を交渉することを好まなければならない。
 
       Rationale: Several stronger cipher suites are available only with
       TLS 1.2 (published in 2008).  In fact, the cipher suites
       recommended by this document (Section 4.2 below) are only
       available in TLS 1.2.
 
-	  $B:,5r!'$$$/$D$+$N6/$$%5%$%U%!!<%9%$!<%H$,(BTLS1.2 (2008$B$K8x3+$5$l$?(B) $B$G$N$_(B
-	  $BMxMQ2DG=$G$"$k!#<B:]!"$3$N%I%-%e%a%s%H$G?d>)$5$l$k%5%$%U%!!<%9%$!<%H(B ($B%;(B
-	  $B%/%7%g%s(B4.2$B0J9_(B) $B$O(BTLS1.2$B$G$N$_MxMQ2DG=$G$"$k!#(B
+	  根拠：いくつかの強いサイファースイートがTLS1.2 (2008に公開された) でのみ
+	  利用可能である。実際、このドキュメントで推奨されるサイファースイート (セ
+	  クション4.2以降) はTLS1.2でのみ利用可能である。
 
    This BCP applies to TLS 1.2 and also to earlier versions.  It is not
    safe for readers to assume that the recommendations in this BCP apply
    to any future version of TLS.
 
-   $B$3$N(BBCP$B$r(BTLS1.2$B5Z$S5l%P!<%8%g%s$KE,MQ$9$k!#$3$N(BBCP$B$N?d>);v9`$r!"(BTLS$B$N99$J$k(B
-   $B%P!<%8%g%s$KE,MQ$9$k$H9M$($k$3$H$OFI<T$K$H$C$F0BA4$G$O$J$$!#(B
+   このBCPをTLS1.2及び旧バージョンに適用する。このBCPの推奨事項を、TLSの更なる
+   バージョンに適用すると考えることは読者にとって安全ではない。
 
 3.1.2.  DTLS Protocol Versions
 
@@ -587,11 +587,11 @@ RFC 7525                   TLS Recommendations                  May 2015
    includes recommendations on the selection and negotiation of cipher
    suites.
 
-   TLS$B$H$=$N<BAu$O!"%5%$%U%!!<%9%$!<%H$NA*Br$KAjEv$N=@Fp@-$rDs6!$9$k!#;DG0$J$,(B
-   $B$i!"MxMQ2DG=$J%5%$%U%!!<%9%$!<%H$N4v$D$+$O0BA4$G$O$J$/!"L\I8$H$5$l$?0BA4@-(B
-   $B$rDs6!$7$J$$!#IT@53N$K@_Dj$5$l$F$$$k%5!<%P!<$O!"$^$C$?$/0BA4$G$J$/$J$k$+!"(B
-   $B$^$?$O0BA4@-$NDc2<$r0z$-5/$3$9!#$3$N%;%/%7%g%s$O%5%$%U%!!<%9%$!<%H$NA*Br$H(B
-   $B8r>D$K4X$9$k?d>);v9`$r4^$`!#(B
+   TLSとその実装は、サイファースイートの選択に相当の柔軟性を提供する。残念なが
+   ら、利用可能なサイファースイートの幾つかは安全ではなく、目標とされた安全性
+   を提供しない。不正確に設定されているサーバーは、まったく安全でなくなるか、
+   または安全性の低下を引き起こす。このセクションはサイファースイートの選択と
+   交渉に関する推奨事項を含む。
 
 4.1.  General Guidelines
 
@@ -613,18 +613,18 @@ RFC 7525                   TLS Recommendations                  May 2015
    as strong as desired.  Therefore, this section modernizes the
    recommendations concerning cipher suite selection.
 
-   $B0E9f2r@O$NH/E8$K$h$j!"0E9f%"%k%4%j%:%`$O<eBN2=$9$k!'6/$$$H9M$($i$l$F$$$?%"(B
-   $B%k%4%j%:%`$N<eBN2=!#$=$N$h$&$J%"%k%4%j%:%`$O;~4V$H6&$KCJ3,E*$KGQ;_$7!"$h$j(B
-   $B0BA4$J%5%$%U%!!<%9%$!<%H$GCV$-49$($i$l$k!#$3$N$3$H$O!"MW5a$5$l$k0BA4@-$N3N(B
-   $BJ]$r=u$1$k!#(BSSL/TLS$B$O$[$\(B20$BG/4VB8:_$7!"(BSSL/TLS$B$NMM!9$J%P!<%8%g%s$G?d>)$5$l(B
-   $B$F$-$?%5%$%U%!!<%9%$!<%H$b8=:_$G$O<e$$$+!">/$J$/$H$b5a$a$i$l$?$[$I6/$/$J$$$H(B
-   $B9M$($i$l$F$$$k!#8N$K$3$N%;%/%7%g%s$G$O!"%5%$%U%!!<%9%$!<%HA*Br$K4X$9$k?d>)(B
-   $B;v9`$r6aBe2=$9$k!#(B
+   暗号解析の発展により、暗号アルゴリズムは弱体化する：強いと考えられていたア
+   ルゴリズムの弱体化。そのようなアルゴリズムは時間と共に段階的に廃止し、より
+   安全なサイファースイートで置き換えられる。このことは、要求される安全性の確
+   保を助ける。SSL/TLSはほぼ20年間存在し、SSL/TLSの様々なバージョンで推奨され
+   てきたサイファースイートも現在では弱いか、少なくとも求められたほど強くないと
+   考えられている。故にこのセクションでは、サイファースイート選択に関する推奨
+   事項を近代化する。
 
    o  Implementations MUST NOT negotiate the cipher suites with NULL
       encryption.
 
-	  NULL$B0E9f$N%5%$%U%!!<%9%$!<%H$r8r>D$7$F$O$J$i$J$$!#(B
+	  NULL暗号のサイファースイートを交渉してはならない。
 
       Rationale: The NULL cipher suites do not encrypt traffic and so
       provide no confidentiality services.  Any entity in the network
@@ -636,7 +636,7 @@ RFC 7525                   TLS Recommendations                  May 2015
 
    o  Implementations MUST NOT negotiate RC4 cipher suites.
 
-      RC4$B%5%$%U%!!<%9%$!<%H$r8r>D$7$F$O$J$i$J$$!#(B
+      RC4サイファースイートを交渉してはならない。
 
       Rationale: The RC4 stream cipher has a variety of cryptographic
       weaknesses, as documented in [RFC7465].  Note that DTLS
@@ -646,9 +646,9 @@ RFC 7525                   TLS Recommendations                  May 2015
       than 112 bits of security, including so-called "export-level"
       encryption (which provide 40 or 56 bits of security).
 
-	  112$B%S%C%H$h$j>/$J$$%;%-%e%j%F%#$rDs6!$9$k%5%$%U%!!<%9%$!<%H$r8r>D$7$F$O(B
-	  $B$J$i$J$$!#$3$l$K$O!"(B"$BM"=P%l%Y%k(B"$B$H8F$P$l$k0E9f(B (40$B!"(B56$B%S%C%H$N%;%-%e%j(B
-	  $B%F%#$rDs6!$9$k(B) $B$,4^$^$l$k!#(B
+	  112ビットより少ないセキュリティを提供するサイファースイートを交渉しては
+	  ならない。これには、"輸出レベル"と呼ばれる暗号 (40、56ビットのセキュリ
+	  ティを提供する) が含まれる。
 
       Rationale: Based on [RFC3766], at least 112 bits of security is
       needed.  40-bit and 56-bit security are considered insecure today.
@@ -657,8 +657,8 @@ RFC 7525                   TLS Recommendations                  May 2015
    o  Implementations SHOULD NOT negotiate cipher suites that use
       algorithms offering less than 128 bits of security.
 
-	  128$B%S%C%H$h$j>/$J$$%;%-%e%j%F%#$rDs6!$9$k%5%$%U%!!<%9%$!<%H$r8r>D$9$Y$-(B
-	  $B$G$J$$!#(B
+	  128ビットより少ないセキュリティを提供するサイファースイートを交渉すべき
+	  でない。
 
       Rationale: Cipher suites that offer between 112-bits and 128-bits
       of security are not considered weak at this time; however, it is
@@ -686,8 +686,8 @@ RFC 7525                   TLS Recommendations                  May 2015
    o  Implementations SHOULD NOT negotiate cipher suites based on RSA
       key transport, a.k.a. "static RSA".
 
-	  "$B@EE*(BRSA"$B$H$b8F$P$l$k(BRSA$B80E>Aw$K4p$E$/%5%$%U%!!<%9%$!<%H$r8r>D$9$Y$-$G$J(B
-	  $B$$!#(B
+	  "静的RSA"とも呼ばれるRSA鍵転送に基づくサイファースイートを交渉すべきでな
+	  い。
 
       Rationale: These cipher suites, which have assigned values
       starting with the string "TLS_RSA_WITH_*", have several drawbacks,
@@ -698,8 +698,8 @@ RFC 7525                   TLS Recommendations                  May 2015
       Hellman and Elliptic Curve Ephemeral Diffie-Hellman ("DHE" and
       "ECDHE") families.
 
-	  $B0l;~E*(BDH$B!"0l;~E*(BECDH$B$N$h$&$J!"A0J}HkF?@-$rDs6!$9$k%5%$%U%!!<%9%$!<%H$r%5(B
-	  $B%]!<%H$7!"$=$l$r8r>D$9$k$3$H$r9%$^$J$1$l$P$J$i$J$$!#(B
+	  一時的DH、一時的ECDHのような、前方秘匿性を提供するサイファースイートをサ
+	  ポートし、それを交渉することを好まなければならない。
 
       Rationale: Forward secrecy (sometimes called "perfect forward
       secrecy") prevents the recovery of information that was encrypted
@@ -712,7 +712,7 @@ RFC 7525                   TLS Recommendations                  May 2015
    Given the foregoing considerations, implementation and deployment of
    the following cipher suites is RECOMMENDED:
 
-   $BA0=R$N9M;!$rA0Ds$H$9$k$H!"0J2<$N%5%$%U%!!<%9%$!<%H$,?d>)$5$l$k!#(B
+   前述の考察を前提とすると、以下のサイファースイートが推奨される。
 
    o  TLS_DHE_RSA_WITH_AES_128_GCM_SHA256
 
@@ -725,8 +725,8 @@ RFC 7525                   TLS Recommendations                  May 2015
    These cipher suites are supported only in TLS 1.2 because they are
    authenticated encryption (AEAD) algorithms [RFC5116].
 
-   $B$3$l$i$N%5%$%U%!!<%9%$!<%H$O(BTLS1.2$B$G$N$_%5%]!<%H$5$l$k!#$J$<$J$i$=$l$i$OG'(B
-   $B>ZIU$-0E9f(B (AEAD) $B%"%k%4%j%:%`(B [RFC5116] $B$G$"$k$+$i$G$"$k!#(B
+   これらのサイファースイートはTLS1.2でのみサポートされる。なぜならそれらは認
+   証付き暗号 (AEAD) アルゴリズム [RFC5116] であるからである。
 
    Typically, in order to prefer these suites, the order of suites needs
    to be explicitly configured in server software.  (See [BETTERCRYPTO]
@@ -735,8 +735,8 @@ RFC 7525                   TLS Recommendations                  May 2015
    if server software implementations were to prefer these suites by
    default.
 
-   $BE57?E*$K!"$3$l$i$N%9%$!<%H$r9%$`$?$a$K$O!"%5!<%P!<%=%U%H%&%'%"Fb$G%9%$!<%H(B
-   $B$N=gHV$,L@3N$K@_Dj$5$l$kI,MW$,$"$k!#(B... <$B:n6HCf(B>
+   典型的に、これらのスイートを好むためには、サーバーソフトウェア内でスイート
+   の順番が明確に設定される必要がある。... <作業中>
 
    Some devices have hardware support for AES-CCM but not AES-GCM, so
    they are unable to follow the foregoing recommendations regarding
