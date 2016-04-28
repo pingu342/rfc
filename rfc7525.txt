@@ -736,12 +736,17 @@ RFC 7525                   TLS Recommendations                  May 2015
    default.
 
    典型的に、これらのスイートを好むためには、サーバーソフトウェア内でスイート
-   の順番が明確に設定される必要がある。... <作業中>
+   の順番が明確に設定される必要がある。( <作業中> )
 
    Some devices have hardware support for AES-CCM but not AES-GCM, so
    they are unable to follow the foregoing recommendations regarding
    cipher suites.  There are even devices that do not support public key
    cryptography at all, but they are out of scope entirely.
+
+   幾つかのデバイスはAES-CCMをハードウェアでサポートしているが、AES-CCMはサ
+   ポートしていない。そのため、先述のサイファースイートに関する推奨事項に従う
+   ことができない。公開鍵暗号をまったくサポートしないデバイスすらある。それら
+   は完全に対象外である。
 
 
 
@@ -759,13 +764,25 @@ RFC 7525                   TLS Recommendations                  May 2015
    first proposal to any server, unless they have prior knowledge that
    the server cannot respond to a TLS 1.2 client_hello message.
 
+   クライアントはTLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256をサーバーへの最初の提案
+   として含めるべきである。ただしクライアントが、そのサーバーはTLS1.2
+   clieht_helloメッセージに応答できないことを事前に知っている場合を除く。
+
    Servers MUST prefer this cipher suite over weaker cipher suites
    whenever it is proposed, even if it is not the first proposal.
+
+   サーバーは、それが提案されたときはいつでも、弱いサイファースイートよりもこ
+   のサイファースイートを好まなければならない。もしそれが最初の提案ではな
+   かったとしても。
 
    Clients are of course free to offer stronger cipher suites, e.g.,
    using AES-256; when they do, the server SHOULD prefer the stronger
    cipher suite unless there are compelling reasons (e.g., seriously
    degraded performance) to choose otherwise.
+
+   クライアントはより強いサイファースイートを提案しても良い。例えばAES-256の利
+   用。サーバーは、やむをえない理由 (例えばパフォーマンスの重大な低下) が無い
+   限り、より強いサイファースイートを好むべきである。
 
    This document does not change the mandatory-to-implement TLS cipher
    suite(s) prescribed by TLS.  To maximize interoperability, RFC 5246
@@ -779,10 +796,22 @@ RFC 7525                   TLS Recommendations                  May 2015
    cipher suite.  Other application protocols specify other cipher
    suites as mandatory to implement (MTI).
 
+   このドキュメントは、TLSが規定として定めている実装必須なTLSサイファース
+   イートを変更しない。相互接続性を最大にするため、RFC5246は、ここで推奨したサ
+   イファースイートよりも著しく弱いTLS_RSA_WITH_AES_128_CBC_SHAのサイファース
+   イートの実装を命じている。(GCMモードは...<作業中>) 
+   TLS_RSA_WITH_AES_128_CBC_SHAサイファースイートを配置する場合は、セキュリ
+   ティの低下と接続性の向上の相反をよく検討すべきである。
+
    Note that some profiles of TLS 1.2 use different cipher suites.  For
    example, [RFC6460] defines a profile that uses the
    TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256 and
    TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384 cipher suites.
+
+   TLS1.2の幾つかのプロファイルは、異なるサイファースイートを使用することに注
+   意せよ。例えば、[RFC6460] はTLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256と
+   TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384のサイファースイートを利用するプロ
+   ファイルを定義している。 
 
    [RFC4492] allows clients and servers to negotiate ECDH parameters
    (curves).  Both clients and servers SHOULD include the "Supported
@@ -791,6 +820,12 @@ RFC 7525                   TLS Recommendations                  May 2015
    [RFC4492].  In addition, clients SHOULD send an ec_point_formats
    extension with a single element, "uncompressed".
 
+   [RFC4492]はクライアントとサーバーでECDHパラメーター(曲線)の交渉を可能とす
+   る。クライアントとサーバーの両方は、[RFC4492]の"サポート楕円曲線"拡張を含む
+   べきである。相互接続性のため、クライアントとサーバーはNIST P-256
+   (secp256r1) 曲線 [RFC4492] をサポートすべきである。加えて、クライアントは
+   "uncompressed"だけを含むec_point_formats拡張を送信すべきである。
+
 4.3.  Public Key Length
 
    When using the cipher suites recommended in this document, two public
@@ -798,9 +833,17 @@ RFC 7525                   TLS Recommendations                  May 2015
    Hellman key agreement and one for server authentication.  Where a
    client certificate is used, a third public key is added.
 
+   このドキュメントで推奨されたサイファースイートを使用する場合、TLSハンド
+   シェイクでは普通、2つの公開鍵が使われる。1つはDH鍵合意用で、1つはサーバー認
+   証用である。クライアント証明書が使用された場合は、3つ目の公開鍵が追加され
+   る。
+
    With a key exchange based on modular exponential (MODP) Diffie-
    Hellman groups ("DHE" cipher suites), DH key lengths of at least 2048
    bits are RECOMMENDED.
+
+   冪剰余 (MODP) DHグループ ("DHE"サイファースイート) に基づく鍵交換では、DH鍵
+   長は少なくとも2048ビットを推奨する。
 
 
 
@@ -820,10 +863,22 @@ RFC 7525                   TLS Recommendations                  May 2015
    [NIST.SP.800-56A].  See Section 4.4 for additional information on the
    use of MODP Diffie-Hellman in TLS.
 
+   根拠：様々な理由で、実際のところ、DH鍵は2の累乗の長さで生成される (例えば
+   2^10=1024ビット、2^11=2048ビット、2^12=4096ビット)。なぜなら、1228 ビットの
+   DH鍵は大体80ビットの対称鍵と同等 [RFC3766] であるので、"DHE"ファミリのサイ
+   ファースイートではそれよりも長い鍵を使用するほうが良い。1926 ビットのDH鍵
+   は大体100ビットの対称鍵と同等 []RFC3766 であり、2048ビットのDH鍵は今後10 年
+   は少なくとも十分と思われる。セクション4.4の、TLSにおけるMODP DHの利用に 関
+   する追加の情報を見よ。
+
    As noted in [RFC3766], correcting for the emergence of a TWIRL
    machine would imply that 1024-bit DH keys yield about 65 bits of
    equivalent strength and that a 2048-bit DH key would yield about 92
    bits of equivalent strength.
+
+   [RFC3766]で注意されるように、TWIRL機械(総当り)の出現をなくすことは、約65
+   ビットと同等な強度をもたらす1024ビットDH鍵、約92ビットと同等な強度をもたら
+   す2048ビットDH鍵を暗示する。
 
    With regard to ECDH keys, the IANA "EC Named Curve Registry" (within
    the "Transport Layer Security (TLS) Parameters" registry [IANA-TLS])
@@ -831,12 +886,21 @@ RFC 7525                   TLS Recommendations                  May 2015
    equivalent to only an 80-bit symmetric key [ECRYPT-II].  Curves of
    less than 192 bits SHOULD NOT be used.
 
+   ECDH鍵については、IANAの("TLSパラメーター"レジストリ [IANA-TLS])にある) "EC
+   Named Curve Registry" に、大体80ビットの対称鍵と同等であると考えられる160
+   ビットの楕円曲線が含まれている。
+
    When using RSA, servers SHOULD authenticate using certificates with
    at least a 2048-bit modulus for the public key.  In addition, the use
    of the SHA-256 hash algorithm is RECOMMENDED (see [CAB-Baseline] for
    more details).  Clients SHOULD indicate to servers that they request
    SHA-256, by using the "Signature Algorithms" extension defined in
    TLS 1.2.
+
+   RSAの利用時、サーバーは、公開鍵に少なくとも2048ビットの法を持つ証明書を使用
+   して認証すべきである。加えて、SHA-256ハッシュアルゴリズムの利用が推奨され
+   る (詳細は[CAB-Baseline]を見よ)。クライアントは、TLS1.2で定義された"署名ア
+   ルゴリズム"拡張を使用して、サーバーにSHA-256をリクエストすべきである。
 
 4.4.  Modular Exponential vs. Elliptic Curve DH Cipher Suites
 
@@ -846,9 +910,18 @@ RFC 7525                   TLS Recommendations                  May 2015
    of DH values.  When such implementations need to be accommodated, the
    following are RECOMMENDED (in priority order):
 
+   全てのTLS実装が、セクション4.2で要求されたような、冪剰余 (MODP) と楕円曲線
+   (EC) DHグループの両方をサポートするとは限らない。幾つかの実装は、DH値の長さ
+   が大幅に制限されている。そのような実装への対応では以下を推奨する。(優先度
+   順)
+
    1.  Elliptic Curve DHE with appropriately negotiated parameters
        (e.g., the curve to be used) and a Message Authentication Code
        (MAC) algorithm stronger than HMAC-SHA1 [RFC5289]
+
+	   適切に交渉されたパラメーター(例えば、使用される曲線)、HMAC-SHA1
+	   [RFC5289] よりも強いメッセージ認証コード(MAC)アルゴリズムを持つ楕円曲線
+	   DHE。
 
    2.  TLS_DHE_RSA_WITH_AES_128_GCM_SHA256 [RFC5288], with 2048-bit
        Diffie-Hellman parameters
@@ -875,11 +948,23 @@ RFC 7525                   TLS Recommendations                  May 2015
    certificates.  On the other hand, there are two related issues
    hindering effective use of MODP Diffie-Hellman cipher suites in TLS:
 
+   根拠：楕円曲線暗号は広く配置されているけれども、モジュラー演算との比較によ
+   る複雑さや、長年に渡るIPR懸念(殆どの部分は解決済み[RFC6090])の知見を含む幾
+   つかの理由によって、その採用が制限されているコミュニティが存在する。
+   ECDHEサイファースイートはRSA-basedな証明書からの引越しを必要としない。他方
+   では、TLSでのMODP DHサイファースイートの効果的な利用を妨げる、2つの問題があ
+   る。
+
    o  There are no standardized, widely implemented protocol mechanisms
       to negotiate the DH groups or parameter lengths supported by
       client and server.
 
+	  クライアントとサーバーで、DHグループやパラメーターの長さを交渉する、
+	  幅広く実装されたプロトコルメカニズムの標準がない。
+
    o  Many servers choose DH parameters of 1024 bits or fewer.
+
+	  多くのサーバーは1024ビット以下のDHパラメーターを選択している。
 
    o  There are widely deployed client implementations that reject
       received DH parameters if they are longer than 1024 bits.  In
@@ -887,14 +972,26 @@ RFC 7525                   TLS Recommendations                  May 2015
       validation of group parameters and are vulnerable to attacks
       referenced in Section 2.9 of [RFC7457].
 
+	  もしDHパラメーターが1024ビットより長いと、そのDHパラメーターを受け入れな
+	  いように実装しているクライアントは多く配置されている。加えて、幾つかの実
+	  装は、グループパラメーターの検証を適切に実施しておらず、[RFC7457]のセク
+	  ション2.9にある攻撃に対して脆弱である。
+
    Note that with DHE and ECDHE cipher suites, the TLS master key only
    depends on the Diffie-Hellman parameters and not on the strength of
    the RSA certificate; moreover, 1024 bit MODP DH parameters are
    generally considered insufficient at this time.
 
+   DHE、ECDHEサイファースイートにおけるTLSマスター鍵はDHパラメーターにのみ依存
+   しており、RSA証明書の強度には依存しないことに注意。さらに、1024ｂ一途のMODP
+   DHパラメーターは今の時点で不十分と考えられている。
+
    With MODP ephemeral DH, deployers ought to carefully evaluate
    interoperability vs. security considerations when configuring their
    TLS endpoints.
+
+   MODP一時的DHにおける配置者には、彼らのTLSエンドポイントを設定する際、相互接続
+   性とセキュリティの対比の考慮を注意深く評価する義務がある。
 
 4.5.  Truncated HMAC
 
@@ -1108,8 +1205,16 @@ RFC 7525                   TLS Recommendations                  May 2015
    In the context of TLS and DTLS, such compromise of long-term keys is
    not entirely implausible.  It can happen, for example, due to:
 
+   前方秘匿性 ([RFC4994]で定義され、完全前方秘匿性、PFSと呼ばれる) とは、
+   セッション鍵のみが通信当事者の長期的な鍵で暗号化された会話を記録した攻撃者
+   に対する防御である。攻撃者は後でこれらの長期的な鍵を獲得でき、セッション鍵
+   と会話全体を解読できるはずである。TLSやDTLSのコンテキストでのそのような長期
+   的な鍵の危殆化はまったく信じ難くない。例えば以下の原因でそれは起こる。
+
    o  A client or server being attacked by some other attack vector, and
       the private key retrieved.
+
+	  他の攻撃により攻撃されているクライアントやサーバー。取り出された秘密鍵。
 
    o  A long-term key retrieved from a device that has been sold or
       otherwise decommissioned without prior wiping.
@@ -1152,6 +1257,8 @@ RFC 7525                   TLS Recommendations                  May 2015
    Elliptic Curves instead of the originally proposed modular
    arithmetics.
 
+   前方秘匿性は、セッション鍵の生成にDHスキームを使用することで獲得される。
+
    Unfortunately, many TLS/DTLS cipher suites were defined that do not
    feature forward secrecy, e.g., TLS_RSA_WITH_AES_256_CBC_SHA256.  This
    document therefore advocates strict use of forward-secrecy-only
@@ -1163,16 +1270,28 @@ RFC 7525                   TLS Recommendations                  May 2015
    Hellman and Elliptic Curve Diffie-Hellman exponents across multiple
    connections.  Such reuse can result in major security issues:
 
+   性能の理由で、多くのTLS実装はDHとECDHの指数を、複数の接続に渡って再利用して
+   いる。そのような再利用は、主要なセキュリティ問題を招く。
+
    o  If exponents are reused for too long (e.g., even more than a few
       hours), an attacker who gains access to the host can decrypt
       previous connections.  In other words, exponent reuse negates the
       effects of forward secrecy.
+
+	  もし指数が長期間再利用された場合(例えば、数時間)、ホストへのアクセスを得
+	  る攻撃者は、前の接続を解読できる。言い換えれば、指数の再利用は前方秘匿性
+	  を無効にする。
 
    o  TLS implementations that reuse exponents should test the DH public
       key they receive for group membership, in order to avoid some
       known attacks.  These tests are not standardized in TLS at the
       time of writing.  See [RFC6989] for recipient tests required of
       IKEv2 implementations that reuse DH exponents.
+
+	  指数を再利用するTLS実装は、既知の攻撃を回避するために、グループメン
+	  バーシップに対して受け取ったDH公開鍵を試験すべきである。これを書いている
+	  時点では、これらのテストはTLSで標準化されていない。DH鍵を再利用するIKEv2
+	  実装に求められるテストのレシピは [RFC6989] を見よ。
 
 6.5.  Certificate Revocation
 
