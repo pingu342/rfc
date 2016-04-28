@@ -16,7 +16,7 @@ ISSN: 2070-1721                                           P. Saint-Andre
     Recommendations for Secure Use of Transport Layer Security (TLS)
               and Datagram Transport Layer Security (DTLS)
 
-                 TLSとDLSの安全な利用に関する推奨事項
+                 TLSとDTLSの安全な利用に関する推奨事項
 
 Abstract
 
