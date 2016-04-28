@@ -888,7 +888,7 @@ RFC 7525                   TLS Recommendations                  May 2015
 
    ECDH鍵については、IANAの("TLSパラメーター"レジストリ [IANA-TLS])にある) "EC
    Named Curve Registry" に、大体80ビットの対称鍵と同等であると考えられる160
-   ビットの楕円曲線が含まれている。
+   ビットの楕円曲線が含まれている。192ビット未満の曲線を使用すべきではない。
 
    When using RSA, servers SHOULD authenticate using certificates with
    at least a 2048-bit modulus for the public key.  In addition, the use
