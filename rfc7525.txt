@@ -646,9 +646,8 @@ RFC 7525                   TLS Recommendations                  May 2015
       than 112 bits of security, including so-called "export-level"
       encryption (which provide 40 or 56 bits of security).
 
-	  112ビットより少ないセキュリティを提供するサイファースイートを交渉しては
-	  ならない。これには、"輸出レベル"と呼ばれる暗号 (40、56ビットのセキュリ
-	  ティを提供する) が含まれる。
+	  安全性が112ビット未満のサイファースイートを交渉してはならない。
+	  これには、"輸出レベル"と呼ばれる暗号 (安全性が40、56ビット) が含まれる。
 
       Rationale: Based on [RFC3766], at least 112 bits of security is
       needed.  40-bit and 56-bit security are considered insecure today.
@@ -657,8 +656,7 @@ RFC 7525                   TLS Recommendations                  May 2015
    o  Implementations SHOULD NOT negotiate cipher suites that use
       algorithms offering less than 128 bits of security.
 
-	  128ビットより少ないセキュリティを提供するサイファースイートを交渉すべき
-	  でない。
+	  安全性が128ビット未満のサイファースイートを交渉すべきでない。
 
       Rationale: Cipher suites that offer between 112-bits and 128-bits
       of security are not considered weak at this time; however, it is
