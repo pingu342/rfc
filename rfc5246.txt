@@ -879,6 +879,15 @@ RFC 5246                          TLS                        August 2008
    parameters a current state.  The initial current state always
    specifies that no encryption, compression, or MAC will be used.
 
+   TLSコネクション状態はTLSレコードプロトコルの動作環境である。それは、圧縮ア
+   ルゴリズム、暗号化アルゴリズム、MACアルゴリズムを規定する。加えて、これらの
+   アルゴリズムのパラメーターがある。具体的にはreadとwriteの両方向のコネク
+   ション用のMAC鍵、バルク暗号化鍵である。理論的に常時4つのコネクション状
+   態が存在する。具体的にはreadとwriteの状態と、保留中のreadとwriteの状態であ
+   る。全てのレコードは現在のreadとwriteの状態の下で処理される。保留中の状態の
+   セキュリティパラメータはTLSハンドシェークプロトコルにより設定可能である。そ
+   してChangeCipherSpecは保留中の状態を選択的に現在にすることができる。
+
    The security parameters for a TLS Connection read and write state are
    set by providing the following values:
 
@@ -1490,6 +1499,11 @@ RFC 5246                          TLS                        August 2008
    can be instantiated using the same session through the resumption
    feature of the TLS Handshake Protocol.
 
+   これらのアイテムは、アプリケーションデータを保護する際のレコード層に使用す
+   るためのセキュリティパラメータを生成するために使用される。TLSハンドシェーク
+   プロトコルの再開の機能により、同一セッションから複数のコネクションを作成す
+   ることができる。
+
 7.1.  Change Cipher Spec Protocol
 
    The change cipher spec protocol exists to signal transitions in
@@ -1857,6 +1871,9 @@ RFC 5246                          TLS                        August 2008
    -  Exchange hello messages to agree on algorithms, exchange random
       values, and check for session resumption.
 
+	  アルゴリズムの合意、乱数の交換、セッション再開かどうかの確認をするために
+	  Helloメッセージを交換する。
+
    -  Exchange the necessary cryptographic parameters to allow the
       client and server to agree on a premaster secret.
 
@@ -1994,6 +2011,10 @@ RFC 5246                          TLS                        August 2008
    duplicate an existing session (instead of negotiating new security
    parameters), the message flow is as follows:
 
+   クライアントとサーバーが、過去のセッションの再開、または既存のセッションの
+   複製（新しいセキュリティパラメータを交渉する代わり）を決定した場合の
+   メッセージフローは以下のようになる。
+
    The client sends a ClientHello using the Session ID of the session to
    be resumed.  The server then checks its session cache for a match.
    If a match is found, and the server is willing to re-establish the
@@ -2005,6 +2026,16 @@ RFC 5246                          TLS                        August 2008
    layer data.  (See flow chart below.)  If a Session ID match is not
    found, the server generates a new session ID, and the TLS client and
    server perform a full handshake.
+
+   クライアントは再開するセッションのSessionIDを使用してClientHelloを送信す
+   る。サーバーはそれがセッションのキャッシュと一致するかを確認する。もし一致
+   するなら、サーバーは指定されたセッション状態の下でコネクションを再確立する
+   ことをいとわず、同一のSessionIDを持つServerHelloを送信する。この段階で、ク
+   ライアントとサーバーの両方はChangeCipherSpecメッセージを送信してFinished
+   メッセージに進まなければならない。いったん再確立がなされたら、クライアント
+   とサーバーはアプリケーション層のデータ交換を開始してよい。もしSessionIDが一
+   致しなければ、サーバーは新規SessionIDを生成し、クライアントとサーバーはフル
+   ハンドシェイクを行う。
 
 
 
@@ -2034,6 +2065,8 @@ RFC 5246                          TLS                        August 2008
 
    The contents and significance of each message will be presented in
    detail in the following sections.
+
+   各メッセージの内容と意味については以降のセクションで詳細に述べる。
 
 7.4.  Handshake Protocol
 
@@ -2288,6 +2321,11 @@ RFC 5246                          TLS                        August 2008
       request), this vector MUST include at least the cipher_suite from
       that session.  Values are defined in Appendix A.5.
 
+	  これはクライアントがサポートしている暗号オプションの一覧である。もし、
+	  session_idフィールドが空でない場合（セッション再開のリクエストの暗示）、
+	  このベクタは少なくともそのセッションのcipher_suiteを含めなければならな
+	  い。値はAppendix A.5.で定義されている。
+
    compression_methods
       This is a list of the compression methods supported by the client,
       sorted by client preference.  If the session_id field is not empty
@@ -2304,6 +2342,12 @@ RFC 5246                          TLS                        August 2008
       and all implementations MUST support, CompressionMethod.null.
       Thus, a client and server will always be able to agree on a
       compression method.
+
+	  これはクライアントがサポートしている圧縮メソッドの一覧である。もし
+	  session_idフィールドが空でない場合（セッション再開のリクエストの暗示）、
+	  そのセッションのcompressoin_methodを含めなければならない。このベクタは必
+	  須で、すべての実装はCompressionMethod.nullをサポートしなければならない。
+	  従って、クライアントとサーバーはいつでも圧縮メソッドの合意が可能である。
 
    extensions
       Clients MAY request extended functionality from servers by sending
@@ -2461,6 +2505,12 @@ RFC 5246                          TLS                        August 2008
    same extensions as it would send if it were not attempting
    resumption.
 
+   最後に、拡張は、新規セッション開始とセッション再開の両方で送信可能である。
+   実際のところ、セッション再開をリクエストするクライアントは通常、サーバーが
+   そのリクエストを受け入れるかどうかを知らない。よって、もしそれが試みられな
+   かった場合に送信されるであろうものと同一の拡張を送信すべきである。
+   である。
+
 
 
 Dierks & Rescorla           Standards Track                    [Page 44]
@@ -2475,6 +2525,13 @@ RFC 5246                          TLS                        August 2008
    server does not process these extensions in Client Hello, and does
    not include them in Server Hello.  However, some extensions may
    specify different behavior during session resumption.
+
+   通常、各拡張の仕様は、フルハンドシェークとセッション再開の両方において、そ
+   の拡張がどのような影響を及ぼすかを記述する必要がある。最新のTLS拡張は、
+   セッション開始時にのみ関係がある。過去のセッションの再開時には、サーバーは
+   ClientHello内にあるそれらの拡張を処理せず、ServerHello内にそれらを含めな
+   い。しかし拡張には、セッション再開時に異なる振る舞いを規定する可能性がある
+   ものがある。
 
    There are subtle (and not so subtle) interactions that may occur in
    this protocol between new features and existing features which may
@@ -2611,6 +2668,9 @@ RFC 5246                          TLS                        August 2008
    When performing session resumption, this extension is not included in
    Server Hello, and the server ignores the extension in Client Hello
    (if present).
+
+   セッション再開時、この拡張はServerHelloに含められない。サーバーは
+   ClientHelloの拡張（もし提示されていれば）を無視する。
 
 7.4.2.  Server Certificate
 
