@@ -881,12 +881,12 @@ RFC 5246                          TLS                        August 2008
 
    TLSコネクション状態はTLSレコードプロトコルの動作環境である。それは、圧縮ア
    ルゴリズム、暗号化アルゴリズム、MACアルゴリズムを規定する。加えて、これらの
-   アルゴリズムのパラメーターがある。具体的にはreadとwriteの両方向のコネク
+   アルゴリズムのパラメーターである。具体的にはreadとwriteの両方向のコネク
    ション用のMAC鍵、バルク暗号化鍵である。理論的に常時4つのコネクション状
-   態が存在する。具体的にはreadとwriteの状態と、保留中のreadとwriteの状態であ
+   態が存在する。具体的には現在のreadとwriteの状態と、保留中のreadとwriteの状態であ
    る。全てのレコードは現在のreadとwriteの状態の下で処理される。保留中の状態の
    セキュリティパラメータはTLSハンドシェークプロトコルにより設定可能である。そ
-   してChangeCipherSpecは保留中の状態を選択的に現在にすることができる。
+   してChangeCipherSpecは保留中の状態を選択的に現在のにすることができる。
 
    The security parameters for a TLS Connection read and write state are
    set by providing the following values:
@@ -1841,6 +1841,9 @@ RFC 5246                          TLS                        August 2008
       communicate changes to these parameters after that point.  This
       message is always a warning.
 
+	  helloリクエストへの応答としてクライアントが送信するか、最初のハンド
+	  シェークの後のclient helloへの応答としてサーバーが送信する。
+
    unsupported_extension
       sent by clients that receive an extended server hello containing
       an extension that they did not put in the corresponding client
@@ -2077,6 +2080,12 @@ RFC 5246                          TLS                        August 2008
    TLSPlaintext structures, which are processed and transmitted as
    specified by the current active session state.
 
+   TLSハンドシェークプロトコルはTLSレコードプロトコルの上位クライアントのひ
+   とつとして定義されている。このプロトコルはセッションのセキュアな属性を交渉
+   するために使用される。ハンドシェークメッセージはTLSレコード層で供給される。
+   ここでは、それらは1つ以上のTLSPlaintext構造体でカプセル化され、現在アク
+   ティブなセッション状態によって規定されたとおりに処理され転送される。
+
       enum {
           hello_request(0), client_hello(1), server_hello(2),
           certificate(11), server_key_exchange (12),
@@ -2120,8 +2129,21 @@ RFC 5246                          TLS                        August 2008
    SHOULD be ignored by the client if it arrives in the middle of a
    handshake.
 
+   以降では、ハンドシェークプロトコルメッセージを、それを送信しなければならな
+   い順に記述する。期待通りの順番で送信されないハンドシェークメッセージは致命
+   的なエラーとなる。しかしながら、不必要なハンドシェークメッセージは除外可能である。
+   順番の1つの例外として、Certificateメッセージのハンドシェーク内での2回使用
+   （サーバーからクライアントへ、それからクライアントからサーバーへ）がある
+   が、その1回目しか記述していないことに注意せよ。これら順番のルールに従わない
+   メッセージの1つがHelloRequestメッセージであり、これはいつでも送信可能であ
+   る。しかしもしそれが、ハンドシェーク中に届いた場合、クライアントはそれを無
+   視すべきである。
+
    New handshake message types are assigned by IANA as described in
    Section 12.
+
+   IANAによる新しいハンドシェークメッセージタイプの割り当てはセクション12に記
+   述されている。
 
 7.4.1.  Hello Messages
 
@@ -2130,6 +2152,11 @@ RFC 5246                          TLS                        August 2008
    begins, the record layer's connection state encryption, hash, and
    compression algorithms are initialized to null.  The current
    connection state is used for renegotiation messages.
+
+   helloフェーズメッセージはクライアントとサーバーの間でセキュリティの能力を交
+   換するために使用される。新規セッション開始時、レコード層のコネクション状態
+   暗号化、ハッシュ、圧縮のアルゴリズムはnullに初期化される。現在のコネク
+   ション状態は再交渉メッセージに使用される。
 
 7.4.1.1.  Hello Request
 
@@ -3574,6 +3601,11 @@ RFC 5246                          TLS                        August 2008
       defined in Section 5, the Hash MUST be the Hash used as the basis
       for the PRF.  Any cipher suite which defines a different PRF MUST
       also define the Hash to use in the Finished computation.
+
+	  Hashはハンドシェークメッセージのハッシュを意味する。セクション5で定義さ
+	  れているPRFのため、HashはPRFの基礎として使われているHashでなければな
+	  らない。異なるPRFを定義するサイファースイートは、Finishedの計算に使用すべき
+	  Hashもまた定義しなければならない。
 
       In previous versions of TLS, the verify_data was always 12 octets
       long.  In the current version of TLS, it depends on the cipher
