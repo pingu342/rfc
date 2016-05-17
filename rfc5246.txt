@@ -879,14 +879,14 @@ RFC 5246                          TLS                        August 2008
    parameters a current state.  The initial current state always
    specifies that no encryption, compression, or MAC will be used.
 
-   TLS$B%3%M%/%7%g%s>uBV$O(BTLS$B%l%3!<%I%W%m%H%3%k$NF0:n4D6-$G$"$k!#$=$l$O!"05=L%"(B
-   $B%k%4%j%:%`!"0E9f2=%"%k%4%j%:%`!"(BMAC$B%"%k%4%j%:%`$r5,Dj$9$k!#2C$($F!"$3$l$i$N(B
-   $B%"%k%4%j%:%`$N%Q%i%a!<%?!<$G$"$k!#6qBNE*$K$O(Bread$B$H(Bwrite$B$NN>J}8~$N%3%M%/(B
-   $B%7%g%sMQ$N(BMAC$B80!"%P%k%/0E9f2=80$G$"$k!#M}O@E*$K>o;~(B4$B$D$N%3%M%/%7%g%s>u(B
-   $BBV$,B8:_$9$k!#6qBNE*$K$O8=:_$N(Bread$B$H(Bwrite$B$N>uBV$H!"J]N1Cf$N(Bread$B$H(Bwrite$B$N>uBV$G$"(B
-   $B$k!#A4$F$N%l%3!<%I$O8=:_$N(Bread$B$H(Bwrite$B$N>uBV$N2<$G=hM}$5$l$k!#J]N1Cf$N>uBV$N(B
-   $B%;%-%e%j%F%#%Q%i%a!<%?$O(BTLS$B%O%s%I%7%'!<%/%W%m%H%3%k$K$h$j@_Dj2DG=$G$"$k!#$=(B
-   $B$7$F(BChangeCipherSpec$B$OJ]N1Cf$N>uBV$rA*BrE*$K8=:_$N$K$9$k$3$H$,$G$-$k!#(B
+   TLSコネクション状態はTLSレコードプロトコルの動作環境である。それは、圧縮ア
+   ルゴリズム、暗号化アルゴリズム、MACアルゴリズムを規定する。加えて、これらの
+   アルゴリズムのパラメーターである。具体的にはreadとwriteの両方向のコネク
+   ション用のMAC鍵、バルク暗号化鍵である。理論的に常時4つのコネクション状
+   態が存在する。具体的には現在のreadとwriteの状態と、保留中のreadとwriteの状態であ
+   る。全てのレコードは現在のreadとwriteの状態の下で処理される。保留中の状態の
+   セキュリティパラメータはTLSハンドシェークプロトコルにより設定可能である。そ
+   してChangeCipherSpecは保留中の状態を選択的に現在のにすることができる。
 
    The security parameters for a TLS Connection read and write state are
    set by providing the following values:
@@ -1499,10 +1499,10 @@ RFC 5246                          TLS                        August 2008
    can be instantiated using the same session through the resumption
    feature of the TLS Handshake Protocol.
 
-   $B$3$l$i$N%"%$%F%`$O!"%"%W%j%1!<%7%g%s%G!<%?$rJ]8n$9$k:]$N%l%3!<%IAX$K;HMQ$9(B
-   $B$k$?$a$N%;%-%e%j%F%#%Q%i%a!<%?$r@8@.$9$k$?$a$K;HMQ$5$l$k!#(BTLS$B%O%s%I%7%'!<%/(B
-   $B%W%m%H%3%k$N:F3+$N5!G=$K$h$j!"F10l%;%C%7%g%s$+$iJ#?t$N%3%M%/%7%g%s$r:n@.$9(B
-   $B$k$3$H$,$G$-$k!#(B
+   これらのアイテムは、アプリケーションデータを保護する際のレコード層に使用す
+   るためのセキュリティパラメータを生成するために使用される。TLSハンドシェーク
+   プロトコルの再開の機能により、同一セッションから複数のコネクションを作成す
+   ることができる。
 
 7.1.  Change Cipher Spec Protocol
 
@@ -1841,8 +1841,8 @@ RFC 5246                          TLS                        August 2008
       communicate changes to these parameters after that point.  This
       message is always a warning.
 
-	  hello$B%j%/%(%9%H$X$N1~Ez$H$7$F%/%i%$%"%s%H$,Aw?.$9$k$+!":G=i$N%O%s%I(B
-	  $B%7%'!<%/$N8e$N(Bclient hello$B$X$N1~Ez$H$7$F%5!<%P!<$,Aw?.$9$k!#(B
+	  helloリクエストへの応答としてクライアントが送信するか、最初のハンド
+	  シェークの後のclient helloへの応答としてサーバーが送信する。
 
    unsupported_extension
       sent by clients that receive an extended server hello containing
@@ -1874,8 +1874,8 @@ RFC 5246                          TLS                        August 2008
    -  Exchange hello messages to agree on algorithms, exchange random
       values, and check for session resumption.
 
-	  $B%"%k%4%j%:%`$N9g0U!"Mp?t$N8r49!"%;%C%7%g%s:F3+$+$I$&$+$N3NG'$r$9$k$?$a$K(B
-	  Hello$B%a%C%;!<%8$r8r49$9$k!#(B
+	  アルゴリズムの合意、乱数の交換、セッション再開かどうかの確認をするために
+	  Helloメッセージを交換する。
 
    -  Exchange the necessary cryptographic parameters to allow the
       client and server to agree on a premaster secret.
@@ -2014,9 +2014,9 @@ RFC 5246                          TLS                        August 2008
    duplicate an existing session (instead of negotiating new security
    parameters), the message flow is as follows:
 
-   $B%/%i%$%"%s%H$H%5!<%P!<$,!"2a5n$N%;%C%7%g%s$N:F3+!"$^$?$O4{B8$N%;%C%7%g%s$N(B
-   $BJ#@=!J?7$7$$%;%-%e%j%F%#%Q%i%a!<%?$r8r>D$9$kBe$o$j!K$r7hDj$7$?>l9g$N(B
-   $B%a%C%;!<%8%U%m!<$O0J2<$N$h$&$K$J$k!#(B
+   クライアントとサーバーが、過去のセッションの再開、または既存のセッションの
+   複製（新しいセキュリティパラメータを交渉する代わり）を決定した場合の
+   メッセージフローは以下のようになる。
 
    The client sends a ClientHello using the Session ID of the session to
    be resumed.  The server then checks its session cache for a match.
@@ -2030,15 +2030,15 @@ RFC 5246                          TLS                        August 2008
    found, the server generates a new session ID, and the TLS client and
    server perform a full handshake.
 
-   $B%/%i%$%"%s%H$O:F3+$9$k%;%C%7%g%s$N(BSessionID$B$r;HMQ$7$F(BClientHello$B$rAw?.$9(B
-   $B$k!#%5!<%P!<$O$=$l$,%;%C%7%g%s$N%-%c%C%7%e$H0lCW$9$k$+$r3NG'$9$k!#$b$70lCW(B
-   $B$9$k$J$i!"%5!<%P!<$O;XDj$5$l$?%;%C%7%g%s>uBV$N2<$G%3%M%/%7%g%s$r:F3NN)$9$k(B
-   $B$3$H$r$$$H$o$:!"F10l$N(BSessionID$B$r;}$D(BServerHello$B$rAw?.$9$k!#$3$NCJ3,$G!"%/(B
-   $B%i%$%"%s%H$H%5!<%P!<$NN>J}$O(BChangeCipherSpec$B%a%C%;!<%8$rAw?.$7$F(BFinished
-   $B%a%C%;!<%8$K?J$^$J$1$l$P$J$i$J$$!#$$$C$?$s:F3NN)$,$J$5$l$?$i!"%/%i%$%"%s%H(B
-   $B$H%5!<%P!<$O%"%W%j%1!<%7%g%sAX$N%G!<%?8r49$r3+;O$7$F$h$$!#$b$7(BSessionID$B$,0l(B
-   $BCW$7$J$1$l$P!"%5!<%P!<$O?75,(BSessionID$B$r@8@.$7!"%/%i%$%"%s%H$H%5!<%P!<$O%U%k(B
-   $B%O%s%I%7%'%$%/$r9T$&!#(B
+   クライアントは再開するセッションのSessionIDを使用してClientHelloを送信す
+   る。サーバーはそれがセッションのキャッシュと一致するかを確認する。もし一致
+   するなら、サーバーは指定されたセッション状態の下でコネクションを再確立する
+   ことをいとわず、同一のSessionIDを持つServerHelloを送信する。この段階で、ク
+   ライアントとサーバーの両方はChangeCipherSpecメッセージを送信してFinished
+   メッセージに進まなければならない。いったん再確立がなされたら、クライアント
+   とサーバーはアプリケーション層のデータ交換を開始してよい。もしSessionIDが一
+   致しなければ、サーバーは新規SessionIDを生成し、クライアントとサーバーはフル
+   ハンドシェイクを行う。
 
 
 
@@ -2069,7 +2069,7 @@ RFC 5246                          TLS                        August 2008
    The contents and significance of each message will be presented in
    detail in the following sections.
 
-   $B3F%a%C%;!<%8$NFbMF$H0UL#$K$D$$$F$O0J9_$N%;%/%7%g%s$G>\:Y$K=R$Y$k!#(B
+   各メッセージの内容と意味については以降のセクションで詳細に述べる。
 
 7.4.  Handshake Protocol
 
@@ -2080,11 +2080,11 @@ RFC 5246                          TLS                        August 2008
    TLSPlaintext structures, which are processed and transmitted as
    specified by the current active session state.
 
-   TLS$B%O%s%I%7%'!<%/%W%m%H%3%k$O(BTLS$B%l%3!<%I%W%m%H%3%k$N>e0L%/%i%$%"%s%H$N$R(B
-   $B$H$D$H$7$FDj5A$5$l$F$$$k!#$3$N%W%m%H%3%k$O%;%C%7%g%s$N%;%-%e%"$JB0@-$r8r>D(B
-   $B$9$k$?$a$K;HMQ$5$l$k!#%O%s%I%7%'!<%/%a%C%;!<%8$O(BTLS$B%l%3!<%IAX$G6!5k$5$l$k!#(B
-   $B$3$3$G$O!"$=$l$i$O(B1$B$D0J>e$N(BTLSPlaintext$B9=B$BN$G%+%W%;%k2=$5$l!"8=:_%"%/(B
-   $B%F%#%V$J%;%C%7%g%s>uBV$K$h$C$F5,Dj$5$l$?$H$*$j$K=hM}$5$lE>Aw$5$l$k!#(B
+   TLSハンドシェークプロトコルはTLSレコードプロトコルの上位クライアントのひ
+   とつとして定義されている。このプロトコルはセッションのセキュアな属性を交渉
+   するために使用される。ハンドシェークメッセージはTLSレコード層で供給される。
+   ここでは、それらは1つ以上のTLSPlaintext構造体でカプセル化され、現在アク
+   ティブなセッション状態によって規定されたとおりに処理され転送される。
 
       enum {
           hello_request(0), client_hello(1), server_hello(2),
@@ -2129,21 +2129,21 @@ RFC 5246                          TLS                        August 2008
    SHOULD be ignored by the client if it arrives in the middle of a
    handshake.
 
-   $B0J9_$G$O!"%O%s%I%7%'!<%/%W%m%H%3%k%a%C%;!<%8$r!"$=$l$rAw?.$7$J$1$l$P$J$i$J(B
-   $B$$=g$K5-=R$9$k!#4|BTDL$j$N=gHV$GAw?.$5$l$J$$%O%s%I%7%'!<%/%a%C%;!<%8$OCWL?(B
-   $BE*$J%(%i!<$H$J$k!#$7$+$7$J$,$i!"ITI,MW$J%O%s%I%7%'!<%/%a%C%;!<%8$O=|302DG=$G$"$k!#(B
-   $B=gHV$N(B1$B$D$NNc30$H$7$F!"(BCertificate$B%a%C%;!<%8$N%O%s%I%7%'!<%/Fb$G$N(B2$B2s;HMQ(B
-   $B!J%5!<%P!<$+$i%/%i%$%"%s%H$X!"$=$l$+$i%/%i%$%"%s%H$+$i%5!<%P!<$X!K$,$"$k(B
-   $B$,!"$=$N(B1$B2sL\$7$+5-=R$7$F$$$J$$$3$H$KCm0U$;$h!#$3$l$i=gHV$N%k!<%k$K=>$o$J$$(B
-   $B%a%C%;!<%8$N(B1$B$D$,(BHelloRequest$B%a%C%;!<%8$G$"$j!"$3$l$O$$$D$G$bAw?.2DG=$G$"(B
-   $B$k!#$7$+$7$b$7$=$l$,!"%O%s%I%7%'!<%/Cf$KFO$$$?>l9g!"%/%i%$%"%s%H$O$=$l$rL5(B
-   $B;k$9$Y$-$G$"$k!#(B
+   以降では、ハンドシェークプロトコルメッセージを、それを送信しなければならな
+   い順に記述する。期待通りの順番で送信されないハンドシェークメッセージは致命
+   的なエラーとなる。しかしながら、不必要なハンドシェークメッセージは除外可能である。
+   順番の1つの例外として、Certificateメッセージのハンドシェーク内での2回使用
+   （サーバーからクライアントへ、それからクライアントからサーバーへ）がある
+   が、その1回目しか記述していないことに注意せよ。これら順番のルールに従わない
+   メッセージの1つがHelloRequestメッセージであり、これはいつでも送信可能であ
+   る。しかしもしそれが、ハンドシェーク中に届いた場合、クライアントはそれを無
+   視すべきである。
 
    New handshake message types are assigned by IANA as described in
    Section 12.
 
-   IANA$B$K$h$k?7$7$$%O%s%I%7%'!<%/%a%C%;!<%8%?%$%W$N3d$jEv$F$O%;%/%7%g%s(B12$B$K5-(B
-   $B=R$5$l$F$$$k!#(B
+   IANAによる新しいハンドシェークメッセージタイプの割り当てはセクション12に記
+   述されている。
 
 7.4.1.  Hello Messages
 
@@ -2153,10 +2153,10 @@ RFC 5246                          TLS                        August 2008
    compression algorithms are initialized to null.  The current
    connection state is used for renegotiation messages.
 
-   hello$B%U%'!<%:%a%C%;!<%8$O%/%i%$%"%s%H$H%5!<%P!<$N4V$G%;%-%e%j%F%#$NG=NO$r8r(B
-   $B49$9$k$?$a$K;HMQ$5$l$k!#?75,%;%C%7%g%s3+;O;~!"%l%3!<%IAX$N%3%M%/%7%g%s>uBV(B
-   $B0E9f2=!"%O%C%7%e!"05=L$N%"%k%4%j%:%`$O(Bnull$B$K=i4|2=$5$l$k!#8=:_$N%3%M%/(B
-   $B%7%g%s>uBV$O:F8r>D%a%C%;!<%8$K;HMQ$5$l$k!#(B
+   helloフェーズメッセージはクライアントとサーバーの間でセキュリティの能力を交
+   換するために使用される。新規セッション開始時、レコード層のコネクション状態
+   暗号化、ハッシュ、圧縮のアルゴリズムはnullに初期化される。現在のコネク
+   ション状態は再交渉メッセージに使用される。
 
 7.4.1.1.  Hello Request
 
@@ -2348,10 +2348,10 @@ RFC 5246                          TLS                        August 2008
       request), this vector MUST include at least the cipher_suite from
       that session.  Values are defined in Appendix A.5.
 
-	  $B$3$l$O%/%i%$%"%s%H$,%5%]!<%H$7$F$$$k0E9f%*%W%7%g%s$N0lMw$G$"$k!#$b$7!"(B
-	  session_id$B%U%#!<%k%I$,6u$G$J$$>l9g!J%;%C%7%g%s:F3+$N%j%/%(%9%H$N0E<(!K!"(B
-	  $B$3$N%Y%/%?$O>/$J$/$H$b$=$N%;%C%7%g%s$N(Bcipher_suite$B$r4^$a$J$1$l$P$J$i$J(B
-	  $B$$!#CM$O(BAppendix A.5.$B$GDj5A$5$l$F$$$k!#(B
+	  これはクライアントがサポートしている暗号オプションの一覧である。もし、
+	  session_idフィールドが空でない場合（セッション再開のリクエストの暗示）、
+	  このベクタは少なくともそのセッションのcipher_suiteを含めなければならな
+	  い。値はAppendix A.5.で定義されている。
 
    compression_methods
       This is a list of the compression methods supported by the client,
@@ -2370,11 +2370,11 @@ RFC 5246                          TLS                        August 2008
       Thus, a client and server will always be able to agree on a
       compression method.
 
-	  $B$3$l$O%/%i%$%"%s%H$,%5%]!<%H$7$F$$$k05=L%a%=%C%I$N0lMw$G$"$k!#$b$7(B
-	  session_id$B%U%#!<%k%I$,6u$G$J$$>l9g!J%;%C%7%g%s:F3+$N%j%/%(%9%H$N0E<(!K!"(B
-	  $B$=$N%;%C%7%g%s$N(Bcompressoin_method$B$r4^$a$J$1$l$P$J$i$J$$!#$3$N%Y%/%?$OI,(B
-	  $B?\$G!"$9$Y$F$N<BAu$O(BCompressionMethod.null$B$r%5%]!<%H$7$J$1$l$P$J$i$J$$!#(B
-	  $B=>$C$F!"%/%i%$%"%s%H$H%5!<%P!<$O$$$D$G$b05=L%a%=%C%I$N9g0U$,2DG=$G$"$k!#(B
+	  これはクライアントがサポートしている圧縮メソッドの一覧である。もし
+	  session_idフィールドが空でない場合（セッション再開のリクエストの暗示）、
+	  そのセッションのcompressoin_methodを含めなければならない。このベクタは必
+	  須で、すべての実装はCompressionMethod.nullをサポートしなければならない。
+	  従って、クライアントとサーバーはいつでも圧縮メソッドの合意が可能である。
 
    extensions
       Clients MAY request extended functionality from servers by sending
@@ -2532,11 +2532,11 @@ RFC 5246                          TLS                        August 2008
    same extensions as it would send if it were not attempting
    resumption.
 
-   $B:G8e$K!"3HD%$O!"?75,%;%C%7%g%s3+;O$H%;%C%7%g%s:F3+$NN>J}$GAw?.2DG=$G$"$k!#(B
-   $B<B:]$N$H$3$m!"%;%C%7%g%s:F3+$r%j%/%(%9%H$9$k%/%i%$%"%s%H$ODL>o!"%5!<%P!<$,(B
-   $B$=$N%j%/%(%9%H$r<u$1F~$l$k$+$I$&$+$rCN$i$J$$!#$h$C$F!"$b$7$=$l$,;n$_$i$l$J(B
-   $B$+$C$?>l9g$KAw?.$5$l$k$G$"$m$&$b$N$HF10l$N3HD%$rAw?.$9$Y$-$G$"$k!#(B
-   $B$G$"$k!#(B
+   最後に、拡張は、新規セッション開始とセッション再開の両方で送信可能である。
+   実際のところ、セッション再開をリクエストするクライアントは通常、サーバーが
+   そのリクエストを受け入れるかどうかを知らない。よって、もしそれが試みられな
+   かった場合に送信されるであろうものと同一の拡張を送信すべきである。
+   である。
 
 
 
@@ -2553,12 +2553,12 @@ RFC 5246                          TLS                        August 2008
    not include them in Server Hello.  However, some extensions may
    specify different behavior during session resumption.
 
-   $BDL>o!"3F3HD%$N;EMM$O!"%U%k%O%s%I%7%'!<%/$H%;%C%7%g%s:F3+$NN>J}$K$*$$$F!"$=(B
-   $B$N3HD%$,$I$N$h$&$J1F6A$r5Z$\$9$+$r5-=R$9$kI,MW$,$"$k!#:G?7$N(BTLS$B3HD%$O!"(B
-   $B%;%C%7%g%s3+;O;~$K$N$_4X78$,$"$k!#2a5n$N%;%C%7%g%s$N:F3+;~$K$O!"%5!<%P!<$O(B
-   ClientHello$BFb$K$"$k$=$l$i$N3HD%$r=hM}$;$:!"(BServerHello$BFb$K$=$l$i$r4^$a$J(B
-   $B$$!#$7$+$73HD%$K$O!"%;%C%7%g%s:F3+;~$K0[$J$k?6$kIq$$$r5,Dj$9$k2DG=@-$,$"$k(B
-   $B$b$N$,$"$k!#(B
+   通常、各拡張の仕様は、フルハンドシェークとセッション再開の両方において、そ
+   の拡張がどのような影響を及ぼすかを記述する必要がある。最新のTLS拡張は、
+   セッション開始時にのみ関係がある。過去のセッションの再開時には、サーバーは
+   ClientHello内にあるそれらの拡張を処理せず、ServerHello内にそれらを含めな
+   い。しかし拡張には、セッション再開時に異なる振る舞いを規定する可能性がある
+   ものがある。
 
    There are subtle (and not so subtle) interactions that may occur in
    this protocol between new features and existing features which may
@@ -2696,8 +2696,8 @@ RFC 5246                          TLS                        August 2008
    Server Hello, and the server ignores the extension in Client Hello
    (if present).
 
-   $B%;%C%7%g%s:F3+;~!"$3$N3HD%$O(BServerHello$B$K4^$a$i$l$J$$!#%5!<%P!<$O(B
-   ClientHello$B$N3HD%!J$b$7Ds<($5$l$F$$$l$P!K$rL5;k$9$k!#(B
+   セッション再開時、この拡張はServerHelloに含められない。サーバーは
+   ClientHelloの拡張（もし提示されていれば）を無視する。
 
 7.4.2.  Server Certificate
 
@@ -3602,10 +3602,10 @@ RFC 5246                          TLS                        August 2008
       for the PRF.  Any cipher suite which defines a different PRF MUST
       also define the Hash to use in the Finished computation.
 
-	  Hash$B$O%O%s%I%7%'!<%/%a%C%;!<%8$N%O%C%7%e$r0UL#$9$k!#%;%/%7%g%s(B5$B$GDj5A$5(B
-	  $B$l$F$$$k(BPRF$B$N$?$a!"(BHash$B$O(BPRF$B$N4pAC$H$7$F;H$o$l$F$$$k(BHash$B$G$J$1$l$P$J(B
-	  $B$i$J$$!#0[$J$k(BPRF$B$rDj5A$9$k%5%$%U%!!<%9%$!<%H$O!"(BFinished$B$N7W;;$K;HMQ$9$Y$-(B
-	  Hash$B$b$^$?Dj5A$7$J$1$l$P$J$i$J$$!#(B
+	  Hashはハンドシェークメッセージのハッシュを意味する。セクション5で定義さ
+	  れているPRFのため、HashはPRFの基礎として使われているHashでなければな
+	  らない。異なるPRFを定義するサイファースイートは、Finishedの計算に使用すべき
+	  Hashもまた定義しなければならない。
 
       In previous versions of TLS, the verify_data was always 12 octets
       long.  In the current version of TLS, it depends on the cipher
