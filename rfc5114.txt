@@ -12,6 +12,8 @@ Category: Informational                                 BBN Technologies
 
      Additional Diffie-Hellman Groups for Use with IETF Standards
 
+	 IETF標準用に追加されたDiffie-Hellmanグループ
+
 Status of This Memo
 
    This memo provides information for the Internet community.  It does
@@ -27,10 +29,17 @@ Abstract
    (SSH), Transport Layer Security (TLS), and Internet Key Exchange
    (IKE).
 
+   このドキュメントは、インターネット通信にセキュリティをもたらすIETFプロトコル
+   で使用可能な8つのDHグループを記述する。例えばSMIME、 SSH、TLS、IKEなどの
+   様々なセキュリティプロトコルの実装者が同一のグループを使用することを可能にする。
+
    All of these groups comply in form and structure with relevant
    standards from ISO, ANSI, NIST, and the IEEE.  These groups are
    compatible with all IETF standards that make use of Diffie-Hellman or
    Elliptic Curve Diffie-Hellman cryptography.
+
+   このらのグループは関連するISO、ANSI、NIST、IEEE標準の形式と構造に従う。こ
+   れらのグループはDHまたはECDH暗号を使用する全てのIETF標準に適合する。
 
    These groups and the associated test data are defined by NIST on
    their web site [EX80056A], but have not yet (as of this writing) been
@@ -42,6 +51,12 @@ Abstract
    Processing Standard (FIPS) validation of implementations that make
    use of these groups.
 
+   これらのグループ及び関連テストデータはNISTのウェブサイト[EX80056A]で定義さ
+   れている。しかし（これを記述している時点では）まだ正式なNISTドキュメントは
+   発行されていない。これらのグループ及び関連するテストデータの発行物だけでな
+   く、以下で1つのRFCで引用されるプロトコルにおける鍵合意にDHとECDHを使用する
+   方法に関する記述は、相互運用可能な実装の開発を促進し、これらのグループを使
+   用した実装のFIPS検証をサポートする。
 
 
 
@@ -105,6 +120,13 @@ Table of Contents
    several additional D-H groups defined later, e.g., [RFC3526] and
    [RFC4492].
 
+   このドキュメントは（例えばIKE、TLS、SSH、SMIMEのような）DH鍵を用いるIETFプ
+   ロトコルと、（DH鍵を運ぶ）X.509証明書の公開鍵基盤のようなIETF標準において使
+   用可能な、DHグループのパラメーターとテストデータを提供する。これらのグ
+   ループは、IETFで既にドキュメント化されている[RFC2409]においてIKEv1用に定義
+   されている"Oakley"グループ、さらに[RFC3526]、[RFC4492]で追加されているグ
+   ループを補完する。
+
 
 
 
@@ -132,6 +154,16 @@ RFC 5114            Additional Diffie-Hellman Groups        January 2008
    EC2N groups (elliptic curve groups over GF[2^N]), and three are ECP
    groups (elliptic curve groups over GF[P]).
 
+   （IETFが）DHグループを定義する最初のきっかけは、IPsec（IKE）において、その
+   プロトコルの出発点として一時的かつ認証されないDH交換を使用するために生じ
+   た。RFC 2409は、3つの冪剰余グループとGF[2^n]上の2つの楕円曲線グループからな
+   る5つのOakleyグループを定義した。冪剰余グループの1つ（768ビット-Oakleyグ
+   ループ1）が、全てのIKEv1の実装においてサポート必須と宣言された。その後追加
+   で16個のグループが、IKEv1用として定義されIANAに登録された。これにはIKEv2用
+   に登録された8個も含まれる。これら追加のグループはすべてIKEでは任意である。
+   これまでにIKE用に定義された21のグループの内8個がMODPグループ、10個がEC2Nグ
+   ループ、3個がECPグループである。
+
    The purpose of this document is to provide the parameters and test
    data for eight additional groups, in a format consistent with
    existing RFCs along with instructions on how these groups can be used
@@ -145,6 +177,16 @@ RFC 5114            Additional Diffie-Hellman Groups        January 2008
    may wish to offer the same Diffie-Hellman groups for use with
    multiple IETF protocols.
 
+   このドキュメントの目的は、8つの追加のグループのパラメーターとテストデータ
+   を、SMIME、SSH、TLS、IKEのようなIETFプロトコルでどのように使用するかについ
+   て説明と併せて、既存のRFCと調和した形式で提供することである。これらのグループ
+   の内3つは、既にRFC 4753でIKE用に規定されており、5つはRFC 4492でTLS用に規定
+   されている。（後者のドキュメントでは規定されたグループのテストデータの提供
+   や言及がされていない。）8つのグループをすべて、テストデータ及び様々なプロト
+   コル用の使用説明と結合することにより、このドキュメントは、複数のIETFプロト
+   コル用に同一のDHグループを使用したい実装者のためのリソースそしての役割を果
+   たす。
+
    All of these groups are compatible with applicable ISO [ISO-14888-3],
    ANSI [X9.62], and NIST [NIST80056A] standards for Diffie-Hellman key
    exchange.  These groups and the associated test data are defined by
@@ -153,6 +195,13 @@ RFC 5114            Additional Diffie-Hellman Groups        January 2008
    these groups with associated test data as an RFC will facilitate
    development of interoperable implementations and support FIPS
    validation of implementations that make use of these groups.
+
+   これらのグループはすべて、DH鍵交換の標準である ISO [IOS-14888-3]、ANSI
+   [X9.62]、NIST [NIST80056A] と互換性がある。これらのグループと関連テスト
+   データはNISTのウェブサイト [EX80056A] で定義されるが、未だ正式なNISTド
+   キュメントは（これを書いている時点では）発行されていない。これらのグループ
+   及び関連テストデータをRFCとして発行することは、相互運用可能な実装の開発を促
+   進し、これらのグループを使用する実装のFIPS検証を支えるだろう。
 
    The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT",
    "SHOULD", "SHOULD NOT", "RECOMMENDED", "MAY", and "OPTIONAL" in this
@@ -180,6 +229,10 @@ RFC 5114            Additional Diffie-Hellman Groups        January 2008
    publications of the National Institute of Standards and Technology,
    specifically [DSS] and [NIST80056A].  Test data for each group is
    provided in Appendix A.
+
+   このセクションはIKE、TLS、SSH、その他のための8つのグループの規定を含む。3つ
+   のMODPグループ、5つのECPグループがある。すべてのグループはNISTの発行物、具
+   体的には[DSS]、[NIST80056A]から取られた。テストデータは付録A.で提供される。
 
 2.1.  1024-bit MODP Group with 160-bit Prime Order Subgroup
 
@@ -514,6 +567,14 @@ RFC 5114            Additional Diffie-Hellman Groups        January 2008
    asserted, and encipherOnly or decipherOnly (but not both) MAY be
    asserted.
 
+   X.509証明書でのMODPとECDHの公開鍵（及び関連パラメーター）の表現は [RFC
+   3279] で定義されている。上で定義されたMODPグループはそのRFCのセクション
+   2.3.3で定義された文法で、楕円曲線グループはセクション2.3.5で定義された文法
+   で表現されなければならない。DH公開鍵を証明書にエンコード時、もしKeyUsage拡
+   張が提示されたら、keyAgreementビットは真の状態にされなければならない。そし
+   てencipherOnlyまたはdecipherOnlyは（どちらか一方だけ）真の状態にされるかも
+   しれない。
+
 3.2.  IKE
 
    Use of MODP Diffie-Hellman groups with IKEv2 is defined in [RFC4306],
@@ -553,6 +614,13 @@ RFC 5114            Additional Diffie-Hellman Groups        January 2008
    changes to the use of Diffie-Hellman, and thus the following will
    likely also be applicable to TLS 1.2).
 
+   TLS1.1におけるMODP DHグループの使用は[RFC4346]で定義されている。TLS1.1の前
+   身であり幅広く配置されているTLS1.0は[RFC2246]で規定されており、pre-Master
+   secretの計算に(MODP)DHを使用すること関してはTLS1.1と同じである。（現在、TLS
+   ワーキング・グループはTLS1.2の仕様を作成するプロセスの最中である。TLS1.2で
+   DHの使用が大幅に変更されることはありそうもないので、以下のことはTLS1.2にも
+   有効になりそうである。）
+
 
 
 
@@ -572,6 +640,13 @@ RFC 5114            Additional Diffie-Hellman Groups        January 2008
    RSA- or DSS-signed server certificate.  The details for accomplishing
    this for MODP Diffie-Hellman groups are provided in [RFC2246].
 
+   サーバーは（固定された）DHパラメーターを含む証明書を使用できる。証明書を使
+   用するクライアントも同様である。従って、関連するPKIX RFC（上記3.1を参照）が
+   適用される。またはサーバーは、ServerKeyExchangeメッセージを使用して一時的な
+   DHパラメーターを送信することもできる。そのメッセージの署名は、RSAまたはDSSで
+   署名されているサーバー証明書を使用して検証される。MODP DHグループにおいてこ
+   れを成し遂げるための詳細は[RFC2246]で提供されている。
+
    Use of Elliptic Curve Diffie-Hellman in TLS 1.1 (and 1.0) is defined
    in [RFC4492].  The elliptic curves in this document appear in the
    IANA EC Named Curve Registry [IANA-TLS], although the names in the
@@ -580,6 +655,12 @@ RFC 5114            Additional Diffie-Hellman Groups        January 2008
    in NIST publications.  The following table provides the EC Named
    Curve ID for each of the elliptic curves along with both the NIST
    name and the SECG name for the curve.
+
+   TLS1.2（及び1.0）におけるECDHの使用は[RFC4492]で定義されている。このド
+   キュメント内の楕円曲線はIANA EC Named Curve Registry [IANA-TLS]に登場する。
+   レジストリ内の名前は[SECG]から取られており、NISTの出版物内に登場する名前
+   とは異る。以下の表に各楕円曲線のEC Named Curve IDと、NIST及びSECG両方の楕円
+   曲線名を併せて示す。
 
    NAME (NIST)                      |    NUMBER    |    NAME (SECG)
    ---------------------------------+--------------+---------------
@@ -639,6 +720,12 @@ RFC 5114            Additional Diffie-Hellman Groups        January 2008
    document were chosen to make the work factor for solving the discrete
    logarithm problem roughly comparable to an attack on the subgroup.
 
+   ここに定義されたグループを使用してのDH交換によって生成される鍵の強度は、そ
+   のグループに固有な強度、使用される指数のサイズ、使用する乱数生成器のエント
+   ロピーによって決まる。このドキュメントで定義されたグループは、サブグループ
+   への攻撃にほぼ匹敵する離散対数問題を解くための作業要因を作るために選ばれ
+   た。
+
    Using secret keys of an appropriate size is crucial to the security
    of a Diffie-Hellman exchange.  For modular exponentiation groups, the
    size of the secret key should be equal to the size of q (the size of
@@ -649,11 +736,21 @@ RFC 5114            Additional Diffie-Hellman Groups        January 2008
    likely to result in dramatically less security.  (See [NIST80056A]
    for more information on selecting secret keys.)
 
+   適切なサイズの秘密鍵を使用することは、DH交換のセキュリティにとって極めて需
+   要である。冪剰余グループでは、秘密鍵のサイズはqのサイズと等しくすべきであ
+   る。楕円曲線グループでは、秘密鍵のサイズはnのサイズと等しくすべきである。よ
+   り大きな秘密鍵を使用してもセキュリティは向上しない。より小さい秘密鍵を使用
+   するとセキュリティが劇的に低下する。
+
    When secret keys of an appropriate size are used, an approximation of
    the strength of each of the Diffie-Hellman groups is provided in the
    table below.  For each group, the table contains an RSA key size and
    symmetric key size that provide roughly equivalent levels of
    security.  This data is based on the recommendations in [NIST80057].
+
+   適切なサイズの秘密鍵を使用時、各DHグループの強度の近似値は以下の表のとおり
+   となる。表では各グループに、ほぼ同等なセキュリティレベルのRSA鍵サイズと対象
+   鍵サイズを示した。このデータは[NIST80057]の推奨に基いている。
 
    GROUP                                      |  SYMMETRIC |   RSA
    -------------------------------------------+------------+-------
@@ -680,10 +777,16 @@ RFC 5114            Additional Diffie-Hellman Groups        January 2008
 
    IANA has taken the following actions:
 
+   IANAは以下のアクションをとった。
+
    Updated the IKE and IKEv2 registries to include the following five
    groups defined in this document: (Note that the other three ECP
    groups defined in this document have already been added to the IKE
    registry).
+
+   IKE及びIKEv2レジストリに、このドキュメントで定義した以下の５つのグループを
+   追加した。（このドキュメントで定義した他の３つのECPグループは既にIKEレジス
+   トリに登録済みであることに注意。）
 
    o  1024-bit MODP Group with 160-bit Prime Order Subgroup
 
@@ -698,6 +801,9 @@ RFC 5114            Additional Diffie-Hellman Groups        January 2008
    Updated [IANA-IKE] and [IANA-IKE2] to reflect the above, which now
    appear as entries in the list of Diffie-Hellman groups given by Group
    Description.  The descriptions are as stated above.
+
+   [IANA-IKE]及び[IANA-IKEv2]に上記を反映し、それらはGroup Descriptionにより与
+   えられるDHグループのリスト内のエントリーとして現れる。
 
 6.  Acknowledgments
 
