@@ -656,7 +656,7 @@ RFC 5114            Additional Diffie-Hellman Groups        January 2008
    Curve ID for each of the elliptic curves along with both the NIST
    name and the SECG name for the curve.
 
-   TLS1.2（及び1.0）におけるECDHの使用は[RFC4492]で定義されている。このド
+   TLS1.1（及び1.0）におけるECDHの使用は[RFC4492]で定義されている。このド
    キュメント内の楕円曲線はIANA EC Named Curve Registry [IANA-TLS]に登場する。
    レジストリ内の名前は[SECG]から取られており、NISTの出版物内に登場する名前
    とは異る。以下の表に各楕円曲線のEC Named Curve IDと、NIST及びSECG両方の楕円
