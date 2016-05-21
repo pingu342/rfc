@@ -54,8 +54,10 @@
 
 # PKI（公開鍵基盤）
 
-* **インターネットX.509 PKI証明書とCRLのプロファイルのためのアルゴリズムと識別子**
-	* RFC3279
 * **インターネットX.509 PKI証明書とCRLのプロファイル**
-	* RFC5280
-* **X.509 PKI用の新しいASN.1モジュール
+	* [RFC2459](https://tools.ietf.org/html/rfc2459) (Obsoleted by RFC3280)
+	* [RFC3280](https://tools.ietf.org/html/rfc3280) (Obsoleted by RFC5280)
+	* [RFC5280](https://tools.ietf.org/html/rfc5280)
+* **インターネットX.509 PKI証明書とCRLのプロファイルのためのアルゴリズムと識別子**
+	* [RFC2528](https://tools.ietf.org/html/rfc2528) (Obsoleted by RFC3279)
+	* [RFC3279](https://tools.ietf.org/html/rfc3279)
