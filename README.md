@@ -1,6 +1,12 @@
 # 鍵交換
-* **Diffie-Hellman鍵共有法**
+* **Diffie-Hellman鍵共有**
+	* PKCS#3 DH
+	* ANSI X9.42 DH
+		* PKCS#3より新しいDH法
+		* X9.42対応Opensslは未リリース (2016/5/21時点)
+			* [note OpenSSL does not support ANSI X9.42 in the released versions - support is available in the as yet unreleased 1.0.2 and 1.1.0](https://wiki.openssl.org/index.php/Diffie_Hellman)
 	* [RFC2631](https://tools.ietf.org/html/rfc2631) | [Japanese(未)](rfc2631.txt)
+		* X9.42に基づくDH法
 
 # IPsec (IKE)
 
@@ -33,6 +39,8 @@
 * **SMIME,SSH,TLS,IKEなどのIETF標準用のDiffie-Hellmanグループ追加**
 	* [RFC5114](https://tools.ietf.org/html/rfc5114) | [Japanese](rfc5114.txt)
 		* DH鍵を用いるITEFプロトコルで使用可能な8つのDHグループ（3つのMODPグループ、5つのECPグループ）のパラメーターとテストデータに関する記述。
+		* 3つのMODPグループはOpensslでサポート予定 (2016/5/21時点)
+			* [RFC 5114 defines 3 standard sets of parameters for use with Diffie-Hellman (OpenSSL will have built-in support for these parameters from OpenSSL 1.0.2 - not yet released)](https://wiki.openssl.org/index.php/Diffie_Hellman)
 * **TLS1.2**
 	* [RFC5246](https://tools.ietf.org/html/rfc5246) | [Japanese(セッション再開部分のみ)](rfc5246.txt)
 * **TLSとDTLSの安全な利用に関する推奨事項**
