@@ -4901,8 +4901,13 @@ RFC 5246                          TLS                        August 2008
    -  When using Diffie-Hellman key exchange, do you correctly strip
       leading zero bytes from the negotiated key (see Section 8.1.2)?
 
+	  DH鍵交換を使用時、交渉された鍵の先行0バイトを正しく取り除いているか？
+
    -  Does your TLS client check that the Diffie-Hellman parameters sent
       by the server are acceptable (see Section F.1.1.3)?
+
+	  TLSクライアントはサーバーから送られたDHパラメーターが受け入れ可能なもの
+	  かどうか確認しているか？
 
 
 
@@ -4924,6 +4929,9 @@ RFC 5246                          TLS                        August 2008
       number generator (see Appendix D.1) for generating the premaster
       secret (for RSA key exchange), Diffie-Hellman private values, the
       DSA "k" parameter, and other security-critical values?
+
+	  premaster secret、DH秘密値、DSA "K"、その他セキュリティ上重要な値の生成
+	  には、強力で正確な種で初期化された乱数生成器を使用しているか？
 
 Appendix E.  Backward Compatibility
 
@@ -5196,6 +5204,11 @@ RFC 5246                          TLS                        August 2008
    private values should not be able to find the Diffie-Hellman result
    (i.e., the pre_master_secret).
 
+   鍵交換にDHを使用して完全に匿名なセッションを確立することができる。
+   サーバーの公開パラメーターはServerKeyExchangeメッセージに含まれ、クライアン
+   トのそれはClientKeyExchangeメッセージで送信される。秘密値を知らない盗聴者が
+   DHの結果を見つけることができないようにすべきである。
+
    Warning: Completely anonymous connections only provide protection
    against passive eavesdropping.  Unless an independent tamper-proof
    channel is used to verify that the Finished messages were not
@@ -5236,6 +5249,13 @@ F.1.1.3.  Diffie-Hellman Key Exchange with Authentication
    either case, the client can verify the certificate or signature to
    ensure that the parameters belong to the server.
 
+   DH鍵交換の使用時、サーバーは固定のDHパラメーターを含んだ証明書を使用する
+   か、DSAまたはRSA証明書で署名された一時的なDHパラメーターを送信するために
+   ServerKeyExchangeメッセージを使用できる。一時的なパラメーターは、古いパラ
+   メーターを再利用する攻撃をさせないために、署名の前にhello.randomの値で
+   ハッシュされる。どちらの場合でもクライアントは、そのパラメーターがその
+   サーバーに属することを確かめるため、証明書か署名を検証できる。
+
    If the client has a certificate containing fixed Diffie-Hellman
    parameters, its certificate contains the information required to
    complete the key exchange.  Note that in this case the client and
@@ -5254,16 +5274,33 @@ RFC 5246                          TLS                        August 2008
    Client Diffie-Hellman parameters must be compatible with those
    supplied by the server for the key exchange to work.
 
+   もしクライアントが肯定のDHパラメーターを含んだ証明書を持っている場合、その
+   証明書は鍵交換を完了させるために必要な情報を含んでいる。この場合、クライア
+   ントとサーバーは常に、（例えばpre_master_secretなどの）DHにより得られる結
+   果が毎回同じ値となるであろうことに注意せよ。pre_master_secretが必要以上に長
+   くメモリに保存されないように、それは可能な限り迅速にmaster_secretに変換され
+   るべきである。鍵交換が動作するには、クライアントのDHパラメーターは、
+   サーバーが供給するパラメーターと互換でなければならない。
+
    If the client has a standard DSA or RSA certificate or is
    unauthenticated, it sends a set of temporary parameters to the server
    in the client key exchange message, then optionally uses a
    certificate verify message to authenticate itself.
+
+   もしクライアントがDSAまたはRSA証明書を持っているか、または認証なしの場
+   合、ClientKeyExchangeメッセージで一時的なパラメーターをサーバーに送信し、そ
+   れから任意でCertificateVerifyメッセージを自身の認証のために使用する。
 
    If the same DH keypair is to be used for multiple handshakes, either
    because the client or server has a certificate containing a fixed DH
    keypair or because the server is reusing DH keys, care must be taken
    to prevent small subgroup attacks.  Implementations SHOULD follow the
    guidelines found in [SUBGROUP].
+
+   もし、クライアントかサーバーが固定のDH鍵ペアを含む証明書を持っているか、ま
+   たはサーバーがDH鍵を再利用するかのどちらかの原因によって、同じDH鍵ペアが複
+   数のハンドシェークで使用された場合、小サブグループ攻撃の抑止に注意しなけれ
+   ばならない。実装は[SUBGROUP]にあるガイドラインに従うべきである。
 
    Small subgroup attacks are most easily avoided by using one of the
    DHE cipher suites and generating a fresh DH private key (X) for each
@@ -5273,6 +5310,12 @@ RFC 5246                          TLS                        August 2008
    provides Perfect Forward Secrecy.  Implementations SHOULD generate a
    new X for each handshake when using DHE cipher suites.
 
+   小サブグループ攻撃を避ける最も簡単な方法は、DHEサイファースイートを使用して
+   DH秘密鍵(X)をハンドシェーク毎に作り直すことである。もし（2のような）適切な
+   baseが選ばれれば、g^x mod pはとても高速に計算できる。またハンドシェーク毎に
+   鍵を作り直すことはPFSをもたらす。DHEサイファースイート使用時は、実装は各ハ
+   ンドシェークで新しいXを生成すべきである。
+
    Because TLS allows the server to provide arbitrary DH groups, the
    client should verify that the DH group is of suitable size as defined
    by local policy.  The client SHOULD also verify that the DH public
@@ -5281,6 +5324,14 @@ RFC 5246                          TLS                        August 2008
    to assist the client by providing a known group, such as those
    defined in [IKEALG] or [MODP].  These can be verified by simple
    comparison.
+
+   TLSではサーバーが任意のDHグループを提供可能であるため、クライアントはそのDH
+   グループがローカルポリシーで定義された適切なサイズであるか検証すべきであ
+   る。クライアントはまたDH公開指数が十分なサイズであるように思われるかどうか
+   検証すべきである。[KEYSZ]は様々なグループサイズの強度について有用なガイドを
+   提供している。サーバーは[IKEALG]や[MODP]で定義されているような既知のグ
+   ループを提供することによりクライアントを助けることを選択しても良い。これら
+   は単純な比較で検証可能である。
 
 F.1.2.  Version Rollback Attacks
 
