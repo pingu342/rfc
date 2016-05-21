@@ -1,13 +1,13 @@
 # IPsec (IKE)
 
 * **IKEv1**
-	* [RFC2409 (Obsoleted by RFC4306:IKEv2)](https://tools.ietf.org/html/rfc2409)
+	* [RFC2409](https://tools.ietf.org/html/rfc2409) (Obsoleted by RFC4306:IKEv2)
 		* IPsec(IKE)に4つのDHグループ(2つのMODPグループと2つのEC2Nグループからなる4つのOakleyグループ)を定義。
 * **IKE用の(MODP)DHグループ**
 	* [RFC3526](https://tools.ietf.org/html/rfc3526)
 		* IPsec(IKE)に6つのDHグループ(MODP)を追加定義。
 * **IKEv1とIKEv2用のECPグループ**
-	* [RFC4753 (Obsoleted by RFC5903)](https://tools.ietf.org/html/rfc4753)
+	* [RFC4753](https://tools.ietf.org/html/rfc4753) (Obsoleted by RFC5903)
 		* IPsec(IKE)に3つのDHグループ(ECP)を追加定義。
 	* [RFC5903](https://tools.ietf.org/html/rfc5903)
 * **IKEv2**
@@ -20,9 +20,9 @@
 # TLS
 
 * **TLS1.0**
-	* [RFC2246 (Obsoleted by RFC4346:TLS1.1)](https://tools.ietf.org/html/rfc2246)
+	* [RFC2246](https://tools.ietf.org/html/rfc2246) (Obsoleted by RFC4346:TLS1.1)
 * **TLS1.1**
-	* [RFC4346 (Obsoleted by RFC5246:TLS1.2)](https://tools.ietf.org/html/rfc4346)
+	* [RFC4346](https://tools.ietf.org/html/rfc4346) (Obsoleted by RFC5246:TLS1.2)
 * **TLS用の楕円曲線暗号サイファースイート**
 	* [RFC4492](https://tools.ietf.org/html/rfc4492) | [Japanese](rfc4492.txt)
 		* TLS1.0/1.1でのECDHの使用。TLS1.2[RFC5246]でUpdateされた。
