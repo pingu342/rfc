@@ -40,6 +40,8 @@
 		* TLS1.2以前に対する推奨事項。本RFCはTLS1.3でUpdateされるだろう。
 * **Negotiated Finite Field Diffie-Hellman Ephemeral Parameters for TLS**
 	* [draft-ietf-tls-negotiated-ff-dhe-10](https://www.ietf.org/id/draft-ietf-tls-negotiated-ff-dhe-10.txt)
+* **IANA: Transport Layer Security (TLS) Parameters** [link](http://www.iana.org/assignments/tls-parameters/tls-parameters.xhtml)
+	* [Supported Groups Registry](http://www.iana.org/assignments/tls-parameters/tls-parameters.xhtml#tls-parameters-8)
 
 # PKI（公開鍵基盤）
 
