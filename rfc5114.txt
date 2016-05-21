@@ -164,6 +164,23 @@ RFC 5114            Additional Diffie-Hellman Groups        January 2008
    これまでにIKE用に定義された21のグループの内8個がMODPグループ、10個がEC2Nグ
    ループ、3個がECPグループである。
 
+   /* comment
+   ・RFC 2409で定義されたグループは5つではなく4つではないのだろうか。
+   
+   ・IANA(http://www.iana.org/assignments/ikev2-parameters/ikev2-parameters.xhtml#ikev2-parameters-8)
+   を参照すると、本RFC5114よりも前には1から21までの21グループが定義されてお
+   り、現時点(2016/5/21)ではMODPが8グループ、ECPが3グループ、残りの10個は
+   Reserved(3-4)またはUnassigned(6-13)となっている。上記説明と辻褄を合わせると
+   すれば、3-4と6-13は本RFC5114時点ではEC2Nグループとして定義されいたが、後に
+   削除されたのではないかと推測される。
+
+   ・本RFC5114には8個のグループ（MODPが3つ、ECPが5つ）が記載されているが、IANA
+   IKEv2にRFC5114から追加されたグループはMODPが3つ、ECPが2つであり、残りのECP3
+   つ（256-bit、384-bit、521-bit Random ECP Group）はRFC4753でIKE用に定義され
+   ていたものと同じである。また、本RFC記載のECPグループ5つはRFC4492でTLS用に定
+   義されていたものと同じである。
+   */
+
    The purpose of this document is to provide the parameters and test
    data for eight additional groups, in a format consistent with
    existing RFCs along with instructions on how these groups can be used
