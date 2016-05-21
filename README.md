@@ -1,3 +1,7 @@
+# 鍵交換
+* **Diffie-Hellman鍵共有法**
+	* [RFC2631](https://tools.ietf.org/html/rfc2631) | [Japanese(未)](rfc2631.txt)
+
 # IPsec (IKE)
 
 * **IKEv1**
@@ -30,7 +34,7 @@
 	* [RFC5114](https://tools.ietf.org/html/rfc5114) | [Japanese](rfc5114.txt)
 		* DH鍵を用いるITEFプロトコルで使用可能な8つのDHグループ（3つのMODPグループ、5つのECPグループ）のパラメーターとテストデータに関する記述。
 * **TLS1.2**
-	* [RFC5246](https://tools.ietf.org/html/rfc5246)
+	* [RFC5246](https://tools.ietf.org/html/rfc5246) | [Japanese(セッション再開部分のみ)](rfc5246.txt)
 * **TLSとDTLSの安全な利用に関する推奨事項**
 	* [RFC7525](https://tools.ietf.org/html/rfc7525) | [Japanese](rfc7525.txt)
 		* TLS1.2以前に対する推奨事項。本RFCはTLS1.3でUpdateされるだろう。
