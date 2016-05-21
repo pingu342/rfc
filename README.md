@@ -1,12 +1,13 @@
 # 鍵交換
 * **Diffie-Hellman鍵共有**
-	* PKCS#3 DH
-	* ANSI X9.42 DH
+	* [PKCS#3](http://japan.emc.com/emc-plus/rsa-labs/standards-initiatives/pkcs-3-diffie-hellman-key-agreement-standar.htm) | [Japanese(9. Object identifierのみ)](pkcs-3.asc)
+	* ANSI X9.42
 		* PKCS#3より新しいDH法
 		* X9.42対応Opensslは未リリース (2016/5/21時点)
 			* [note OpenSSL does not support ANSI X9.42 in the released versions - support is available in the as yet unreleased 1.0.2 and 1.1.0](https://wiki.openssl.org/index.php/Diffie_Hellman)
 	* [RFC2631](https://tools.ietf.org/html/rfc2631) | [Japanese(未)](rfc2631.txt)
 		* X9.42に基づくDH法
+	* [NIST Special Publication 800-56A](http://nvlpubs.nist.gov/nistpubs/SpecialPublications/NIST.SP.800-56Ar2.pdf)
 
 # IPsec (IKE)
 
@@ -57,3 +58,4 @@
 	* RFC3279
 * **インターネットX.509 PKI証明書とCRLのプロファイル**
 	* RFC5280
+* **X.509 PKI用の新しいASN.1モジュール
