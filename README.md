@@ -47,6 +47,8 @@
 * **TLSとDTLSの安全な利用に関する推奨事項**
 	* [RFC7525](https://tools.ietf.org/html/rfc7525) | [Japanese](rfc7525.txt)
 		* TLS1.2以前に対する推奨事項。本RFCはTLS1.3でUpdateされるだろう。
+* **TLS1.3**
+	* [Draft](https://tools.ietf.org/wg/tls/draft-ietf-tls-tls13/)
 * **Negotiated Finite Field Diffie-Hellman Ephemeral Parameters for TLS**
 	* [draft-ietf-tls-negotiated-ff-dhe-10](https://www.ietf.org/id/draft-ietf-tls-negotiated-ff-dhe-10.txt)
 * **IANA: Transport Layer Security (TLS) Parameters** [link](http://www.iana.org/assignments/tls-parameters/tls-parameters.xhtml)

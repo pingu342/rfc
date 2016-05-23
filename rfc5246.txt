@@ -5274,7 +5274,7 @@ RFC 5246                          TLS                        August 2008
    Client Diffie-Hellman parameters must be compatible with those
    supplied by the server for the key exchange to work.
 
-   もしクライアントが肯定のDHパラメーターを含んだ証明書を持っている場合、その
+   もしクライアントが固定のDHパラメーターを含んだ証明書を持っている場合、その
    証明書は鍵交換を完了させるために必要な情報を含んでいる。この場合、クライア
    ントとサーバーは常に、（例えばpre_master_secretなどの）DHにより得られる結
    果が毎回同じ値となるであろうことに注意せよ。pre_master_secretが必要以上に長

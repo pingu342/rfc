@@ -865,7 +865,7 @@ RFC 7525                   TLS Recommendations                  May 2015
    2^10=1024ビット、2^11=2048ビット、2^12=4096ビット)。なぜなら、1228 ビットの
    DH鍵は大体80ビットの対称鍵と同等 [RFC3766] であるので、"DHE"ファミリのサイ
    ファースイートではそれよりも長い鍵を使用するほうが良い。1926 ビットのDH鍵
-   は大体100ビットの対称鍵と同等 []RFC3766 であり、2048ビットのDH鍵は今後10 年
+   は大体100ビットの対称鍵と同等 [RFC3766] であり、2048ビットのDH鍵は今後10 年
    は少なくとも十分と思われる。セクション4.4の、TLSにおけるMODP DHの利用に 関
    する追加の情報を見よ。
 
@@ -981,7 +981,7 @@ RFC 7525                   TLS Recommendations                  May 2015
    generally considered insufficient at this time.
 
    DHE、ECDHEサイファースイートにおけるTLSマスター鍵はDHパラメーターにのみ依存
-   しており、RSA証明書の強度には依存しないことに注意。さらに、1024ｂ一途のMODP
+   しており、RSA証明書の強度には依存しないことに注意。さらに、1024ビットのMODP
    DHパラメーターは今の時点で不十分と考えられている。
 
    With MODP ephemeral DH, deployers ought to carefully evaluate
