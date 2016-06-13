@@ -2985,10 +2985,24 @@ RFC 5246                          TLS                        August 2008
    selecting them.  This is somewhat inelegant but is a compromise
    designed to minimize changes to the original cipher suite design.
 
+   もしクライアントが"signature_algorithms"拡張を提示していた場合、
+   その拡張に記載されていた署名アルゴリズムとハッシュアルゴリズムのペアを
+   使用しなければならない。ここで矛盾の可能性があることに注意しなさい。
+   例えばクライアントがDHE_DSS鍵交換を要求したが、その"signature_algorithms"拡張では
+   DSAのペアが省略した場合など。正しく交渉するために、サーバーはサイファースイートを
+   選択する前に、"signature_algorithms"拡張に違反しているサイファースイートの候補を
+   確認しなければならない。このような仕様はいささかかっこ悪いが、
+   元々のサイファースイートの設計への変更を最小化するための妥協である。
+
    In addition, the hash and signature algorithms MUST be compatible
    with the key in the server's end-entity certificate.  RSA keys MAY be
    used with any permitted hash algorithm, subject to restrictions in
    the certificate, if any.
+
+   加えて、ハッシュと署名のアルゴリズムは、サーバーのend-entityな証明書に
+   含まれる鍵と互換でなければならない。RSA鍵は、許可されたあらゆる
+   ハッシュアルゴリズムと共に使用される可能性があり、もし証明書内に制約があれば、
+   その制約の影響を受ける可能性がある。
 
    Because DSA signatures do not contain any secure indication of hash
    algorithm, there is a risk of hash substitution if multiple hashes
