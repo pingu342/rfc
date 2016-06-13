@@ -2601,6 +2601,10 @@ RFC 5246                          TLS                        August 2008
    digital signatures.  The "extension_data" field of this extension
    contains a "supported_signature_algorithms" value.
 
+   クライアントは"signature_algorithms"拡張を使用し、デジタル署名に使用して良い
+   署名とハッシュのアルゴリズムをサーバーに指定する。この拡張の"extension_data"フィールドには
+   "supported_signature_algorithms"の値を含める。
+
 
 
 Dierks & Rescorla           Standards Track                    [Page 45]
@@ -2628,6 +2632,9 @@ RFC 5246                          TLS                        August 2008
    pair that the client is willing to verify.  The values are indicated
    in descending order of preference.
 
+   SignatureAndHashAlgorithmは、クライアントが検証することができる
+   ハッシュと署名のペアの1つである。この値は優先度順に記載される。
+
    Note: Because not all signature algorithms and hash algorithms may be
    accepted by an implementation (e.g., DSA with SHA-1, but not
    SHA-256), algorithms here are listed in pairs.
@@ -2639,6 +2646,11 @@ RFC 5246                          TLS                        August 2008
       "none" value is provided for future extensibility, in case of a
       signature algorithm which does not require hashing before signing.
 
+	  このフィールドは使用可能はハッシュアルゴリズムを示す。
+	  その値は、ハッシュされないデータ、MD5、SHA-1、SHA-224、SHA-256、SHA-384、
+	  SHA-512のサポートしているかどうかを示す。"none"という値は、例えば
+	  署名の前にハッシュする必要がないといった将来の拡張のために用意されている。
+
    signature
       This field indicates the signature algorithm that may be used.
       The values indicate anonymous signatures, RSASSA-PKCS1-v1_5
@@ -2646,9 +2658,17 @@ RFC 5246                          TLS                        August 2008
       "anonymous" value is meaningless in this context but used in
       Section 7.4.3.  It MUST NOT appear in this extension.
 
+	  このフィールドは使用可能な署名アルゴリズムを示す。
+	  その値は"anonymous"、PKCS1、DSA、ECDSAを示す。
+	  "anonymous"はセクション7.4.3で使用される。この拡張に使用してはならない。
+
    The semantics of this extension are somewhat complicated because the
    cipher suite indicates permissible signature algorithms but not hash
    algorithms.  Sections 7.4.2 and 7.4.3 describe the appropriate rules.
+
+   この拡張の意味は、サイファースイートは使用可能な署名アルゴリズムを指定するが
+   ハッシュアルゴリズムを指定しないことが原因で、少々込み入っている。
+   セクション7.4.2(Server Certificate)と7.4.3(Server Key Exchange Message)に適切なルールを記載する。
 
    If the client supports only the default hash and signature algorithms
    (listed in this section), it MAY omit the signature_algorithms
@@ -2667,12 +2687,25 @@ RFC 5246                          TLS                        August 2008
    signature_algorithms extension, listing the algorithms it is willing
    to accept.
 
+   もしクライアントがデフォルトのハッシュと署名アルゴリズムのみをサポートするのなら、
+   signature_algorithms拡張を省略しても良い。もしクライアントがデフォルトのアルゴリズムを
+   サポートしていない場合や、他のアルゴリズムをサポートしている場合(そしてそれらを、
+   サーバーが送信するCertificateやServerKeyExchangeのメッセージの検証にしようするつもり
+   である場合)は、受け入れ可能なアルゴリズムがリストされたこの拡張を送信しなければならない。
+
    If the client does not send the signature_algorithms extension, the
    server MUST do the following:
+
+   もしクライアントがsignature_algorithms拡張を送信しない場合、
+   サーバーは以下を行わなければならない。
 
    -  If the negotiated key exchange algorithm is one of (RSA, DHE_RSA,
       DH_RSA, RSA_PSK, ECDH_RSA, ECDHE_RSA), behave as if client had
       sent the value {sha1,rsa}.
+
+	  もし交渉された鍵交換アルゴリズムがRSA, DHE_RSA, DH_RSA, RSA_PSK,
+	  ECDH_RSA, ECDHE_RSAのいずれかである場合、クライアントが{sha1,rsa}
+	  を送信したかのうように振舞う。
 
    -  If the negotiated key exchange algorithm is one of (DHE_DSS,
       DH_DSS), behave as if the client had sent the value {sha1,dsa}.
@@ -2684,20 +2717,31 @@ RFC 5246                          TLS                        August 2008
    rules, but as a practical matter one can assume that the peer
    supports MD5 and SHA-1.
 
+   上記は、明確なルールが無かったTLS1.1からの変更点であるが、実際問題として
+   ピアがMD5とSHA-1をサポートしていると仮定できる。
+
    Note: this extension is not meaningful for TLS versions prior to 1.2.
    Clients MUST NOT offer it if they are offering prior versions.
    However, even if clients do offer it, the rules specified in [TLSEXT]
    require servers to ignore extensions they do not understand.
 
+   この拡張はTLS1.2より前のバージョンでは意味を持たない。
+   前のバージョンを要求している場合、クライアントはこの拡張を提示してはならない。
+   しかしながら、もしクライアントが提示したとしても、[TLSEXT]で規定されたルールによれば、
+   サーバーは理解できない拡張を無視することをサーバーに求めている。
+
    Servers MUST NOT send this extension.  TLS servers MUST support
    receiving this extension.
+
+   サーバーはこの拡張を送信してはならない。
+   TLSサーバーはこの拡張の受信をサポートしなければならない。
 
    When performing session resumption, this extension is not included in
    Server Hello, and the server ignores the extension in Client Hello
    (if present).
 
    セッション再開時、この拡張はServerHelloに含められない。サーバーは
-   ClientHelloの拡張（もし提示されていれば）を無視する。
+   ClientHelloのこの拡張を（もし提示されていれば）無視する。
 
 7.4.2.  Server Certificate
 
@@ -2709,12 +2753,22 @@ RFC 5246                          TLS                        August 2008
       except DH_anon).  This message will always immediately follow the
       ServerHello message.
 
+	  認証のために証明書を使用する鍵交換方式が合意された時はいつでも、
+	  Certificateメッセージを送信しなければならない。(これは、このドキュメント
+	  で定義されているDH_anonを除く全ての鍵交換方式が対象である）
+	  このメッセージは常にServerHelloメッセージの直ぐ後に続く。
+
    Meaning of this message:
 
       This message conveys the server's certificate chain to the client.
 
+	  このメッセージはサーバーの証明書チェーンをクライアントに運ぶ。
+
       The certificate MUST be appropriate for the negotiated cipher
       suite's key exchange algorithm and any negotiated extensions.
+
+	  交渉されたサイファースイートの鍵交換アルゴリズム、交渉された拡張
+	  に対して適切な証明書でなければならない。
 
 
 
@@ -2753,12 +2807,20 @@ RFC 5246                          TLS                        August 2008
 
    The following rules apply to the certificates sent by the server:
 
+   サーバーが送信する証明書には以下のルールが適用される。
+
    -  The certificate type MUST be X.509v3, unless explicitly negotiated
       otherwise (e.g., [TLSPGP]).
+
+	  証明書はX.509v3であること。他(例えば[TLSPGP])のタイプが明示的に交渉
+	  されない限り。
 
    -  The end entity certificate's public key (and associated
       restrictions) MUST be compatible with the selected key exchange
       algorithm.
+
+	  end entity証明書の公開鍵(そしてそれに関連する制約)は、選択された
+	  鍵交換アルゴリズムと互換でなければならない。
 
       Key Exchange Alg.  Certificate Key Type
 
@@ -2767,6 +2829,9 @@ RFC 5246                          TLS                        August 2008
                          keyEncipherment bit MUST be set if the key
                          usage extension is present).
                          Note: RSA_PSK is defined in [TLSPSK].
+
+						 RSA公開鍵であること。
+						 暗号用に使用可であること。
 
 
 
@@ -2786,6 +2851,10 @@ RFC 5246                          TLS                        August 2008
                          scheme and hash algorithm that will be employed
                          in the server key exchange message.
                          Note: ECDHE_RSA is defined in [TLSECC].
+
+						 RSA公開鍵であること。
+						 ServerKeyExchangeメッセージで使用される署名スキーム
+						 とハッシュアルゴリズムによる署名用に使用可であること。
 
       DHE_DSS            DSA public key; the certificate MUST allow the
                          key to be used for signing with the hash
@@ -2823,6 +2892,17 @@ RFC 5246                          TLS                        August 2008
    signed with any hash/signature algorithm pair appearing in the
    extension.  The names DH_DSS, DH_RSA, ECDH_ECDSA, and ECDH_RSA are
    historical.
+
+   もしクライアントが"signature_algorithms"拡張を提示した場合、サーバーが
+   提供する全ての証明書は、その拡張に現れるハッシュと署名のアルゴリズムで
+   署名されたものでなければならない。このことは、ある署名アルゴリズム用の
+   鍵を含んだ証明書が、それとは異なる署名アルゴリズムを使って署名されても
+   良いことを暗示している。(例えば、DSA鍵で署名されたRSA鍵。) これは、
+   アルゴリズムが同じであることを要求したTLS1.1からの発展である。また、
+   これはDH_DSS、DH_RSA、ECDH_ECDSA，ECDH_RSA鍵交換アルゴリズムは証明書の
+   署名に使用するアルゴリズムを制限しないことも暗示している。Fixed DHの
+   証明書は、拡張に現れるハッシュと署名のアルゴリズムで署名されて良い。
+   DH_DSS、DH_RSA、ECDH_ECDSA、ECDH_RSAの名前は歴史的な意味合いでしかない。
 
 
 

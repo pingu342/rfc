@@ -371,7 +371,7 @@ RFC 4492               ECC Cipher Suites for TLS                May 2006
    図1はTLS鍵を確立するプロトコルで使用される全メッセージ (フルハンドシェイ
    ク) を示している。ECCの追加はCientHello、SercerHello、サーバーの
    Certificate メッセージ、ServerKeyExchange、ClientKeyExchange、
-   CertificateRequest、クラ イアントのCertificateメッセージ、CertificateVerify
+   CertificateRequest、クライアントのCertificateメッセージ、CertificateVerify
    に直接影響する。次に、ECC 鍵交換アルゴリズムでの、これらのメッセージの内容
    と処理の詳細を記述する。説明のしやすさのため、セクション3までクライアント
    認証とそれに関連するメッセージ (図1で+が追加もの) の説明を保留する。オプ
