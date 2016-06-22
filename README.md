@@ -8,7 +8,10 @@
 			* [note OpenSSL does not support ANSI X9.42 in the released versions - support is available in the as yet unreleased 1.0.2 and 1.1.0](https://wiki.openssl.org/index.php/Diffie_Hellman)
 	* [RFC2631](https://tools.ietf.org/html/rfc2631) | [Japanese(未)](rfc2631.txt)
 		* X9.42に基づくDH法
-	* [NIST Special Publication 800-56A](http://nvlpubs.nist.gov/nistpubs/SpecialPublications/NIST.SP.800-56Ar2.pdf)
+	* [NIST Special Publication 800-56A](http://nvlpubs.nist.gov/nistpubs/SpecialPublications/NIST.SP.800-56Ar2.pdf) | [Japanese(途中)](NIST.SP.800-56Ar2.md)
+	* [CAVP TESTING: KEY ESTABLISHMENT - KEY AGREEMENT SCHEMES (KAS) AND KEY CONFIRMATION (SP800-56A)](http://csrc.nist.gov/groups/STM/cavp/key-establishment.html)
+		* The Key Agreement Schemes Validation System (KASVS) | [Japanese(途中)](The Key Agreement Schemes Validation System (KASVS).md)
+
 
 # IPsec (IKE)
 
