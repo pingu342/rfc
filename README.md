@@ -34,6 +34,8 @@
 
 # TLS
 
+* **SSL3.0**
+	* [RFC6101](https://tools.ietf.org/html/rfc6101) 
 * **TLS1.0**
 	* [RFC2246](https://tools.ietf.org/html/rfc2246) (Obsoleted by RFC4346:TLS1.1)
 * **TLS1.1**
