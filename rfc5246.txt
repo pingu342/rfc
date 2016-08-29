@@ -762,10 +762,17 @@ RFC 5246                          TLS                        August 2008
    is based on a hash function.  Other cipher suites MAY define their
    own MAC constructions, if needed.
 
+   TLSレコード層はメッセージの完全性を保護するためにMACを使用する。
+   本ドキュメントで定義されているサイファースイートは、ハッシュ関数に基くHMACと呼ばれる建築様式を使用する。
+   その他のサイファースイートでは、必要なら、独自の様式を定義しても良い。
+
    In addition, a construction is required to do expansion of secrets
    into blocks of data for the purposes of key generation or validation.
    This pseudorandom function (PRF) takes as input a secret, a seed, and
    an identifying label and produces an output of arbitrary length.
+
+   加えて、鍵の生成及び検証の目的で、シークレットをデータブロックに拡張するためにも、この建築様式を使用する。
+   この擬似乱数関数(PRF)は、シークレットとシード、識別ラベルを入力として取り、任意の長さの出力を生成する。
 
    In this section, we define one PRF, based on HMAC.  This PRF with the
    SHA-256 hash function is used for all cipher suites defined in this
@@ -774,9 +781,18 @@ RFC 5246                          TLS                        August 2008
    PRF and, in general, SHOULD use the TLS PRF with SHA-256 or a
    stronger standard hash function.
 
+   このセクションでは、HMACに基づくPRFを定義する。
+   SHA256ハッシュ関数を使用するこのPRFは、本ドキュメント及び以前のドキュメントで定義されている全てのサイファースイートで、
+   TLS1.2の場合に使用される。新しいサイファースイートはPRFを明確に規定しなければならない。
+   通常、SHA256を使用するPRFか、より強いハッシュ関数を使用すべきである。
+
+
    First, we define a data expansion function, P_hash(secret, data),
    that uses a single hash function to expand a secret and seed into an
    arbitrary quantity of output:
+
+   まず、データ拡張関数P_hash(secret, data)を定義する。
+   データ拡張関数は、シークレットとシードを任意の量の出力に拡張するため、単一のハッシュ関数を使用する。
 
 
 
@@ -794,6 +810,8 @@ RFC 5246                          TLS                        August 2008
 
    where + indicates concatenation.
 
+   ここで + は連結を意味する。
+
    A() is defined as:
 
       A(0) = seed
@@ -806,7 +824,13 @@ RFC 5246                          TLS                        August 2008
    of the final iteration will then be discarded, leaving 80 bytes of
    output data.
 
+   P_hashは必要な量が得られるまで繰り返される。
+   例えば、もしP_SHA256が80バイトのデータ生成に使用されるなら、3回繰り返して、
+   96バイトの出力を生成する。最後の16バイトは破棄し、残った80バイトを使う。
+
    TLS's PRF is created by applying P_hash to the secret as:
+
+   TLSのPRFはこのようにシークレットにP_hashを適用することで作られる。
 
       PRF(secret, label, seed) = P_<hash>(secret, label + seed)
 
@@ -1403,6 +1427,9 @@ RFC 5246                          TLS                        August 2008
    by the current connection state (see Appendix A.6) from the security
    parameters provided by the handshake protocol.
 
+   レコードプロトコルには、ハンドシェークプロトコルが提供するセキュリティパラメーターから
+   現在のコネクションステート(付録A.6)用の鍵を生成するアルゴリズムが必要である。
+
 
 
 
@@ -1420,8 +1447,17 @@ RFC 5246                          TLS                        August 2008
    values are empty.  Some AEAD ciphers may additionally require a
    client write IV and a server write IV (see Section 6.2.3.3).
 
+   マスターシークレットは、セキュアなバイトの並びに拡張された後に、
+   クライアント用write MAC key、サーバー用write MAC key、
+   クライアント用write encryption key、サーバー用write encryption keyに分割される。
+   これらの鍵はこの順序で、セキュアなバイトの並びから生成される。
+   未使用の値は無い。AEADサイファーはclient write IVとserver write IVを追加で必要とする。
+   (セクション6.2.3.3を見よ)
+
    When keys and MAC keys are generated, the master secret is used as an
    entropy source.
+
+   鍵生成時、マスターシークレットはエントロピー源として使用される。
 
    To generate the key material, compute
 
@@ -1439,6 +1475,9 @@ RFC 5246                          TLS                        August 2008
       server_write_key[SecurityParameters.enc_key_length]
       client_write_IV[SecurityParameters.fixed_iv_length]
       server_write_IV[SecurityParameters.fixed_iv_length]
+
+   鍵の材料生成には、PRF式を、十分な出力が得られるまで計算する。
+   それから、key_blockを以下の順序で分割する。
 
    Currently, the client_write_IV and server_write_IV are only generated
    for implicit nonce techniques as described in Section 3.2.1 of
@@ -3760,6 +3799,9 @@ RFC 5246                          TLS                        August 2008
    should be deleted from memory once the master_secret has been
    computed.
 
+   すべての鍵交換方式でpre_master_secretをmaster_secretに変換するアルゴリズムは同じとする。
+   pre_master_secretは、master_secretが計算されたらすぐにメモリから削除されるべき。
+
       master_secret = PRF(pre_master_secret, "master secret",
                           ClientHello.random + ServerHello.random)
                           [0..47];
@@ -3790,6 +3832,10 @@ RFC 5246                          TLS                        August 2008
    into the master_secret, as specified above.  Leading bytes of Z that
    contain all zero bits are stripped before it is used as the
    pre_master_secret.
+
+   伝統的なDH計算が行われる。
+   交渉された鍵(Z)がpre_master_secretとして使用され、上記のようにmaster_secretに変換される。
+   Zの先頭のバイトが、全てのビットが0の場合、そのバイトは取り除かれる。
 
    Note: Diffie-Hellman parameters are specified by the server and may
    be either ephemeral or contained within the server's certificate.
