@@ -314,18 +314,18 @@ RFC 7457                       TLS Attacks                 February 2015
    [Cross-Protocol].  Using predefined DH groups, as proposed in
    [FFDHE-TLS], would mitigate this attack.
 
-   TLS$B$O0l;~E*$J(BDH$B$H(BECDH$B$N%Q%i%a!<%?!<$r5v$7$F$$$k!#(B
-   $B$3$l$O(B[Cross-Protocol]$B$G>\$7$/=R$Y$i$l$F$$$k967b$r$b$?$i$9!#(B
-   [FFDHE-TLS]$B$GDs0F$5$l$F$$$k$h$&$JDj5A:Q$_$N(BDH$B%0%k!<%W$r;HMQ$9$k$3$H$O!"(B
-   $B$3$N967b$r7Z8:$9$k!#(B
+   TLSは一時的なDHとECDHのパラメーターを許している。
+   これは[Cross-Protocol]で詳しく述べられている攻撃をもたらす。
+   [FFDHE-TLS]で提案されているような定義済みのDHグループを使用することは、
+   この攻撃を軽減する。
 
    In addition, clients that do not properly verify the received
    parameters are exposed to man-in-the-middle (MITM) attacks.
    Unfortunately, the TLS protocol does not mandate this verification
    (see [RFC6989] for analogous information for IPsec).
 
-   $B2C$($F!"<u?.%Q%i%a!<%?!<$N8!>Z$r@5$7$/9T$o$J$$%/%i%$%"%s%H$O!"Cf4V<T967b$K$5$l$5$l$k!#(B
-   $B;DG0$J$,$i!"(BTLS$B%W%m%H%3%k$O$3$N8!>Z$rL?$8$F$$$J$$!#(B
+   加えて、受信パラメーターの検証を正しく行わないクライアントは、中間者攻撃にされされる。
+   残念ながら、TLSプロトコルはこの検証を命じていない。
 
 2.10.  Renegotiation (CVE-2009-3555)
 

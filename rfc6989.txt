@@ -89,8 +89,8 @@ Table of Contents
    the two peers.  Existing implementations typically use modular
    exponential (MODP) DH groups, such as those defined in [RFC3526].
 
-   IKEv2$B$O(BDH$B%W%m%H%3%k$K$h$k6&M-HkL)$N@_N)$H!"$=$l$KB3$/(B2$B%T%"$NG'>Z$+$i@.$k!#(B
-   $B4{B8$N<BAu$O!"BgBN$O!"(B[RFC3526]$B$GDj5A$5$l$F$$$k$h$&$JQQ>jM>(B(MODP)DH$B%0%k!<%W$r;HMQ$7$F$$$k!#(B
+   IKEv2はDHプロトコルによる共有秘密の設立と、それに続く2ピアの認証から成る。
+   既存の実装は、大体は、[RFC3526]で定義されているような冪剰余(MODP)DHグループを使用している。
 
    IKEv2 does not require that any tests be performed by a peer
    receiving a public Diffie-Hellman key from the other peer.  This is
@@ -101,19 +101,19 @@ Table of Contents
    Elliptic Curve (EC) groups, whose use is becoming ever more popular.
    This document defines such tests for several types of DH groups.
 
-   IKEv2$B$O!"B>$N%T%"$+$i(BDH$B8x3+80$r<u$1<h$C$?%T%"$KBP$7$F$I$s$J%F%9%H$bMW5a$7$F$$$J$$!#(B
-   $B$3$l$O(BMODP$B%0%k!<%W$N6&DL%1!<%9$KBP$7$F$ONI$$!#B>$N(BDH$B%0%k!<%W$KBP$7$F$O!"(B
-   $B%T%"$,(BDH$BCM$rJ#?t$N(BIKE$B%;%C%7%g%s$KEO$C$F:FMxMQ$7$?$H$-!"<u$1<h$C$?B&$,%F%9%H$r9T$C$F$J$$(B
-   $B$3$H$O!"@x:_E*$J@H<e@-$r$b$?$i$9(B ($B%;%/%7%g%s(B4.1$B$r;2>H(B)$B!#(B
-   $B6qBNE*$K$O!"$3$l$O!"$3$l$^$G0J>e$K%]%T%e%i!<$K$J$C$?(BEC$B%0%k!<%W$KBP$7$F$b$$$($k$3$H$G$"$k!#(B
-   $B$3$N%I%-%e%a%s%H$O(BDH$B%0%k!<%W$N%?%$%W$KBP$7$F$=$N$h$&$J%F%9%H$rDj5A$9$k!#(B
+   IKEv2は、他のピアからDH公開鍵を受け取ったピアに対してどんなテストも要求していない。
+   これはMODPグループの共通ケースに対しては良い。他のDHグループに対しては、
+   ピアがDH値を複数のIKEセッションに渡って再利用したとき、受け取った側がテストを行ってない
+   ことは、潜在的な脆弱性をもたらす (セクション4.1を参照)。
+   具体的には、これは、これまで以上にポピュラーになったECグループに対してもいえることである。
+   このドキュメントはDHグループのタイプに対してそのようなテストを定義する。
 
    In addition, this document describes another potential attack related
    to the reuse of DH keys: a timing attack.  This additional material
    is taken from [RFC2412].
 
-   $B2C$($F$3$N%I%-%e%a%s%H$O!"(BDH$B80$N:FMxMQ$K@x$`B>$N967b(B:$B%?%$%_%s%0967b(B $B$K$D$$$F5-=R$9$k!#(B
-   $B$3$NDI2CE*$J:`NA$O(B[RFC2412]$B$+$i$H$C$F$-$?!#(B
+   加えてこのドキュメントは、DH鍵の再利用に潜む他の攻撃:タイミング攻撃 について記述する。
+   この追加的な材料は[RFC2412]からとってきた。
 
    This document updates [RFC5996] by adding security requirements that
    apply to many of the protocol's implementations.

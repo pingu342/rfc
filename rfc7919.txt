@@ -27,18 +27,18 @@ Abstract
    finite field DH parameters with known structure and a mechanism for
    peers to negotiate support for these groups.
 
-   TLS$B%O%s%I%7%'%$%/$NEAE}E*$J(Bfinite-field-based Diffie-Hellman (DH)$B808r49$O(B
-   $B%;%-%e%j%F%#!"Aj8_@\B3@-!"7g4Y$KG:$^$5$l$F$$$k!#$3$l$i$N7g4Y$O!"(BTLS$B%5!<%P!<(B
-   $B$,?=$7=P$F$k$Y$-(BDH$B%0%k!<%W%Q%i%a!<%?!<!"%/%i%$%"%s%H$,<u$1F~$l$k$Y$-(B
-   DH$B%0%k!<%W%Q%i%a!<%?!<$K$D$$$FL@NF$5$,7g$1$F$$$k$3$H$+$i5/$3$C$F$$$k!#(B
-   $B$3$N%I%-%e%a%s%H$O$3$l$i$N7g4Y$N2r7hJ}K!$rDs<($9$k!#(B
+   TLSハンドシェイクの伝統的なfinite-field-based Diffie-Hellman (DH)鍵交換は
+   セキュリティ、相互接続性、欠陥に悩まされている。これらの欠陥は、TLSサーバー
+   が申し出てるべきDHグループパラメーター、クライアントが受け入れるべき
+   DHグループパラメーターについて明瞭さが欠けていることから起こっている。
+   このドキュメントはこれらの欠陥の解決方法を提示する。
 
 
    This document updates TLS versions 1.0 (RFC 2246), 1.1 (RFC 4346),
    and 1.2 (RFC 5246), as well as the TLS Elliptic Curve Cryptography
    (ECC) extensions (RFC 4492).
 
-   $B$3$N%I%-%e%a%s%H$O(BTLS1.0(RFC2246)$B!"(B1.1(RFC4346)$B!"(B1.2(RFC5246)$B!"(BECC$B3HD%(B(RFC4492)$B$r99?7$9$k!#(B
+   このドキュメントはTLS1.0(RFC2246)、1.1(RFC4346)、1.2(RFC5246)、ECC拡張(RFC4492)を更新する。
 
 Status of This Memo
 
@@ -193,13 +193,13 @@ RFC 7919                Negotiated FFDHE for TLS             August 2016
    group for other reasons, the client has no recourse but to terminate
    the connection.
 
-   $BEAE}E*$J(BTLS [RFC5246] $B$O!"(BPFS$B$rDs6!$9$k(BDHE$B808r49$rDs<($7$F$$$k!#(B
-   $B%/%i%$%"%s%H$O(BDHE$B$r4^$`(BClientHello$B$G%5%$%U%!!<%9%$!<%H$rDs<($7!"(B
-   $B%5!<%P!<$O(Bg$B$H(Bp$B$N%Q%i%a!<%?!<$r%/%i%$%"%s%H$XDs<($9$k!#(B
-   $B$b$7%/%i%$%"%s%H$,!"$=$N%0%k!<%W$N6/$5$r==J,$K9MN8$7$J$$(B($BNc$($P!"(B
-   p$B$,>.$52a$.$k!"(Bp$B$,AG?t$G$J$$!"MF0W$KKI$2$J$$>.%5%V%0%k!<%W$,$"$k(B)$B!"(B
-   $B$^$?$OB>$NM}M3$G%0%k!<%W$r=hM}$G$-$J$1$l$P!"%/%i%$%"%s%H$O@\B3$r(B
-   $B@ZCG$9$k0J30$K2r7h$N<jCJ$r;}$?$J$$!#(B
+   伝統的なTLS [RFC5246] は、PFSを提供するDHE鍵交換を提示している。
+   クライアントはDHEを含むClientHelloでサイファースイートを提示し、
+   サーバーはgとpのパラメーターをクライアントへ提示する。
+   もしクライアントが、そのグループの強さを十分に考慮しない(例えば、
+   pが小さ過ぎる、pが素数でない、容易に防げない小サブグループがある)、
+   または他の理由でグループを処理できなければ、クライアントは接続を
+   切断する以外に解決の手段を持たない。
 
    Conversely, when a TLS server receives a suggestion for a DHE cipher
    suite from a client, it has no way of knowing what kinds of DH groups
@@ -212,12 +212,12 @@ RFC 7919                Negotiated FFDHE for TLS             August 2016
    server has no way of knowing which type of client is connecting but
    must select DH parameters with insufficient knowledge.
 
-   $BH?BP$K!"(BTLS$B%5!<%P!<$,%/%i%$%"%s%H$+$i(BDHE$B%5%$%U%!!<%9%$!<%H$NDs0F$r<u$1$?$H$-!"(B
-   $B%/%i%$%"%s%H$,07$($k(BDH$B%0%k!<%W$N<oN`!"%/%i%$%"%s%H$N%;%-%e%j%F%#MW7o$rCN$k=Q$,$J$$!#(B
-   $BNc$($P!"9-$/N.DL$7$F$$$k(BTLS$B%/%i%$%"%s%H$O!"(Bp > 1024bit$B$J(BDH$B%0%k!<%W$r07$($J$$!#(B
-   $BB>$N(BTLS$B%/%i%$%"%s%H$O!"%]%j%7!<$G!"%5!<%P!<$,6/$$%0%k!<%W$rDs<($7$?$H$-$@$1!"(B
-   DHE$B$r;HMQ$7$?$$$+$b$7$l$J$$!#%5!<%P!<$O%/%i%$%"%s%H$N%?%$%W$rCN$k=Q$,$J$$$,!"(B
-   $BIT==J,$JCN<1$G(BDH$B%Q%i%a!<%?!<$rA*$P$J$1$l$P$J$i$J$$!#(B
+   反対に、TLSサーバーがクライアントからDHEサイファースイートの提案を受けたとき、
+   クライアントが扱えるDHグループの種類、クライアントのセキュリティ要件を知る術がない。
+   例えば、広く流通しているTLSクライアントは、p > 1024bitなDHグループを扱えない。
+   他のTLSクライアントは、ポリシーで、サーバーが強いグループを提示したときだけ、
+   DHEを使用したいかもしれない。サーバーはクライアントのタイプを知る術がないが、
+   不十分な知識でDHパラメーターを選ばなければならない。
 
    Additionally, the DH parameters selected by the server may have a
    known structure that renders them secure against a small subgroup
@@ -234,14 +234,14 @@ RFC 7919                Negotiated FFDHE for TLS             August 2016
    provides guidance for compatible peers to take advantage of the
    additional security, availability, and efficiency offered.
 
-   TLS$B$X$N$3$NJQ99$O$3$l$i$NLdBj$r2r7h$9$k!#(B
-   $B$=$l$O(B ("EC Named Curve Registry"$B$NL>A0$rJQ99$7$?(B)"Supported Groups Registry"$B$N%;%/%7%g%s$r;HMQ$9$k$3$H$K$h$k!#(B
+   TLSへのこの変更はこれらの問題を解決する。
+   それは ("EC Named Curve Registry"の名前を変更した)"Supported Groups Registry"のセクションを使用することによる。
 
    The use of this mechanism by one compatible peer when interacting
    with a non-compatible peer should have no detrimental effects.
 
-   $B$3$N%a%+%K%:%`$K8_49$J%T%"$,!"Hs8_49$J%T%"$HDL?.;~$K!"$3$N%a%+%K%:%`$N;HMQ$O!"(B
-   $BM-32$J1F6A$r5/$3$5$J$$!#(B
+   このメカニズムに互換なピアが、非互換なピアと通信時に、このメカニズムの使用は、
+   有害な影響を起こさない。
 
    This document updates TLS versions 1.0 [RFC2246], 1.1 [RFC4346], and
    1.2 [RFC5246], as well as the TLS ECC extensions [RFC4492].
@@ -276,12 +276,12 @@ RFC 7919                Negotiated FFDHE for TLS             August 2016
    exclusively to cipher suites with FFDHE key exchange mechanisms, but
    note that these suites are typically labeled with a TLS_DHE_ prefix.
 
-   $B$3$N%I%-%e%a%s%H$G;H$o$l$k(B"DHE", "FFDHE"$B$O!"(BTLS$B$K$*$1$k(Bfinite-field-based DHE$B808r49%a%+%K%:%`(B
-   $B$r;X$9!#(BTLS$B$O(BECDHE$B808r49$b%5%]!<%H$7$F$$$k$,!"$3$N%I%-%e%a%s%H$O$=$l$i$N;HMQ$r07$o$J$$!#(B
-   ECDHE-capable$B$J<BAu$K$h$C$F$N$_;HMQ$5$l$F$$$k4{B8$N%l%8%9%H%j$O!"(BFFDHE$B%0%k!<%W$r%+%P!<$9$k$h$&$K(B
-   $B$3$N%I%-%e%a%s%H$G3HD%$5$l$k!#$3$N%I%-%e%a%s%H$G;HMQ$5$l$k(B"FFDHE$B%5%$%U%!!<%9%$!<%H(B"$B$O!"(B
-   FFDHE$B808r49%a%+%K%:%`$N%5%$%U%!!<%9%$!<%H$rL@3N$K;X$9$?$a$K;HMQ$5$l$k$,!"(B
-   $B$3$l$i$N%9%$!<%H$ODL>o$O(BTLS_DHE_$B%W%j%U%#%/%9$r;}$D%i%Y%k$G$"$k!#(B
+   このドキュメントで使われる"DHE", "FFDHE"は、TLSにおけるfinite-field-based DHE鍵交換メカニズム
+   を指す。TLSはECDHE鍵交換もサポートしているが、このドキュメントはそれらの使用を扱わない。
+   ECDHE-capableな実装によってのみ使用されている既存のレジストリは、FFDHEグループをカバーするように
+   このドキュメントで拡張される。このドキュメントで使用される"FFDHEサイファースイート"は、
+   FFDHE鍵交換メカニズムのサイファースイートを明確に指すために使用されるが、
+   これらのスイートは通常はTLS_DHE_プリフィクスを持つラベルである。
 
 2.  Named Group Overview
 
@@ -293,18 +293,18 @@ RFC 7919                Negotiated FFDHE for TLS             August 2016
    to NamedGroup.  Its semantics are likewise expanded from "named
    curve" to "named group".
 
-   $B2f!9$O!"8=:_$O(B"elliptic_curves"([RFC4492]$B$N%;%/%7%g%s(B5.1.1)$B$H$7$FCN$i$l$F$$$k3HD%$NCf$G!"(B
-   $BL$$@3d$jEv$F$i$l$F$$$J$$%3!<%I%]%$%s%H$r!"(Bfinite-field$B%0%k!<%W$r<($7$?$a$K;HMQ$9$k(B $B!#(B
-   $B3HD%$N0UL#$O!"(B"Supported Elliptic Curves"$B$+$i(B"Supported Groups"$B$K3HD%$5$l$k!#(B
-   $B$=$N3HD%$G;HMQ$5$l$k%G!<%?%?%$%W$O!"(BNamedCurve$B$+$i(BNamedGroup$B$KL>A0$,JQ99$5$l$k!&(B
-   $B$=$N0UL#$O(B"named curve"$B$+$i(B"named group"$B$X3HD%$5$l$k!#(B
+   我々は、現在は"elliptic_curves"([RFC4492]のセクション5.1.1)として知られている拡張の中で、
+   未だ割り当てられていないコードポイントを、finite-fieldグループを示しために使用する 。
+   拡張の意味は、"Supported Elliptic Curves"から"Supported Groups"に拡張される。
+   その拡張で使用されるデータタイプは、NamedCurveからNamedGroupに名前が変更される・
+   その意味は"named curve"から"named group"へ拡張される。
 
    Additionally, we explicitly relax the requirement about when the
    Supported Groups extension can be sent.  This extension MAY be sent
    by the client when either FFDHE or ECDHE cipher suites are listed.
 
-   $B2C$($F!"(BSupported Groups$B3HD%$rAw$k$3$H$,$G$-$kMW7o$r4K$a$k!#(B
-   $B$3$N3HD%$O%/%i%$%"%s%H$,(BFFDHE$B$+(BECDHE$B$N%5%$%U%!!<%9%$!<%H$N$H$-$KAw$l$k!#(B
+   加えて、Supported Groups拡張を送ることができる要件を緩める。
+   この拡張はクライアントがFFDHEかECDHEのサイファースイートのときに送れる。
 
    Codepoints in the "Supported Groups Registry" with a high byte of
    0x01 (that is, between 256 and 511, inclusive) are set aside for
@@ -314,11 +314,11 @@ RFC 7919                Negotiated FFDHE for TLS             August 2016
    FFDHE groups.  The new codepoints for the "Supported Groups Registry"
    are:
 
-   $B>e0L%P%$%H$,(B0x01($B$D$^$j(B256$B$+$i(B511)$B$N(B"Supported Groups Registry"$B$N%3!<%I%]%$%s%H$,(B
-   FFDHE$B%0%k!<%W$K%;%C%H$5$l$k!#(B
-   $B$?$/$5$s$N(BFFDHE$B%0%k!<%W$,$3$NHO0O$X3d$jEv$F$i$l$k$H$OM=4|$7$J$$!#(B
-   $B$3$NHO0O30$N%3!<%I%]%$%s%H$O(BFFDHE$B%0%k!<%W$K3d$jEv$F$J$$!#(B
-   "Supported Groups Registry"$B$N?7$7$$%3!<%I%]%$%s%H$O!"(B
+   上位バイトが0x01(つまり256から511)の"Supported Groups Registry"のコードポイントが
+   FFDHEグループにセットされる。
+   たくさんのFFDHEグループがこの範囲へ割り当てられるとは予期しない。
+   この範囲外のコードポイントはFFDHEグループに割り当てない。
+   "Supported Groups Registry"の新しいコードポイントは、
 
            enum {
            // other already defined elliptic curves (see RFC 4492)
@@ -1074,11 +1074,11 @@ Appendix A.  Supported Groups Registry (Formerly "EC Named Curve
    further finite field groups to the "Supported Groups Registry"; any
    attempt to do so should consider Section 9.1.
 
-   $B0J2<$N3F5-=R$O!"%0%k!<%W$=$l<+?H!"$=$NGI@8!"$=$N4|BT$5$l$k6/$5(B
-   ([ECRYPTII]$B$N%,%$%I%i%$%s$K$h$kBgBN$N?dDj(B) $B!"M?$($i$l$?%;%-%e%j%F%#%l%Y%k$K$*$$$F(B
-   TLS$B808r49$K$=$l$,;HMQ$,?d>)$5$l$k$+$I$&$+$r5-=R$9$k!#(B
-   $B99$J$k(Bfinite-field$B%0%k!<%W$r(B"Supported Groups Registry"$B$KDI2C$9$k$3$H$O?d>)$7$J$$!#(B
-   $B$=$N$h$&$J;n$_$O%;%/%7%g%s(B9.1$B$G5DO@$5$l$k$Y$-$G$"$k!#(B
+   以下の各記述は、グループそれ自身、その派生、その期待される強さ
+   ([ECRYPTII]のガイドラインによる大体の推定) 、与えられたセキュリティレベルにおいて
+   TLS鍵交換にそれが使用が推奨されるかどうかを記述する。
+   更なるfinite-fieldグループを"Supported Groups Registry"に追加することは推奨しない。
+   そのような試みはセクション9.1で議論されるべきである。
 
    The primes in these finite field groups are all safe primes; that is,
    a prime p is a safe prime when q = (p-1)/2 is also prime.  Where e is
@@ -1087,11 +1087,11 @@ Appendix A.  Supported Groups Registry (Formerly "EC Named Curve
    derived for a given bit length b by finding the lowest positive
    integer X that creates a safe prime p where:
 
-   $B$3$l$i$N(Bfinite field$B%0%k!<%W$NAG?t$OA4$F0BA4$JAG?t$G$"$k!#(B
-   $B$D$^$j!"AG?t(Bp$B$O!"(Bq=(p-1)/2$B$b$^$?AG?t$G$"$k$H$-!"0BA4$JAG?t$G$"$k!#(B
-   $B$3$3$G(Be$B$O<+A3BP?t$NDl$G!"(B[]$B$N3g8L$O(Bfloor$B$G$"$k!#$3$N%l%8%9%H%j$K(B
-   $B=i4|$KDI2C$5$l$k%0%k!<%W$O!"0BA4$JAG?t(Bp$B$r@8@.$9$k:G$b>.$5$$@5$N@0?t(BX$B$r(B
-   $B8+$D$1$k$3$H$K$h$C$FM?$($i$l$k(Bbit$B$ND9$5(Bb$B$KBP$7$F(B... ???
+   これらのfinite fieldグループの素数は全て安全な素数である。
+   つまり、素数pは、q=(p-1)/2もまた素数であるとき、安全な素数である。
+   ここでeは自然対数の底で、[]の括弧はfloorである。このレジストリに
+   初期に追加されるグループは、安全な素数pを生成する最も小さい正の整数Xを
+   見つけることによって与えられるbitの長さbに対して... ???
 
     p = 2^b - 2^{b-64} + {[2^{b-130} e] + X } * 2^64 - 1
 
@@ -1100,7 +1100,7 @@ Appendix A.  Supported Groups Registry (Formerly "EC Named Curve
    parameters in a different way, but they must be clear about how the
    parameters were derived.
 
-   $B?7$7$/DI2C$5$l$k(BFFDHE$B%0%k!<%W$O!"(B...
+   新しく追加されるFFDHEグループは、...
 
    New additions of FFDHE groups MUST use a safe prime as the modulus to
    enable the inexpensive peer verification described in Section 5.1.
