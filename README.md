@@ -28,6 +28,7 @@
 * **IKEv2**
 	* RFC4306 (Obsoleted by RFC5996)
 	* RFC5996 (Obsoleted by RFC7296) 
+	* [RFC6989](https://tools.ietf.org/html/rfc6989) | [Japanese](rfc6989.txt)
 	* RFC7296
 * **IANA: Internet Key Exchange Version 2 (IKEv2) Parameters** [link](http://www.iana.org/assignments/ikev2-parameters/ikev2-parameters.xhtml)
 	* [Transform Type 4 - Diffie-Hellman Group Transform IDs](http://www.iana.org/assignments/ikev2-parameters/ikev2-parameters.xhtml#ikev2-parameters-8)
@@ -55,10 +56,12 @@
 		* TLS1.2以前に対する推奨事項。本RFCはTLS1.3でUpdateされるだろう。
 * **TLS1.3**
 	* [Draft](https://tools.ietf.org/wg/tls/draft-ietf-tls-tls13/)
-* **Negotiated Finite Field Diffie-Hellman Ephemeral Parameters for TLS**
-	* [draft-ietf-tls-negotiated-ff-dhe-10](https://www.ietf.org/id/draft-ietf-tls-negotiated-ff-dhe-10.txt)
+* **Negotiated Finite Field Diffie-Hellman Ephemeral Parameters for Transport Layer Security (TLS)**
+	* [RFC7919](https://tools.ietf.org/html/rfc7919) | [Japanese](rfc7919.txt)
 * **IANA: Transport Layer Security (TLS) Parameters** [link](http://www.iana.org/assignments/tls-parameters/tls-parameters.xhtml)
 	* [Supported Groups Registry](http://www.iana.org/assignments/tls-parameters/tls-parameters.xhtml#tls-parameters-8)
+* **TLS及びDTLSにおける既知の攻撃**
+	* [RFC7457](https://tools.ietf.org/html/rfc7457) | [Japanese](rfc7547.txt)
 
 # PKI（公開鍵基盤）
 
