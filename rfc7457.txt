@@ -314,7 +314,7 @@ RFC 7457                       TLS Attacks                 February 2015
    [Cross-Protocol].  Using predefined DH groups, as proposed in
    [FFDHE-TLS], would mitigate this attack.
 
-   TLSは一時的なDHとECDHのパラメーターを許している。
+   TLSは短命なDHとECDHのパラメーターを許している。
    これは[Cross-Protocol]で詳しく述べられている攻撃をもたらす。
    [FFDHE-TLS]で提案されているような定義済みのDHグループを使用することは、
    この攻撃を軽減する。

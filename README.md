@@ -61,7 +61,7 @@
 * **IANA: Transport Layer Security (TLS) Parameters** [link](http://www.iana.org/assignments/tls-parameters/tls-parameters.xhtml)
 	* [Supported Groups Registry](http://www.iana.org/assignments/tls-parameters/tls-parameters.xhtml#tls-parameters-8)
 * **TLS及びDTLSにおける既知の攻撃**
-	* [RFC7457](https://tools.ietf.org/html/rfc7457) | [Japanese](rfc7547.txt)
+	* [RFC7457](https://tools.ietf.org/html/rfc7457) | [Japanese](rfc7457.txt)
 
 # PKI（公開鍵基盤）
 

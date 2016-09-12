@@ -89,7 +89,7 @@ Table of Contents
    the two peers.  Existing implementations typically use modular
    exponential (MODP) DH groups, such as those defined in [RFC3526].
 
-   IKEv2はDHプロトコルによる共有秘密の設立と、それに続く2ピアの認証から成る。
+   IKEv2は、DHプロトコルによる共有秘密の確立と、それに続く2ピアの認証から成る。
    既存の実装は、大体は、[RFC3526]で定義されているような冪剰余(MODP)DHグループを使用している。
 
    IKEv2 does not require that any tests be performed by a peer
@@ -101,7 +101,7 @@ Table of Contents
    Elliptic Curve (EC) groups, whose use is becoming ever more popular.
    This document defines such tests for several types of DH groups.
 
-   IKEv2は、他のピアからDH公開鍵を受け取ったピアに対してどんなテストも要求していない。
+   IKEv2は、他のピアからDH公開鍵を受け取ったピアに対して、どんなテストも要求していない。
    これはMODPグループの共通ケースに対しては良い。他のDHグループに対しては、
    ピアがDH値を複数のIKEセッションに渡って再利用したとき、受け取った側がテストを行ってない
    ことは、潜在的な脆弱性をもたらす (セクション4.1を参照)。
@@ -145,6 +145,11 @@ RFC 6989                        DH Tests                       July 2013
    should check the received payload.  They are listed here according to
    the DH group being used.
 
+   このセクションは、KEペイロードを受信するIKEペアが行う必要があるテストを記述する。
+   テストはすべての実装でRECOMMENDEDだが、DH秘密鍵を再利用するものはREQUIREDである。
+   テストはKEペイロードの受信者に適用し、受信ペイロードをどのようにチェックすべきか
+   を記述する。それらは使用されるDHグループに従ってここに記載される。
+
 2.1.  Sophie Germain Prime MODP Groups
 
    These are currently the most commonly used groups; all these groups
@@ -155,7 +160,15 @@ RFC 6989                        DH Tests                       July 2013
    possibility of leaking a single bit of the secret exponent when DH
    keys are reused; this amount of leakage is insignificant.
 
+   これらは現在最も共通に使用されているグループで、これらのグループはすべて、
+   (p-1)/2もまた素数であるという特性を持つ。このセクションは、そのような
+   MODPグループに適用する。各受信者はピアの公開鍵rが法の範囲内であることを
+   検証しなければならない。[Menezes] セクション2.2によると、DH鍵が再利用され、
+   秘密鍵の1つのビットが漏れる可能性が残っていても、漏れの量は軽微である。
+
    See Section 5 for the specific groups covered by this section.
+
+   このセクションでカバーされるグループはセクション5を参照。
 
 2.2.  MODP Groups with Small Subgroups
 
@@ -165,12 +178,23 @@ RFC 6989                        DH Tests                       July 2013
    describes some informational leakage from a small-subgroup attack on
    these groups if the DH private value is reused.
 
+   [RFC5114]は小サブグループを持つ冪剰余グループを定義している。
+   これらは比較的小さいサブグループを持つ冪剰余グループであり、すべて、
+   (p-1)/2の合成数を持つ。[Menezes]のセクション2.1は、これらのグループで
+   もしDH秘密鍵が再利用されると、小サブグループ攻撃で情報が漏れると記述
+   している。
+
    This leakage can be prevented if the recipient performs a test on the
    peer's public value; however, this test is expensive (approximately
    as expensive as what reusing DH private values saves).  In addition,
    the NIST standard ([NIST-800-56A], Section 5.6.2.4) requires that
    test; hence, anyone needing to conform to that standard will need to
    implement the test anyway.
+
+   この漏れは、受信者がピアの公開鍵をテストすれば防ぐことができる。
+   しかし、このテストは高価(おおよそで、再利用しているDH秘密鍵を保存
+   するのと同じくらい)である。加えて、NIST標準はテストを要求しているので、
+   その標準への準拠が必要なものはどっちみちテストを実装する必要がある。
 
 
 
@@ -188,11 +212,18 @@ RFC 6989                        DH Tests                       July 2013
    Because of the above, the IKE implementation MUST choose between one
    of the following two options:
 
+   上記の理由から、IKE実装は以下の2つのオプションから選択しなければならない。
+
    o  It MUST check both that the peer's public value is in range (1 < r
       < p-1) and that r^q = 1 mod p (where q is the size of the
       subgroup, as listed in the RFC defining the group).  DH private
       values MAY then be reused.  This option is appropriate if
       conformance to [NIST-800-56A] is required.
+
+      ピアの公開鍵が(1 < r < p-1)の範囲内で、かつ r^q = 1 mod p (ここで、
+      q はサブグループのサイズで、グループを定義しているRFCに記載されている)
+      であることをチェックしなければならない。DH秘密鍵は再利用されても良い。
+      このオプションは[NIST-800-56A]への準拠が求められる場合に適している。
 
    o  It MUST NOT reuse DH private values (that is, the DH private value
       for each DH exchange MUST be generated from a fresh output of a
@@ -200,6 +231,11 @@ RFC 6989                        DH Tests                       July 2013
       check that the peer's public value is in range (1 < r < p-1).
       This option is more appropriate if conformance to [NIST-800-56A]
       is not required.
+
+      DH秘密鍵を再利用しない (つまり、DH秘密鍵は各DH交換において、セキュアな
+      乱数生成器から新たに生成されなければならない)。そして、ピアの公開鍵
+      が(1 < r < p-1)の範囲内であることをチェックしなければならない。
+      このオプションは[NIST-800-56A]への準拠が求められない場合に適している。
 
    See Section 5 for the specific groups covered by this section.
 
@@ -335,6 +371,8 @@ RFC 6989                        DH Tests                       July 2013
    This section describes one variant of the attack prevented by the
    tests defined above.
 
+   このセクションは上述したテストによって防がれる攻撃の種類を記述する。
+
    Suppose that IKE peer Alice maintains IKE security associations with
    peers Bob and Eve.  Alice uses the same secret ECDH key for both SAs,
    which is allowed with some restrictions.  If Alice does not implement
@@ -342,6 +380,13 @@ RFC 6989                        DH Tests                       July 2013
    would allow her to efficiently determine Alice's private key (as
    described in Section 2 of [Menezes]).  Since the key is shared, Eve
    will be able to obtain Alice's shared IKE SA key with Bob.
+
+   IKEピアであるアリスは、IKEピアであるボブ、エバとのIKEセキュリティ接続を
+   保持しているとする。アリスは同じECDH秘密鍵を両方のSAで使用している。
+   もしアリスがこれらのテストを実装しない場合、エバは、不正な公開鍵を送信
+   して、アリスの秘密鍵を効率よく決定できる。鍵は共有されているので、エバは
+   アリスの共有されたIKE SA鍵を、ボブとで獲得することができる。
+   
 
 
 

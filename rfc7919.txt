@@ -27,10 +27,11 @@ Abstract
    finite field DH parameters with known structure and a mechanism for
    peers to negotiate support for these groups.
 
-   TLSハンドシェイクの伝統的なfinite-field-based Diffie-Hellman (DH)鍵交換は
-   セキュリティ、相互接続性、欠陥に悩まされている。これらの欠陥は、TLSサーバー
-   が申し出てるべきDHグループパラメーター、クライアントが受け入れるべき
-   DHグループパラメーターについて明瞭さが欠けていることから起こっている。
+   TLSハンドシェイクでのfinite-field-based Diffie-Hellman (DH)鍵交換は
+   セキュリティ、相互接続性、欠陥に悩まされている。
+   これらの欠陥は、TLSサーバーが申し出るべきDHグループパラメーター、
+   クライアントが受け入れるべきDHグループパラメーターについて、明瞭さが
+   欠けていることから起こっている。
    このドキュメントはこれらの欠陥の解決方法を提示する。
 
 
@@ -193,7 +194,7 @@ RFC 7919                Negotiated FFDHE for TLS             August 2016
    group for other reasons, the client has no recourse but to terminate
    the connection.
 
-   伝統的なTLS [RFC5246] は、PFSを提供するDHE鍵交換を提示している。
+   TLS [RFC5246] は、PFSを提供するDHE鍵交換を提示している。
    クライアントはDHEを含むClientHelloでサイファースイートを提示し、
    サーバーはgとpのパラメーターをクライアントへ提示する。
    もしクライアントが、そのグループの強さを十分に考慮しない(例えば、
@@ -212,11 +213,11 @@ RFC 7919                Negotiated FFDHE for TLS             August 2016
    server has no way of knowing which type of client is connecting but
    must select DH parameters with insufficient knowledge.
 
-   反対に、TLSサーバーがクライアントからDHEサイファースイートの提案を受けたとき、
-   クライアントが扱えるDHグループの種類、クライアントのセキュリティ要件を知る術がない。
+   反対に、TLSサーバーがクライアントからDHEサイファースイートを提示されたとき、
+   クライアントが扱えるDHグループの種類や、クライアントのセキュリティ要件を知る術がない。
    例えば、広く流通しているTLSクライアントは、p > 1024bitなDHグループを扱えない。
    他のTLSクライアントは、ポリシーで、サーバーが強いグループを提示したときだけ、
-   DHEを使用したいかもしれない。サーバーはクライアントのタイプを知る術がないが、
+   DHEを使用したいかもしれない。クライアントのタイプを知る術がないサーバーは、
    不十分な知識でDHパラメーターを選ばなければならない。
 
    Additionally, the DH parameters selected by the server may have a
@@ -224,6 +225,10 @@ RFC 7919                Negotiated FFDHE for TLS             August 2016
    attack, but a client receiving an arbitrary p and g has no efficient
    way to verify that the structure of a new group is reasonable for
    use.
+
+   加えて、サーバーによって選択されたDHパラメーターは、小サブグループ攻撃に対して
+   安全な既知構造を持っても良い。しかし、任意のp,gを受信するクライアントは、
+   新しいグループの構造が使用に十分であることを検証する効果的な方法を持たない。
 
    This modification to TLS solves these problems by using a section of
    the "Supported Groups Registry" (renamed from "EC Named Curve
@@ -234,13 +239,17 @@ RFC 7919                Negotiated FFDHE for TLS             August 2016
    provides guidance for compatible peers to take advantage of the
    additional security, availability, and efficiency offered.
 
-   TLSへのこの変更はこれらの問題を解決する。
-   それは ("EC Named Curve Registry"の名前を変更した)"Supported Groups Registry"のセクションを使用することによる。
+   これらの問題を解決するため、既知の構造を持った共通DHグループを選択できるようにするために、
+   ("EC Named Curve Registry"の名前を変更して)"Supported Groups Registry"セクションを使用する。
+   また、クライアントがDHEにこれらのグループをサポートしていることを通知できるようにするために、
+   (ここではSupported Groups拡張として記述されている)"elliptic_curves(10)"拡張を使用する。
+   このドキュメントはまた、この仕様に対応したピアが、この仕様によって追加されるセキュリティ、
+   可用性、効率性の強みを受けるためのガイダンスを提供する。
 
    The use of this mechanism by one compatible peer when interacting
    with a non-compatible peer should have no detrimental effects.
 
-   このメカニズムに互換なピアが、非互換なピアと通信時に、このメカニズムの使用は、
+   このメカニズムに互換なピアが非互換なピアと通信時にこのメカニズムを使用することは、
    有害な影響を起こさない。
 
    This document updates TLS versions 1.0 [RFC2246], 1.1 [RFC4346], and
@@ -294,9 +303,9 @@ RFC 7919                Negotiated FFDHE for TLS             August 2016
    curve" to "named group".
 
    我々は、現在は"elliptic_curves"([RFC4492]のセクション5.1.1)として知られている拡張の中で、
-   未だ割り当てられていないコードポイントを、finite-fieldグループを示しために使用する 。
-   拡張の意味は、"Supported Elliptic Curves"から"Supported Groups"に拡張される。
-   その拡張で使用されるデータタイプは、NamedCurveからNamedGroupに名前が変更される・
+   未だ割り当てられていないコードポイントを、finite-fieldグループを示すために使用する。
+   その拡張の意味は、"Supported Elliptic Curves"から"Supported Groups"に拡張される。
+   その拡張で使用されるデータタイプは、NamedCurveからNamedGroupに名前が変更される。
    その意味は"named curve"から"named group"へ拡張される。
 
    Additionally, we explicitly relax the requirement about when the
@@ -314,9 +323,9 @@ RFC 7919                Negotiated FFDHE for TLS             August 2016
    FFDHE groups.  The new codepoints for the "Supported Groups Registry"
    are:
 
-   上位バイトが0x01(つまり256から511)の"Supported Groups Registry"のコードポイントが
-   FFDHEグループにセットされる。
-   たくさんのFFDHEグループがこの範囲へ割り当てられるとは予期しない。
+   上位バイトが0x01(つまり256から511)の"Supported Groups Registry"のコードポイントを
+   FFDHEグループにセットするる。
+   たくさんのFFDHEグループがこの範囲へ割り当てられるとは思われない。
    この範囲外のコードポイントはFFDHEグループに割り当てない。
    "Supported Groups Registry"の新しいコードポイントは、
 
@@ -341,6 +350,10 @@ RFC 7919                Negotiated FFDHE for TLS             August 2016
    of the natural logarithm ("e"), with the high and low 64 bits set to
    1 for efficient Montgomery or Barrett reduction.
 
+   "Supported Groups Registry"へ追加されるこれらのことはAppendix Aで詳述される。
+   それらは全て、自然対数の底("e")から生成された安全な素数で、モンゴメリや
+   バレットリダクションのために上位と下位の64ビットは1にセットされてある。
+
    The use of the base of the natural logarithm here is as a "nothing-
    up-my-sleeve" number.  The goal is to guarantee that the bits in the
    middle of the modulus are effectively random, while avoiding any
@@ -348,11 +361,21 @@ RFC 7919                Negotiated FFDHE for TLS             August 2016
    according to some secret criteria.  [RFC3526] used pi for this value.
    See Section 8.5 for reasons that this document does not reuse pi.
 
+   ここで自然対数の底は"隠し事のない"値とする。
+   素数が、幾つかの秘密の基準に従って弱くなるように内密に選択されている疑いを
+   回避しつつ、modの中間のビットが十分にランダムであることを保証することがゴールである。
+   [RFC3526]はこの値にpiを使用した。このドキュメントがpiを再利用しない理由は
+   セクション8.5を参照。
+
+
 3.  Client Behavior
 
    A TLS client that is capable of using strong finite field Diffie-
    Hellman groups can advertise its capabilities and its preferences for
    stronger key exchange by using this mechanism.
+
+   強いfinite field Diffie-Hellmanグループを使用できるTLSクライアントは、
+   このメカニズムによって、強い鍵交換を行うためのその能力と設定を通知できる。
 
    The compatible client that wants to be able to negotiate strong FFDHE
    sends a Supported Groups extension (identified by type
@@ -364,21 +387,40 @@ RFC 7919                Negotiated FFDHE for TLS             August 2016
    groups).  The ordering SHOULD be based on client preference, but see
    Section 6.1 for more nuance.
 
+   強いFFDHEを交渉可能な互換クライアントは([RFC4492]ではelliptic_curves(10)で識別される)
+   Supported Groups拡張をClientHelloで送信し、その拡張データに既知のFFDHEグループのリストを、
+   最も好ましいものの順で含める。もしクライアントがECDHE鍵交換も提示したい場合は、
+   単一のSupported Groups拡張に、サポートする全ての拡張(ECDHEとFFDHEのグループ両方)を
+   含めなければならない。順番はクライアントの設定に基づくが詳細はセクション6.1を参照。
+
    A client that offers a Supported Groups extension containing an FFDHE
    group SHOULD also include at least one FFDHE cipher suite in the
    ClientHello.
 
+   またFFDHEグループを含んだSupported Groups拡張を提示するクライアントは、
+   少なくとも一つのFFDHEサイファースイートをClientHelloに含めなければならない。
+
    A client that offers a group MUST be able and willing to perform a DH
    key exchange using that group.
+
+   グループを提示したクライアントは、そのグループを使用したDH鍵交換を実行する意思があり、
+   かつそれを実行可能でなければならない。
 
    A client that offers one or more FFDHE groups in the Supported Groups
    extension and an FFDHE cipher suite and that receives an FFDHE cipher
    suite from the server SHOULD take the following steps upon receiving
    the ServerKeyExchange:
 
+   FFDHEサイファースイートと1つ以上のFFDHEグループをSupported Groups拡張で提示し、
+   サーバーからFFDHEサイファースイートを受け取ったクライアントは、ServerKeyExchangeで
+   以下のステップを行うべきである。
+
    o  For non-anonymous cipher suites where the offered certificate is
       valid and appropriate for the peer, validate the signature over
       the ServerDHParams.  If not valid, terminate the connection.
+
+	  匿名でないサイファースイートで、有効かつ適切なピアが証明書がピアへ提示された場合、
+	  ServerDHParamsの署名検証を行う。もし有効でないなら接続を切断する。
 
 
 
@@ -400,14 +442,27 @@ RFC 7919                Negotiated FFDHE for TLS             August 2016
       policy, or it MAY decide to terminate the connection with a fatal
       insufficient_security(71) alert.
 
+	  もしServerDHParamsの署名が有効なら、選択されたdh_pとdh_gを、クライアントが
+	  提示したFFDHEグループと比較する。
+	  もし提示したグループと一致しないなら、サーバーはこのドキュメントと互換性がない。
+	  クライアントはローカルポリシーの下で、選択されたグループを受け入れ可能であれば、
+	  その接続を継続しても良い。または、insufficient_security(71)アラートで接続を切っても良い。
+
    o  If the client continues (either because the server offered a
       matching group or because local policy permits the offered custom
       group), the client MUST verify that dh_Ys is in the range 1 <
       dh_Ys < dh_p - 1.  If dh_Ys is not in this range, the client MUST
       terminate the connection with a fatal handshake_failure(40) alert.
 
+	  もしクライアントが継続するなら、クライアントは、dh_Ysが 1 < dh_Ys < dh_p-1 の
+	  範囲内であるか検証する。もしdh_Ysが範囲外なら、クライアントはhandshake_failuer(40)アラートで
+	  接続を切断しなければならない。
+
    o  If dh_Ys is in range, then the client SHOULD continue with the
       connection as usual.
+
+	  もしdh_Ysが範囲内なら、クライアントは通常通りに接続を継続すべきである。
+
 
 3.1.  Client Local Policy on Custom Groups
 
@@ -417,15 +472,29 @@ RFC 7919                Negotiated FFDHE for TLS             August 2016
    a risk to clients, who may accept weakly protected communications
    from misconfigured servers.
 
+   非互換サーバーからのFFDHEサイファースイートを受け入れる互換クライアントは、
+   独自のFFDHEグループを受け入れるかどうかのローカルポリシーを持ってよい。
+   このローカルポリシーはクライアントにリスクを与える。
+
    This document cannot enumerate all possible safe local policy (the
    safest may be to simply reject all custom groups), but compatible
    clients that accept some custom groups from the server MUST do at
    least cursory checks on group size and may take other properties into
    consideration as well.
 
+   このドキュメントはあらゆる安全なローカルポリシーすべてを示すことはできない。
+   (単純に、独自なグループはすべて受け入れないことがもっとも安全)
+   しかし、サーバーの独自なグループを受け入れる互換クライアントは、少なくとも、
+   グループサイズについて大雑把なチェックをしなければならない。
+   その上に、他の考慮を行っても良い。
+
    A compatible client that accepts FFDHE cipher suites using custom
    groups from non-compatible servers MUST reject any group with |dh_p|
    < 768 bits and SHOULD reject any group with |dh_p| < 1024 bits.
+
+   非互換サーバーからの独自なグループを使用するFFDHEサイファースイートを受け入れる互換クライアントは、
+   |dh_p| < 768bitのグループをリジェクトしなければならない。
+   |dh_p| < 1024bitのグループはリジェクトすべきである。
 
    A compatible client that rejects a non-compatible server's custom
    group may decide to retry the connection while omitting all FFDHE
@@ -434,6 +503,10 @@ RFC 7919                Negotiated FFDHE for TLS             August 2016
    over the ServerDHParams, to avoid being forced by an active attacker
    into a non-preferred cipher suite.
 
+   非互換サーバーの独自なグループをリジェクトする互換クライアントは、
+   ClientHelloからFFDHEサイファースイートを除いて再接続を試みても良い。
+   クライアントは、好まないサイファースイートが攻撃者により強制されることを
+   防ぐため、ServerDHParamsの署名検証が成功した場合のみこのアプローチを使用すべきである。
 
 
 
@@ -462,6 +535,15 @@ RFC 7919                Negotiated FFDHE for TLS             August 2016
    suites are acceptable to the server, the server MUST end the
    connection with a fatal TLS alert of type insufficient_security(71).
 
+   もし互換TLSサーバーが、FFDHEグループを含むSupported Groups拡張をクライアントから
+   受信したら(256から511の任意のコードポイントで、たとえサーバーが非サポートでも)、
+   かつ、もしサーバーが、クライアントが提案したFFDHEグループのどれも知らないか受け入れ
+   られないなら、サーバーはクライアントの提示したリストからFFDHEでないサイファースイートを
+   選ぶべきである。もし拡張にFFDHEグループが与えられており、クライアントが提示したグループの
+   いずれもサーバーが受け入れなれず、かつクライアントが提案したFFDHEでないサイファースイート
+   のいずれもサーバーが受け入れなれないなら、サーバーはinsufficient_security(71)のアラートで
+   接続を失敗させなけれなならない。
+
    If at least one FFDHE cipher suite is present in the client cipher
    suite list and the Supported Groups extension is either absent from
    the ClientHello entirely or contains no FFDHE groups (i.e., no
@@ -471,6 +553,13 @@ RFC 7919                Negotiated FFDHE for TLS             August 2016
    select an FFDHE cipher suite and offer an FFDHE group of its choice
    to the client as part of a traditional ServerKeyExchange.
 
+   もしクライアントのサイファーリストに少なくとも1つのFFDHEサイファースイートが与えられ、
+   かつClientHelloでSupported Groups拡張がまったく省略されるかFFDHEグループが1つも含まれないなら、
+   サーバーは、クライアントはこのドキュメントに非互換であることを知る。
+   この場合、サーバーはnon-FFDHEサイファースイートを選んでも良い。または、
+   FFDHEサイファースイートを選び、従来のようにServerKeyExchangeでクライアントに
+   FFDHEグループを提示しても良い。
+
    A compatible TLS server that receives the Supported Groups extension
    with FFDHE codepoints in it and that selects an FFDHE cipher suite
    MUST select one of the client's offered groups.  The server indicates
@@ -478,12 +567,23 @@ RFC 7919                Negotiated FFDHE for TLS             August 2016
    as usual in the ServerKeyExchange as described in Section 7.4.3 of
    [RFC5246].
 
+   FFDHEコードポイントを含んだSupported Groups拡張を受け取り、FFDHEサイファースイートを
+   選んだ互換TLSサーバーは、クライアントが提示ｓたグループの1つを選ばなければならない。
+   サーバーは選んだグループのパラメーターを、従来のServerKeyExchangeでクライアントへ
+   送信することによってクライアントに示す。
+
    A TLS server MUST NOT select a named FFDHE group that was not offered
    by a compatible client.
+
+   TLSサーバーは、互換クライアントが提示していない名前つきFFDHEグループを選択してはならない。
 
    A TLS server MUST NOT select an FFDHE cipher suite if the client did
    not offer one, even if the client offered an FFDHE group in the
    Supported Groups extension.
+
+   TLSサーバーは、たとえクライアントがFFDHEグループをSupported Groups拡張で提示した
+   としても、クライアントがFFDHEサイファースイートを提示していないなら、サーバーは
+   FFDHEサイファースイートを選んではならない。
 
    If a non-anonymous FFDHE cipher suite is selected and the TLS client
    has used this extension to offer an FFDHE group of comparable or
@@ -492,6 +592,12 @@ RFC 7919                Negotiated FFDHE for TLS             August 2016
    For example, if the server has a 3072-bit RSA key and the client
    offers only ffdhe2048 and ffdhe4096, the server SHOULD select
    ffdhe4096.
+
+   もし匿名でないFFDHEサイファースイートが選ばれ、TLSクライアントが
+   サーバーの公開鍵と同等かそれ以上の強度のFFDHEグループをこの拡張で提示していた場合
+   サーバーは少なくともサーバーの公開鍵の強度と同等なFFDHEグループを選択すべきである。
+   例えば、もしサーバーが3072bitのRSA鍵を持ち、クライアントがffdhe2048とffdhe4096のみを
+   提示した場合、サーバーはffdhe4096ｗｏ選択すべきである。
 
 
 
@@ -509,6 +615,11 @@ RFC 7919                Negotiated FFDHE for TLS             August 2016
    If dh_Yc is out of range, the server MUST terminate the connection
    with a fatal handshake_failure(40) alert.
 
+   FFDHEサイファースイートが選択されたとき、クライアントはClientKeyExchangeを
+   送信する。サーバーは1 < dh_Yc < dh_p - 1 を検証しなければならない。
+   もしdh_Ycが範囲外なら、サーバーはhandshake_failuer(40)アラートで接続を切断
+   しなければならない。
+
 5.  Optimizations
 
    In a key exchange with a successfully negotiated known FFDHE group,
@@ -517,6 +628,11 @@ RFC 7919                Negotiated FFDHE for TLS             August 2016
    allows at least three optimizations that can be used to improve
    performance.
 
+   既知のFFDHEグループで成功裏に交渉された鍵交換では、両ピアは、
+   当該グループがmodとして安全な素数を使用し、かつ使用されるグループは
+   p-1 or (p-1)/2のサイズであることを知っている。
+   このことはパフォーマンス向上になる少なくとも3つの最適化を許す。
+
 5.1.  Checking the Peer's Public Key
 
    Peers MUST validate each other's public key Y (dh_Ys offered by the
@@ -524,10 +640,18 @@ RFC 7919                Negotiated FFDHE for TLS             August 2016
    This simple check ensures that the remote peer is properly behaved
    and isn't forcing the local system into the 2-element subgroup.
 
+   ピアは互いに、公開鍵Yが1 < Y < p-1であることを検証しなければならない。
+   これは単純に、相手のピアが正しく振舞っていることと、2要素サブグループへ
+   ローカルシステムを強制しないことをチェックする。
+
    To reach the same assurance with an unknown group, the client would
    need to verify the primality of the modulus, learn the factors of
    p-1, and test both the generator g and Y against each factor to avoid
    small subgroup attacks.
+
+   未知のグループで同様な保証を得るには、クライアントは、小サブグループ攻撃を防ぐため、
+   modが素数であることを検証し、p-1の因数を学習して各因数に対するg,Yの両方をテストする
+   ことになる。
 
 5.2.  Short Exponents
 
@@ -536,6 +660,13 @@ RFC 7919                Negotiated FFDHE for TLS             August 2016
    squaring, this means each peer must do roughly 2*log_2(p)
    multiplications, twice (once for the generator and once for the
    peer's public key).
+
+   従来のfinite field Diffie-Hellmanでは、各ピアは、それぞれの秘密鍵を
+   [2, p-2]の範囲から選択する。
+   2の冪乗を使うと、これは各ピアがおおよそ2*log_2(p)回の掛け算を、
+   2回行わなければならないことを意味する。
+
+// log_2(p) := pのビット数
 
    Peers concerned with performance may also prefer to choose their
    secret exponent from a smaller range, doing fewer multiplications,
@@ -548,8 +679,18 @@ RFC 7919                Negotiated FFDHE for TLS             August 2016
    is, an m-bit integer where m is at least 275) and still keep the same
    approximate security level.
 
+   パフォーマンスが重要なピアは、秘密鍵をもっと小さい範囲から選び、
+   セキュリティ全体のレベルは同じままで、掛け算をより少なく行っても良い。
+   名前つきグループはそれぞれセキュリティレベルの近似値を示し、そのレベルを
+   保持する秘密鍵の範囲の下界を提供する。例えばffdhe3072ハンドシェイクなら、
+   各ピアは、秘密鍵を[2^274, 2^275]の範囲(つまり、mが少なくとも275のm-bitの整数)から選ぶことで、
+   セキュリティレベルの近似値を保持したまま、2*2*3072回の掛け算を行うのではなく、
+   2*2*275回の掛け算を選ぶことができる。
+
    A similar short-exponent approach is suggested in a Secure SHell
    (SSH) Diffie-Hellman key exchange (see Section 6.2 of [RFC4419]).
+
+
 
 
 
@@ -577,6 +718,9 @@ RFC 7919                Negotiated FFDHE for TLS             August 2016
    contain some ECDHE groups and some FFDHE groups.  These SHOULD be
    ranked in the order preferred by the client.
 
+   Supported Groups拡張における名前つきグループの順番は、ECDHEグループと
+   FFDHEグループを含んでよい。これらはクライアントによる優先順でランク付けされるべきである。
+
    However, the ClientHello also contains a list of desired cipher
    suites, also ranked in preference order.  This presents the
    possibility of conflicted preferences.  For example, if the
@@ -592,6 +736,15 @@ RFC 7919                Negotiated FFDHE for TLS             August 2016
    (in the example case, it should select
    TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA with secp256r1) but MAY resolve
    the contradiction any way it sees fit.
+
+   しかしながら、ClientHelloはまた、要求するサイファースイートのリストも含んでいて、
+   それも優先順でランク付けされる。そのため優先権が衝突する可能性がある。
+   例えば、もしClientHelloがサイファースイートのフィールドに2つの選択肢を<DHE_RSA, ECDHE_RSA>の
+   順で含み、かつSupported Groups拡張が2つの選択肢を<secp256r1,ffdhe3072>の順で含んでいる場合、
+   疑う余地のない矛盾がある。クライアントはそのような矛盾を示すべきではない。
+   そのような矛盾に出くわしたサーバーは、Supported Groups拡張に優先度を与えるべきであるが、
+   (先のケースなら、secp256r1とECDHE_RSAを選ぶべき) 適切と思われるなんらかの方法で、
+   矛盾を解決して良い。
 
    More subtly, clients MAY interleave preferences between ECDHE and
    FFDHE groups; for example, if stronger groups are preferred
@@ -682,17 +835,30 @@ RFC 7919                Negotiated FFDHE for TLS             August 2016
    possibly not before getting the peer to do something it would not
    otherwise have done.
 
+   Supported Groups拡張はFinishedメッセージでハッシュされるので、
+   グループをフィルタまたは削除する中間者攻撃はハンドシェーク失敗となる。
+   しかし、...
+
    An attacker who impersonates the server can try to do any of the
    following:
+
+   サーバーのふりをする攻撃者は以下を試すことができる。
 
    o  Pretend that a non-compatible server is actually capable of this
       extension and select a group from the client's list, causing the
       client to select a group it is willing to negotiate.  It is
       unclear how this would be an effective attack.
 
+	  非互換サーバーがこの拡張に対応しているふりをしてクライアントのリストからグループを選ぶ。
+	  クライアントは交渉する意思のあるグループを選ぶことになる。
+	  これがどのように効果的な攻撃になるかは不明である。
+
    o  Pretend that a compatible server is actually non-compatible by
       negotiating a non-FFDHE cipher suite.  This is no different than
       MITM cipher suite filtering.
+
+	  互換サーバーがnon-FFDHEサイファースイートを交渉することで非互換サーバーのふりをする。
+	  これはMITMサイファースイートフィルタリングと違いない。
 
    o  Pretend that a compatible server is actually non-compatible by
       negotiating a DHE cipher suite with a custom (perhaps weak) group
@@ -700,6 +866,9 @@ RFC 7919                Negotiated FFDHE for TLS             August 2016
       scenario and would require the attacker to be able to sign the
       ServerDHParams, which should not be possible without access to the
       server's secret key.
+
+	  互換サーバーが、攻撃者により選ばれた独自のグループでDHEサイファースイートを
+	  交渉することにより非互換サーバーのふりをする。
 
    An attacker who impersonates the client can try to do the following:
 
@@ -741,6 +910,10 @@ RFC 7919                Negotiated FFDHE for TLS             August 2016
    against attacks on the session's confidentiality and integrity, since
    the session keys are derived from the DHE handshake.
 
+   FFDHE鍵交換をしようしているTLS実装は、交渉するグループの強さを考慮すべきである。
+   選ばれたグループの強さは、セッションの機密性と完全性の攻撃に対する耐性を定義する
+   因子の一つである。なぜなら、セッション鍵はDHEハンドシェークで生成されるからである。
+
    While attacks on integrity must generally happen while the session is
    in progress, attacks against session confidentiality can happen
    significantly later if the entire TLS session is stored for offline
@@ -749,10 +922,21 @@ RFC 7919                Negotiated FFDHE for TLS             August 2016
    need extremely long-term confidentiality should prefer stronger
    groups.
 
+   完全性への攻撃はセッションが進行中の間に起こさなければならない。
+   機密性への攻撃は、もしTLSセッション全体がオフライン解析のために保持されれば、
+   著しく遅れて起こりうる。
+   従って、FFDHEグループはクライアントとサーバーによって、求められる機密性の
+   保証に基づいて選択されるべきである。長期間の機密性が求められるセッションは
+   強いグループを優先すべきである。
+
    [ENISA] provides rough estimates of group resistance to attack and
    recommends that forward-looking implementations ("future systems")
    should use FFDHE group sizes of at least 3072 bits.  ffdhe3072 is
    intended for use in these implementations.
+
+   [ENISA]は、攻撃に対するグループの耐性のおおまかな推定を提供しており、
+   将来を考慮した実装は少なくとも3072bitサイズのFFDHEグループを推奨している。
+   ffdge3072はこれらの実装での使用が意図されている。
 
    Other sources (e.g., [NIST]) estimate the security levels of the
    Discrete Log (DLOG) problem to be slightly more difficult than
@@ -761,6 +945,11 @@ RFC 7919                Negotiated FFDHE for TLS             August 2016
    optimization (Section 5.2) are deliberately conservative to account
    for the range of these estimates.
 
+   上記以外(例えば[NIST])は、[ENISA]より離散対数(DLOG)問題のセキュリティレベルが
+   わずかに困難であると推定している。このドキュメントが、Appendix Aで提案している、
+   (セクション5.2の)short-exponent 最適化を使用する実装に対する最小の(累乗の)指数のサイズは、
+   これらの推定の範囲を説明するために意図的に保守的である。
+
 8.3.  Finite Field DHE Only
 
    Note that this document specifically targets only finite field
@@ -768,8 +957,13 @@ RFC 7919                Negotiated FFDHE for TLS             August 2016
    the non-ephemeral DH key exchange mechanisms, nor does it address
    ECDHE key exchange, which is defined in [RFC4492].
 
+   このドキュメントはfinite field Diffie-Hellman ephemeral鍵交換のみをターゲットとしている。
+   non-ephemeralなDH鍵交換、ECDHE鍵交換はカバーしていない。
+
    Measured by computational cost to the TLS peers, ECDHE appears today
    to offer a much stronger key exchange mechanism than FFDHE.
+
+   TLSピアの計算コストで測られる、今日のECDHEは、FFDHEよりもはるかに強い鍵交換を提供する。
 
 
 
@@ -792,6 +986,9 @@ RFC 7919                Negotiated FFDHE for TLS             August 2016
    the premaster secret (and may therefore compromise the
    confidentiality and integrity of the TLS session).
 
+   ハードウェアやfinite field暗号解析の進展で、いくつかのグループは必要な
+   セキュリティマージンを提供しなくなった。
+
    Revisions of this document should mark known weak groups as
    explicitly deprecated for use in TLS and should update the estimated
    work factor needed to break the group if the cryptanalysis has
@@ -799,23 +996,41 @@ RFC 7919                Negotiated FFDHE for TLS             August 2016
    integrity guarantees should avoid using deprecated groups and should
    be updated when the estimated security margins are updated.
 
+   このドキュメントのリビジョンは、暗号解析変化に応じて、既知の弱いグループについては、
+   TLSでの使用を明確に廃止すべき、グループの破壊に必要とされる作業要因の推定を更新すべきである。
+   強い機密性と完全性の保証を求める実装は、廃止されたグループの使用を避けるべきで、
+   セキュリティマージンの推定が更新されたときは、更新されるべきである。
+
+
 8.5.  Choice of Groups
 
    Other lists of named finite field Diffie-Hellman groups
    [STRONGSWAN-IKE] exist.  This document chooses to not reuse them for
    several reasons:
 
+   名前付きfinite field Diffie-Hellmanグループの他のリストが存在する。
+   このドキュメントは以下の理由でそれらを再利用しないことにした。
+
    o  Using the same groups in multiple protocols increases the value
       for an attacker with the resources to crack any single group.
 
+	  複数のプロトコルで同じグループを使用すると、任意のひとつのグループを
+	  クラックするリソースを持つ攻撃者の価値を高めることになる。
+
    o  The Internet Key Exchange Protocol (IKE) groups include weak
       groups like MODP768 that are unacceptable for secure TLS traffic.
+
+	  IKEグループは、セキュアなTLSトラヒックで受け入れられないMODP768の
+	  ような弱いグループを含んでいる。
 
    o  Mixing group parameters across multiple implementations leaves
       open the possibility of some sort of cross-protocol attack.  This
       shouldn't be relevant for ephemeral scenarios, and even with non-
       ephemeral keying, services shouldn't share keys; however, using
       different groups avoids these failure modes entirely.
+
+	  複数の実装にわたってグループパラメーターを混ぜ合わせることは、
+	  ある種のクロスプロトコル攻撃の可能性を残す。
 
 8.6.  Timing Attacks
 
@@ -825,6 +1040,10 @@ RFC 7919                Negotiated FFDHE for TLS             August 2016
    secret keys (so-called "semi-static" ephemeral keying) or share DHE
    secret keys across a multiple machines (e.g., in a load-balancer
    situation).
+
+   finite field Diffie-Hellman鍵交換の実装は、一定時間の冪剰余の実装を使用すべきである。
+   これは、特に、常にDHE秘密鍵を再利用する実装や (いわゆる、"semi-static" ephemeral keyingと呼ばれる)、
+   複数のマシンでDHE秘密鍵を共用する実装 (例えば、負荷分散器)が当てはまる。
 
 
 
