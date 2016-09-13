@@ -27,12 +27,12 @@ Abstract
    finite field DH parameters with known structure and a mechanism for
    peers to negotiate support for these groups.
 
-   TLSハンドシェイクでのfinite-field-based Diffie-Hellman (DH)鍵交換は
-   セキュリティ、相互接続性、欠陥に悩まされている。
-   これらの欠陥は、TLSサーバーが申し出るべきDHグループパラメーター、
+   TLSハンドシェイクでのfinite-field-based Diffie-Hellman (DH)鍵交換は、
+   セキュリティ、相互接続性、効率性の欠陥に苦しんでいる。
+   これらの欠陥は、TLSサーバーが提示すべきDHグループパラメーター、
    クライアントが受け入れるべきDHグループパラメーターについて、明瞭さが
    欠けていることから起こっている。
-   このドキュメントはこれらの欠陥の解決方法を提示する。
+   このドキュメントは、これらの欠陥の解決方法を提示する。
 
 
    This document updates TLS versions 1.0 (RFC 2246), 1.1 (RFC 4346),
@@ -195,11 +195,11 @@ RFC 7919                Negotiated FFDHE for TLS             August 2016
    the connection.
 
    TLS [RFC5246] は、PFSを提供するDHE鍵交換を提示している。
-   クライアントはDHEを含むClientHelloでサイファースイートを提示し、
-   サーバーはgとpのパラメーターをクライアントへ提示する。
-   もしクライアントが、そのグループの強さを十分に考慮しない(例えば、
-   pが小さ過ぎる、pが素数でない、容易に防げない小サブグループがある)、
-   または他の理由でグループを処理できなければ、クライアントは接続を
+   クライアントは、ClientHelloでDHEサイファースイートを要求し、
+   サーバーは、グループパラメーターgとpを、クライアントへ提示する。
+   もしクライアントが、そのグループの強さ(例えば、pが小さ過ぎる、
+   pが素数でない、容易に避けられない小サブグループがある)を十分に考慮しない、
+   または他の理由でそのグループを処理できない場合、クライアントは接続を
    切断する以外に解決の手段を持たない。
 
    Conversely, when a TLS server receives a suggestion for a DHE cipher
@@ -213,8 +213,9 @@ RFC 7919                Negotiated FFDHE for TLS             August 2016
    server has no way of knowing which type of client is connecting but
    must select DH parameters with insufficient knowledge.
 
-   反対に、TLSサーバーがクライアントからDHEサイファースイートを提示されたとき、
-   クライアントが扱えるDHグループの種類や、クライアントのセキュリティ要件を知る術がない。
+   反対に、TLSサーバーがクライアントからDHEサイファースイートを要求されたとき、
+   クライアントが扱えるDHグループの種類や、クライアントのセキュリティ要件を、
+   TLSサーバーが知る術がない。
    例えば、広く流通しているTLSクライアントは、p > 1024bitなDHグループを扱えない。
    他のTLSクライアントは、ポリシーで、サーバーが強いグループを提示したときだけ、
    DHEを使用したいかもしれない。クライアントのタイプを知る術がないサーバーは、
@@ -226,9 +227,9 @@ RFC 7919                Negotiated FFDHE for TLS             August 2016
    way to verify that the structure of a new group is reasonable for
    use.
 
-   加えて、サーバーによって選択されたDHパラメーターは、小サブグループ攻撃に対して
-   安全な既知構造を持っても良い。しかし、任意のp,gを受信するクライアントは、
-   新しいグループの構造が使用に十分であることを検証する効果的な方法を持たない。
+   加えて、サーバーによって選択されるDHパラメーターは、小サブグループ攻撃に対して
+   安全な既知の構造であっても良い。しかし、任意のp,gを受信するクライアントは、
+   新しいグループの構造が使用に適当なことを検証する効果的な方法を持たない。
 
    This modification to TLS solves these problems by using a section of
    the "Supported Groups Registry" (renamed from "EC Named Curve
@@ -239,8 +240,8 @@ RFC 7919                Negotiated FFDHE for TLS             August 2016
    provides guidance for compatible peers to take advantage of the
    additional security, availability, and efficiency offered.
 
-   これらの問題を解決するため、既知の構造を持った共通DHグループを選択できるようにするために、
-   ("EC Named Curve Registry"の名前を変更して)"Supported Groups Registry"セクションを使用する。
+   これらの問題を解決するため、既知の構造を持つ共通DHグループを選択できるようにする。
+   そのために、("EC Named Curve Registry"の名前を変更した)"Supported Groups Registry"セクションを使用する。
    また、クライアントがDHEにこれらのグループをサポートしていることを通知できるようにするために、
    (ここではSupported Groups拡張として記述されている)"elliptic_curves(10)"拡張を使用する。
    このドキュメントはまた、この仕様に対応したピアが、この仕様によって追加されるセキュリティ、
@@ -285,7 +286,7 @@ RFC 7919                Negotiated FFDHE for TLS             August 2016
    exclusively to cipher suites with FFDHE key exchange mechanisms, but
    note that these suites are typically labeled with a TLS_DHE_ prefix.
 
-   このドキュメントで使われる"DHE", "FFDHE"は、TLSにおけるfinite-field-based DHE鍵交換メカニズム
+   このドキュメントで使われる"DHE","FFDHE"は、TLSにおけるfinite-field-based DHE鍵交換メカニズム
    を指す。TLSはECDHE鍵交換もサポートしているが、このドキュメントはそれらの使用を扱わない。
    ECDHE-capableな実装によってのみ使用されている既存のレジストリは、FFDHEグループをカバーするように
    このドキュメントで拡張される。このドキュメントで使用される"FFDHEサイファースイート"は、
@@ -324,7 +325,7 @@ RFC 7919                Negotiated FFDHE for TLS             August 2016
    are:
 
    上位バイトが0x01(つまり256から511)の"Supported Groups Registry"のコードポイントを
-   FFDHEグループにセットするる。
+   FFDHEグループにセットする。
    たくさんのFFDHEグループがこの範囲へ割り当てられるとは思われない。
    この範囲外のコードポイントはFFDHEグループに割り当てない。
    "Supported Groups Registry"の新しいコードポイントは、
@@ -629,9 +630,9 @@ RFC 7919                Negotiated FFDHE for TLS             August 2016
    performance.
 
    既知のFFDHEグループで成功裏に交渉された鍵交換では、両ピアは、
-   当該グループがmodとして安全な素数を使用し、かつ使用されるグループは
-   p-1 or (p-1)/2のサイズであることを知っている。
-   このことはパフォーマンス向上になる少なくとも3つの最適化を許す。
+   当該グループがmodに安全な素数を使用し、かつ p-1 or (p-1)/2 の
+   サイズが使用されることを知っている。
+   このことはパフォーマンスを向上させる少なくとも3つの最適化を許す。
 
 5.1.  Checking the Peer's Public Key
 
@@ -837,7 +838,6 @@ RFC 7919                Negotiated FFDHE for TLS             August 2016
 
    Supported Groups拡張はFinishedメッセージでハッシュされるので、
    グループをフィルタまたは削除する中間者攻撃はハンドシェーク失敗となる。
-   しかし、...
 
    An attacker who impersonates the server can try to do any of the
    following:
@@ -869,6 +869,10 @@ RFC 7919                Negotiated FFDHE for TLS             August 2016
 
 	  互換サーバーが、攻撃者により選ばれた独自のグループでDHEサイファースイートを
 	  交渉することにより非互換サーバーのふりをする。
+	  これは今のシナリオより悪いことはない。
+	  攻撃者には、サーバー秘密鍵へのアクセスなしには不可能なServerDHParamsへの署名が
+	  求められるだろう。
+
 
    An attacker who impersonates the client can try to do the following:
 
@@ -880,12 +884,16 @@ RFC 7919                Negotiated FFDHE for TLS             August 2016
       but it would fail to complete during the final check of the
       Finished message.
 
+	  Finishedメッセージでこける。
+
    o  Pretend that a non-compatible client is compatible (e.g., by
       adding the Supported Groups extension or by adding FFDHE groups to
       the extension).  This could cause the server to select a
       particular named group in the ServerKeyExchange or to avoid
       selecting an FFDHE cipher suite.  The peers would fail to compute
       the final check of the Finished message.
+
+      Finishedメッセージでこける。
 
 
 
@@ -901,6 +909,8 @@ RFC 7919                Negotiated FFDHE for TLS             August 2016
       the stronger of the set of groups offered).  This could cause the
       server to negotiate a weaker group than desired, but again, should
       be caught by the check in the Finished message.
+
+      Finishedメッセージでこける。
 
 8.2.  Group Strength Considerations
 
@@ -1067,6 +1077,10 @@ RFC 7919                Negotiated FFDHE for TLS             August 2016
    replayed to another server using a non-FFDHE key exchange and can
    then be bootstrapped to replay client authentication.
 
+   [SECURE-RESUMPTION],[CROSS-PROTOCOL],[SSL3-ANALYSIS]
+   悪意のあるピアが、悪いFFDHEグループを使い、悪意のあるピアが選んだ
+   プリマスターシークレットをクライアントに選ばせる。
+
    To prevent this attack (barring the session hash fix documented in
    [RFC7627]), a client would need not only to implement this document,
    but also to reject non-negotiated FFDHE cipher suites whose group
@@ -1074,10 +1088,22 @@ RFC 7919                Negotiated FFDHE for TLS             August 2016
    abort the initial handshake and reconnect to the server in question
    without listing any FFDHE cipher suites on the subsequent connection.
 
+   この攻撃([RFC7627]に記載されている...)を防ぐには、クライアントはこの
+   ドキュメントを実装するだけでなく、クライアントが確認する余裕のない
+   グループ構造を持ったnon-negotiated FFDHEサイファースイートをリジェクト
+   する必要がある。そのようなクライアントは、最初のハンドシェークを
+   アボートさせ、FFDHEサイファースイートをリストから除き、問題になっている
+   サーバーに再接続する必要があるだろう。
+
    This trade-off may be too costly for most TLS clients today but may
    be a reasonable choice for clients performing client certificate
    authentication or for clients who have other reasons to be concerned
    about server-controlled premaster secrets.
+
+   このトレードオフは今日のほとんどのTLSクライアントにとってコストのかかる
+   ことだろうが、クライアント認証を行うクライアント、またはサーバーに
+   コントロールされたプリマスターシークレットを懸念する他の理由を持った
+   クライアントに対しては、たぶん適した選択だろう。
 
 8.8.  Forward Secrecy
 
@@ -1085,10 +1111,18 @@ RFC 7919                Negotiated FFDHE for TLS             August 2016
    secrecy, the ability to resist decryption even if the endpoint's
    long-term secret key (usually RSA) is revealed in the future.
 
+   FFDHEサイファースイートが好まれる主な理由の一つが前方秘匿性である。
+   これは、たとえエンドポイントの長期間の秘密鍵(普通はRSA)が、将来に
+   漏洩したとしても、復号に抵抗する能力である。
+
    This property depends on both sides of the connection discarding
    their ephemeral keys promptly.  Implementations should wipe their
    FFDHE secret key material from memory as soon as it is no longer
    needed and should never store it in persistent storage.
+
+   この特徴は、接続の両側で、短命な鍵が速やかに捨てられることに依存している。
+   実装は、必要なくなったらすぐに、FFDHE秘密鍵をメモリから一掃すべきであり、
+   持続性のあるストレージにそれを保存すべきでない。
 
    Forward secrecy also depends on the strength of the Diffie-Hellman
    group; using a very strong symmetric cipher like AES256 with a
@@ -1097,9 +1131,17 @@ RFC 7919                Negotiated FFDHE for TLS             August 2016
    attacking the symmetric cipher to attacking the dh_Ys or dh_Yc
    ephemeral key shares.
 
+   前方秘匿性はDHグループの強さにも依存している。
+   AES256のような強い対称暗号を前方秘匿性を持つサイファースイートと共に
+   使用しているが、dhe2048のようなはるかに弱いグループで鍵を生成することは、
+   敵のコストを対称暗号への攻撃から、dh_Ysまたはdh_Ysへの攻撃に移動させる。
+
    If the goal is to provide forward secrecy, attention should be paid
    to all parts of the cipher suite selection process, both key exchange
    and symmetric cipher choice.
+
+   前方秘匿性の提供をゴールとするなら、サイファースイートを選択する工程の
+   すべてに注意を払うべきである。
 
 8.9.  False Start
 
