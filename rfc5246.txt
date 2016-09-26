@@ -712,6 +712,10 @@ RFC 5246                          TLS                        August 2008
    ciphered output is generally larger than the input in order to
    accommodate the integrity check value.
 
+   AEAD暗号では、平文の暗号化と完全性保護は同時に行われる。
+   入力は任意の長さでよい。aead暗号の出力は、完全性をチェックする値のために
+   入力よりも大きくなる。
+
    In public key encryption, a public key algorithm is used to encrypt
    data in such a way that it can be decrypted only with the matching
    private key.  A public-key-encrypted element is encoded as an opaque
@@ -958,6 +962,10 @@ RFC 5246                          TLS                        August 2008
       appropriate), and the lengths of explicit and implicit
       initialization vectors (or nonces).
 
+	  バルク暗号のアルゴリズム。
+	  アルゴリズムの鍵長、ブロック暗号かストリーム暗号かAEAD暗号かどうか、
+	  暗号のブロックサイズ、IV(またはnonce)の長さ。
+
    MAC algorithm
       An algorithm to be used for message authentication.  This
       specification includes the size of the value returned by the MAC
@@ -1203,6 +1211,11 @@ RFC 5246                          TLS                        August 2008
       number so that missing, extra, or repeated messages are
       detectable.
 
+      暗号化及びMAC関数はTLSCompressed構造体をTLSCiphertextに変換する。
+      復号関数はこのプロセスの逆を行う。
+      レコードのMACは、メッセージの損失や余分、繰り返しを検出するために
+      シーケンス番号を含む。
+
       struct {
           ContentType type;
           ProtocolVersion version;
@@ -1376,6 +1389,9 @@ RFC 5246                          TLS                        August 2008
    converts TLSCompressed.fragment structures to and from AEAD
    TLSCiphertext.fragment structures.
 
+   AEAD([CCM]や[GCM])におけるAEAD関数は、TLSCompressed.fragment構造と
+   TLSCiphertext.fragment構造を互いに変換し合う。
+
       struct {
          opaque nonce_explicit[SecurityParameters.record_iv_length];
          aead-ciphered struct {
@@ -1387,6 +1403,10 @@ RFC 5246                          TLS                        August 2008
    "additional data" to be included in the authentication check, as
    described in Section 2.1 of [AEAD].  The key is either the
    client_write_key or the server_write_key.  No MAC key is used.
+
+   AEAD暗号は入力に1つの鍵、ノンス、平文、そして[AEAD]のセクション2.1で
+   記述されているとおり認証チェックに含まれるadditional_dataを受け取る。
+   鍵はclient_write_keyまたはserver_write_keyのどちらかで、MAC鍵は使用されない。
 
    Each AEAD cipher suite MUST specify how the nonce supplied to the
    AEAD operation is constructed, and what is the length of the
@@ -1406,15 +1426,28 @@ RFC 5246                          TLS                        August 2008
    in Section 6.3), and the explicit part is included in
    GenericAEAEDCipher.nonce_explicit.
 
+   各AEADサイファースイートはAEADオペレーションにノンスがどのように供給されるか、
+   及びGenericAEADCipher.nonce_explicit部の長さを規定しなければならない。
+   多くの場合、[AEAD]のセクション3.2.1で記述されている部分的に暗黙なノンスの
+   テクニックを使用することが適切である。この場合、暗黙な部分は、key_blockから
+   client_write_iv, server_write_ivとして生成されるべきである(セクション6.3に記述の通り)。
+   そして明確な部分はGenericAEADCipher.nonce_explicitに含まれる。
+
    The plaintext is the TLSCompressed.fragment.
+
+   平文はTLSCompressed.fragmentである。
 
    The additional authenticated data, which we denote as
    additional_data, is defined as follows:
+
+   additional_dataは次のように定義される。
 
       additional_data = seq_num + TLSCompressed.type +
                         TLSCompressed.version + TLSCompressed.length;
 
    where "+" denotes concatenation.
+
+   ここで "+" は連結を意味する。
 
    The aead_output consists of the ciphertext output by the AEAD
    encryption operation.  The length will generally be larger than
@@ -1424,6 +1457,12 @@ RFC 5246                          TLS                        August 2008
    AEAD cipher MUST NOT produce an expansion of greater than 1024 bytes.
    Symbolically,
 
+   aead_outputはAEAD暗号化オペレーションが出力した暗号文からなる。
+   その長さはTLSCompressed.lengthよりも通常は長くなるが、その長さは
+   AEAD暗号の種類に拠る。暗号化ではパディングを付けるがそのオーバーヘッドの
+   量はTLSCompressed.lengthの値によって異なる。
+   各AEAD暗号の出力は1024バイトを超えてはならない。
+
       AEADEncrypted = AEAD-Encrypt(write_key, nonce, plaintext,
                                    additional_data)
 
@@ -1432,6 +1471,10 @@ RFC 5246                          TLS                        August 2008
    output is either the plaintext or an error indicating that the
    decryption failed.  There is no separate integrity check.  That is:
 
+   復号と検証のため、サイファーは入力に鍵とノンス、"additional_data"、
+   AEADEncryptedの値を受け取る。出力は平文か、復号失敗を示すエラーのどちらか
+   である。これとは別の完全性チェックは存在しない。
+
       TLSCompressed.fragment = AEAD-Decrypt(write_key, nonce,
                                             AEADEncrypted,
                                             additional_data)
@@ -1439,14 +1482,17 @@ RFC 5246                          TLS                        August 2008
    If the decryption fails, a fatal bad_record_mac alert MUST be
    generated.
 
+   もし復号に失敗したら、bad_record_macアラートが生成されなければならない。
+
+
 6.3.  Key Calculation
 
    The Record Protocol requires an algorithm to generate keys required
    by the current connection state (see Appendix A.6) from the security
    parameters provided by the handshake protocol.
 
-   レコードプロトコルには、ハンドシェークプロトコルが提供するセキュリティパラメーターから
-   現在のコネクションステート(付録A.6)用の鍵を生成するアルゴリズムが必要である。
+   レコードプロトコルは、ハンドシェークプロトコルが提供するセキュリティパラメーターから、
+   現在のコネクションステート(付録A.6)用の鍵を生成するアルゴリズムを必要とする。
 
 
 
@@ -1500,6 +1546,9 @@ RFC 5246                          TLS                        August 2008
    Currently, the client_write_IV and server_write_IV are only generated
    for implicit nonce techniques as described in Section 3.2.1 of
    [AEAD].
+
+   今の所、client_write_IVとserver_write_IVは、[AEAD]セクション3.2.1に記述される
+   ような暗黙なノンスのためにのみ生成される。
 
    Implementation note: The currently defined cipher suite which
    requires the most material is AES_256_CBC_SHA256.  It requires 2 x 32

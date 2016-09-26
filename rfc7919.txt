@@ -541,7 +541,7 @@ RFC 7919                Negotiated FFDHE for TLS             August 2016
    かつ、もしサーバーが、クライアントが提案したFFDHEグループのどれも知らないか受け入れ
    られないなら、サーバーはクライアントの提示したリストからFFDHEでないサイファースイートを
    選ぶべきである。もし拡張にFFDHEグループが与えられており、クライアントが提示したグループの
-   いずれもサーバーが受け入れなれず、かつクライアントが提案したFFDHEでないサイファースイート
+   いずれもサーバーが受け入れられず、かつクライアントが提案したFFDHEでないサイファースイート
    のいずれもサーバーが受け入れなれないなら、サーバーはinsufficient_security(71)のアラートで
    接続を失敗させなけれなならない。
 
@@ -569,7 +569,7 @@ RFC 7919                Negotiated FFDHE for TLS             August 2016
    [RFC5246].
 
    FFDHEコードポイントを含んだSupported Groups拡張を受け取り、FFDHEサイファースイートを
-   選んだ互換TLSサーバーは、クライアントが提示ｓたグループの1つを選ばなければならない。
+   選んだ互換TLSサーバーは、クライアントが提示したグループの1つを選ばなければならない。
    サーバーは選んだグループのパラメーターを、従来のServerKeyExchangeでクライアントへ
    送信することによってクライアントに示す。
 
@@ -719,8 +719,9 @@ RFC 7919                Negotiated FFDHE for TLS             August 2016
    contain some ECDHE groups and some FFDHE groups.  These SHOULD be
    ranked in the order preferred by the client.
 
-   Supported Groups拡張における名前つきグループの順番は、ECDHEグループと
-   FFDHEグループを含んでよい。これらはクライアントによる優先順でランク付けされるべきである。
+   Supported Groups拡張の名前付きグループの並びには、ECDHEグループと
+   FFDHEグループを含んでよい。これらは、クライアントによる優先度順に
+   並べられるべきである。
 
    However, the ClientHello also contains a list of desired cipher
    suites, also ranked in preference order.  This presents the
@@ -738,12 +739,14 @@ RFC 7919                Negotiated FFDHE for TLS             August 2016
    TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA with secp256r1) but MAY resolve
    the contradiction any way it sees fit.
 
-   しかしながら、ClientHelloはまた、要求するサイファースイートのリストも含んでいて、
-   それも優先順でランク付けされる。そのため優先権が衝突する可能性がある。
-   例えば、もしClientHelloがサイファースイートのフィールドに2つの選択肢を<DHE_RSA, ECDHE_RSA>の
-   順で含み、かつSupported Groups拡張が2つの選択肢を<secp256r1,ffdhe3072>の順で含んでいる場合、
-   疑う余地のない矛盾がある。クライアントはそのような矛盾を示すべきではない。
-   そのような矛盾に出くわしたサーバーは、Supported Groups拡張に優先度を与えるべきであるが、
+   しかしながら、ClientHelloはまた、要求するサイファースイートのリストも
+   含んでおり、それも優先度順に並べられる。そのため優先度が衝突する可能性がある。
+   例えば、もしClientHelloがサイファースイートのフィールドに<DHE_RSA, ECDHE_RSA>の
+   順で2つの選択肢を含み、かつSupported Groups拡張が<secp256r1,ffdhe3072>の順で
+   2つの選択肢を含んでいる場合、疑う余地のない矛盾がある。
+   クライアントはそのような矛盾を示すべきではない。
+   クライアントの設定を尊重しつつECDHEとFFDHEの間で鍵交換メカニズムを選択する時、
+   そのような矛盾に出くわしたサーバーは、Supported Groups拡張を優先すべきであるが、
    (先のケースなら、secp256r1とECDHE_RSAを選ぶべき) 適切と思われるなんらかの方法で、
    矛盾を解決して良い。
 
@@ -758,6 +761,15 @@ RFC 7919                Negotiated FFDHE for TLS             August 2016
    ffdhe8192.  A server configured to respect client preferences and
    with support for only secp384p1 and ffdhe3072 SHOULD select
    TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA with secp384p1.
+
+   クライアントはECDHEとFFDHEの間に設定を挟んでも良い。
+   例えば、コストに関係なく強いグループを優先するが、弱いグループも
+   受け入れる場合、Supported Group拡張を <ffdhe8192,secp384p1,ffdhe3072,secp256r1> 
+   とできる。この例で、前の例と同じcipher_suiteフィールドが使われた場合、
+   クライアントの設定を尊重するように構成され、かつ全てのグループをサポートするサーバーは、
+   ffdhe8192とTLS_DHE_RSA_WITH_AES_128_CBC_SHAを選ぶべきである。
+   クライアントの設定を尊重するように構成されているがsecp384p1とffdhe3072のみサポートする
+   サーバーは、secp384p1とTLS_ECDHE_RSA_WITH_AES_128_CBC_SHAを選ぶべきである。
 
 
 
