@@ -1,20 +1,20 @@
 ## RFC
 
-* [RFC5116: An Interface and Algorithms for Authenticated Encryption](https://tools.ietf.org/html/rfc5116)
+* [RFC5116: An Interface and Algorithms for Authenticated Encryption](https://tools.ietf.org/html/rfc5116) ([txt](rfc5116.txt))
 
 	* AEADのアルゴリズムとインターフェースを規定
 
 
-* [RFC5246: The Transport Layer Security (TLS) Protocol Version 1.2](https://tools.ietf.org/html/rfc5246)
+* [RFC5246: The Transport Layer Security (TLS) Protocol Version 1.2](https://tools.ietf.org/html/rfc5246) ([txt](rfc5246.txt))
 
 	* TLS1.2に認証付き暗号(AEAD: authenticated encryption with additional data)を追加
 
-* [RFC5288: AES Galois Counter Mode (GCM) Cipher Suites for TLS](https://tools.ietf.org/html/rfc5288)
+* [RFC5288: AES Galois Counter Mode (GCM) Cipher Suites for TLS](https://tools.ietf.org/html/rfc5288) ([txt](rfc5288.txt))
 
 	* AEADの1つであるAES-GCMをTLS1.2に追加
 
 
-* [RFC5289: TLS Elliptic Curve Cipher Suites with SHA-256/384 and AES Galois Counter Mode (GCM)](https://tools.ietf.org/html/rfc5289)
+* [RFC5289: TLS Elliptic Curve Cipher Suites with SHA-256/384 and AES Galois Counter Mode (GCM)](https://tools.ietf.org/html/rfc5289) ([txt](rfc5289.txt))
 
 	* RFC4492で追加されたECCサイファースイートはSHA1サポートのみであった
 	* RFC5289はSHA256、SHA384のECCサイファースイートと、GCMのECCサイファースイートを追加

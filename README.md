@@ -51,6 +51,8 @@
 			* [RFC 5114 defines 3 standard sets of parameters for use with Diffie-Hellman (OpenSSL will have built-in support for these parameters from OpenSSL 1.0.2 - not yet released)](https://wiki.openssl.org/index.php/Diffie_Hellman)
 * **TLS1.2**
 	* [RFC5246](https://tools.ietf.org/html/rfc5246) | [Japanese(セッション再開部分のみ)](rfc5246.txt)
+* **認証付き暗号(AEAD)**
+	* [まとめ](AEAD.md)
 * **TLSとDTLSの安全な利用に関する推奨事項**
 	* [RFC7525](https://tools.ietf.org/html/rfc7525) | [Japanese](rfc7525.txt)
 		* TLS1.2以前に対する推奨事項。本RFCはTLS1.3でUpdateされるだろう。
