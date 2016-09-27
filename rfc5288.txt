@@ -71,10 +71,10 @@ RFC 5288                 AES-GCM Cipher suites               August 2008
    Diffie-Hellman key exchanges; ECC-based (Elliptic Curve Cryptography)
    cipher suites are defined in a separate document [RFC5289].
 
-   $B$3$N%I%-%e%a%s%H$O(BTLS$B$NMM!9$J808r49%a%+%K%:%`$G$N(BAES-GCM$B$N;HMQ$K$D$$$F5-=R$9$k!#(B
-   AES-GCM$B$O5!L)@-$H%G!<%?8;G'>Z$rDs6!$9$k(BAEAD$B0E9f$G$"$k!#(B
-   $B0J2<$N%;%/%7%g%s$O(BRSA$B!"(BDSA$B!"(BDH$B808r49$K4p$E$$$?%5%$%U%!!<%9%$!<%H$rDj5A$9$k!#(B
-   $BBJ1_6J@~0E9f$N%5%$%U%!!<%9%$!<%H$OJLES(BRFC5289$B$GDj5A$5$l$k!#(B
+   このドキュメントはTLSの様々な鍵交換メカニズムでのAES-GCMの使用について記述する。
+   AES-GCMは機密性とデータ源認証を提供するAEAD暗号である。
+   以下のセクションはRSA、DSA、DH鍵交換に基づいたサイファースイートを定義する。
+   楕円曲線暗号のサイファースイートは別途RFC5289で定義される。
 
    AES-GCM is not only efficient and secure, but hardware
    implementations can achieve high speeds with low cost and low
@@ -84,11 +84,11 @@ RFC 5288                 AES-GCM Cipher suites               August 2008
    used with IPsec ESP [RFC4106] and 802.1AE Media Access Control (MAC)
    Security [IEEE8021AE].
 
-   AES-GCM$B$O8zN($,$h$/0BA4$G$"$k$P$+$j$+!"%b!<%I$r%Q%$%W%i%$%s2=$G$-$k$3$H$+$i(B
-   $B9bB.$J%O!<%I%&%'%"$rDc%3%9%H!"DcCY1d$G<B8=$G$-$k!#(B
-   $B9b%G!<%?%9%k!<%W%C%H$rI,MW$H$9$k%"%W%j%1!<%7%g%s$O$3$l$i$N9bB.$J<BAu$N(B
-   $B287C$r<u$1$i$l$k!#(BAES-GCM$B$O(BIPsec ESP [RFC4106]$B!"(B802.1AE MAC Security[IEEE8021AE]
-   $B$G;HMQ2DG=$J%b!<%I$H$7$F4{$K5,Dj$5$l$F$$$k!#(B
+   AES-GCMは効率がよく安全であるばかりか、モードをパイプライン化できることから
+   高速なハードウェアを低コスト、低遅延で実現できる。
+   高データスループットを必要とするアプリケーションはこれらの高速な実装の
+   恩恵を受けられる。AES-GCMはIPsec ESP [RFC4106]、802.1AE MAC Security[IEEE8021AE]
+   で使用可能なモードとして既に規定されている。
 
 2.  Conventions Used in This Document
 
@@ -101,8 +101,8 @@ RFC 5288                 AES-GCM Cipher suites               August 2008
    The following cipher suites use the new authenticated encryption
    modes defined in TLS 1.2 with AES in Galois Counter Mode (GCM) [GCM]:
 
-   $B0J2<$N%5%$%U%!!<%9%$!<%H$O(BTLS1.2$B$GDj5A$5$l$?G'>ZIU$-0E9f%b!<%I$r(B
-   AES-GCM$B$H6&$K;HMQ$9$k!#(B
+   以下のサイファースイートはTLS1.2で定義された認証付き暗号モードを
+   AES-GCMと共に使用する。
 
       CipherSuite TLS_RSA_WITH_AES_128_GCM_SHA256 = {0x00,0x9C}
       CipherSuite TLS_RSA_WITH_AES_256_GCM_SHA384 = {0x00,0x9D}
@@ -135,13 +135,13 @@ RFC 5288                 AES-GCM Cipher suites               August 2008
    of two parts as follows: (this is an example of a "partially
    explicit" nonce; see Section 3.2.1 in [RFC5116]).
 
-   $B$3$l$i$N%5%$%U%!!<%9%$!<%H$O(B[RFC5116]$B$K5-=R$5$l$?(BAEAD_AES_128_GCM$B$H(B
-   AEAD_AES_256_GCM$B$N(BAEAD$B%"%k%4%j%:%`$H6&$K!"(BAES-GCM$B$r;HMQ$9$k!#(B
-   $B$3$l$i$N(BAEAD$B%"%k%4%j%:%`$O(BGCM$B$H6&$K(B128$B%S%C%HG'>Z%?%0$r;HMQ$9$k!#(B
-   ($B6qBNE*$K$O!"(B[RFC4366]$B%;%/%7%g%s(B3.5$B$N5-=R$N$H$*$j!"(B"truncated_hmac"$B3HD%$O(B
-   HMAC$B$r;HMQ$7$J$$%5%$%U%!!<%9%$!<%H$X$N1F6A$r;}$?$J$$(B)
-   "nonce"$B$O0J2<$N$h$&$K(B2$B$D$NItJ,$+$i$J$k(B12$B%P%$%H$G$"$k!#(B
-   ($B$3$l$O(B"partially explicit" nonce$B$NNc$G$"$j!"(B[RFC5116]$B%;%/%7%g%s(B3.2.1$B$r8+$h(B)
+   これらのサイファースイートは[RFC5116]に記述されたAEAD_AES_128_GCMと
+   AEAD_AES_256_GCMのAEADアルゴリズムと共に、AES-GCMを使用する。
+   これらのAEADアルゴリズムはGCMと共に128ビット認証タグを使用する。
+   (具体的には、[RFC4366]セクション3.5の記述のとおり、"truncated_hmac"拡張は
+   HMACを使用しないサイファースイートへの影響を持たない)
+   "nonce"は以下のように2つの部分からなる12バイトである。
+   (これは"partially explicit" nonceの例であり、[RFC5116]セクション3.2.1を見よ)
 
              struct {
                 opaque salt[4];
@@ -154,48 +154,48 @@ RFC 5288                 AES-GCM Cipher suites               August 2008
    sending) or the server_write_IV (when the server is sending).  The
    salt length (SecurityParameters.fixed_iv_length) is 4 octets.
 
-   salt$B$O(Bnonce$B$N(B"implicit"$B$JItJ,$GAw?.$O$5$l$J$$!#Be$o$j$K!"(Bsalt$B$O(B
-   $B%O%s%I%7%'!<%/$N%W%m%;%9$NCf$G@8@.$5$l$k!#$=$l$O(Bclient_write_IV$B$+(B
-   server_write_IV$B$N$I$A$i$+$G$"$k!#(Bsalt$B$ND9$5(B(SecurityParameters.fixed_iv_length)
-   $B$O(B4$B%*%/%F%C%H(B(4$B%P%$%H(B)$B$G$"$k!#(B
+   saltはnonceの"implicit"な部分で送信はされない。代わりに、saltは
+   ハンドシェークのプロセスの中で生成される。それはclient_write_IVか
+   server_write_IVのどちらかである。saltの長さ(SecurityParameters.fixed_iv_length)
+   は4オクテット(4バイト)である。
 
    The nonce_explicit is the "explicit" part of the nonce.  It is chosen
    by the sender and is carried in each TLS record in the
    GenericAEADCipher.nonce_explicit field.  The nonce_explicit length
    (SecurityParameters.record_iv_length) is 8 octets.
 
-   nonce_explicit$B$O(Bnonce$B$N(B"explicit"$B$JItJ,$G$"$k!#(B
-   $B$=$l$OAw?.<T$,A*Br$7!"3F(BTLS$B%l%3!<%I$N(BGenericAEADCipher.nonce_explicit$B%U%#!<%k%I(B
-   $B$GE>Aw$5$l$k!#(Bnonce_explicit$B$ND9$5(B(SecurityParameters.record_iv_length)$B$O(B
-   8$B%*%/%F%C%H$G$"$k!#(B
+   nonce_explicitはnonceの"explicit"な部分である。
+   それは送信者が選択し、各TLSレコードのGenericAEADCipher.nonce_explicitフィールド
+   で転送される。nonce_explicitの長さ(SecurityParameters.record_iv_length)は
+   8オクテットである。
 
    Each value of the nonce_explicit MUST be distinct for each distinct
    invocation of the GCM encrypt function for any fixed key.  Failure to
    meet this uniqueness requirement can significantly degrade security.
    The nonce_explicit MAY be the 64-bit sequence number.
 
-   nonce_explicit$B$NCM$O(BGCM$B0E9f2=4X?t$N3F8F$S=P$7$G0[$J$C$F$$$J$1$l$P$J$i$J$$!#(B
-   $B$3$NMW7o$,<i$i$l$J$$$H0BA4@-$,0-2=$9$k!#(B
-   nonce_explicit$B$O(B64$B%S%C%H$N%7!<%1%s%9HV9f$G$h$$!#(B
+   nonce_explicitの値はGCM暗号化関数の各呼び出しで異なっていなければならない。
+   この要件が守られないと安全性が悪化する。
+   nonce_explicitは64ビットのシーケンス番号でよい。
 
    The RSA, DHE_RSA, DH_RSA, DHE_DSS, DH_DSS, and DH_anon key exchanges
    are performed as defined in [RFC5246].
 
    The Pseudo Random Function (PRF) algorithms SHALL be as follows:
 
-   PRF$B%"%k%4%j%:%`$O<!$N$h$&$K$9$k!#(B
+   PRFアルゴリズムは次のようにする。
 
       For cipher suites ending with _SHA256, the PRF is the TLS PRF
       [RFC5246] with SHA-256 as the hash function.
 
-	  _SHA256$B$G=*$o$k%5%$%U%!!<%9%$!<%H$G$O!"%O%C%7%e4X?t$K(BSHA-256$B$r;HMQ$7$?(B
-	  [RFC5246] TLS PRF$B$H$9$k!#(B
+	  _SHA256で終わるサイファースイートでは、ハッシュ関数にSHA-256を使用した
+	  [RFC5246] TLS PRFとする。
 
       For cipher suites ending with _SHA384, the PRF is the TLS PRF
       [RFC5246] with SHA-384 as the hash function.
 
-	  _SHA384$B$G=*$o$k%5%$%U%!!<%9%$!<%H$G$O!"%O%C%7%e4X?t$K(BSHA-384$B$r;HMQ$7$?(B
-	  [RFC5246] TLS PRF$B$H$9$k!#(B
+	  _SHA384で終わるサイファースイートでは、ハッシュ関数にSHA-384を使用した
+	  [RFC5246] TLS PRFとする。
 
    Implementations MUST send TLS Alert bad_record_mac for all types of
    failures encountered in processing the AES-GCM algorithm.
@@ -222,12 +222,12 @@ RFC 5288                 AES-GCM Cipher suites               August 2008
    generate a fatal "illegal_parameter" alert if they detect an
    incorrect version.
 
-   $B$3$l$i$N%5%$%U%!!<%9%$!<%H$O(BTLS1.2$B$GDj5A$5$l$?(Badditional data$B$H6&$K(B
-   $B;HMQ$5$l$k!#$3$l$i$O8E$$(BTLS$B%P!<%8%g%s$G8r>D$5$l$F$O$J$i$J$$!#(B
-   $B%/%i%$%"%s%H$O$b$7(BTLS1.2$B0J9_$rDs<($7$J$$$N$G$"$l$P!"$3$l$i$N(B
-   $B%5%$%U%!!<%9%$!<%H$rDs<($7$F$O$J$i$J$$!#(B
-   $BA0$N(BTLS$B%P!<%8%g%s$rA*$V%5!<%P!<$O!"$3$l$i$N%5%$%U%!!<%9%$!<%H$N(B1$B$D$r(B
-   $BA*Br$7$F$O$J$i$J$$!#(B
+   これらのサイファースイートはTLS1.2で定義されたadditional dataと共に
+   使用される。これらは古いTLSバージョンで交渉されてはならない。
+   クライアントはもしTLS1.2以降を提示しないのであれば、これらの
+   サイファースイートを提示してはならない。
+   前のTLSバージョンを選ぶサーバーは、これらのサイファースイートの1つを
+   選択してはならない。
 
 5.  IANA Considerations
 
