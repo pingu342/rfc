@@ -72,8 +72,8 @@ RFC 5288                 AES-GCM Cipher suites               August 2008
    cipher suites are defined in a separate document [RFC5289].
 
    このドキュメントはTLSの様々な鍵交換メカニズムでのAES-GCMの使用について記述する。
-   AES-GCMは機密性とデータ源認証を提供するAEAD暗号である。
-   以下のセクションはRSA、DSA、DH鍵交換に基づいたサイファースイートを定義する。
+   AES-GCMは機密性とデータ源認証の両方を提供する認証付き暗号(AEAD)である。
+   以下のセクションでRSA、DSA、DH鍵交換に基づくサイファースイートを定義する。
    楕円曲線暗号のサイファースイートは別途RFC5289で定義される。
 
    AES-GCM is not only efficient and secure, but hardware
@@ -84,7 +84,7 @@ RFC 5288                 AES-GCM Cipher suites               August 2008
    used with IPsec ESP [RFC4106] and 802.1AE Media Access Control (MAC)
    Security [IEEE8021AE].
 
-   AES-GCMは効率がよく安全であるばかりか、モードをパイプライン化できることから
+   AES-GCMは効率がよく安全であるだけでなく、モードをパイプライン化できることから
    高速なハードウェアを低コスト、低遅延で実現できる。
    高データスループットを必要とするアプリケーションはこれらの高速な実装の
    恩恵を受けられる。AES-GCMはIPsec ESP [RFC4106]、802.1AE MAC Security[IEEE8021AE]
@@ -135,13 +135,13 @@ RFC 5288                 AES-GCM Cipher suites               August 2008
    of two parts as follows: (this is an example of a "partially
    explicit" nonce; see Section 3.2.1 in [RFC5116]).
 
-   これらのサイファースイートは[RFC5116]に記述されたAEAD_AES_128_GCMと
+   これらのサイファースイートは[RFC5116]に記述されているAEAD_AES_128_GCMと
    AEAD_AES_256_GCMのAEADアルゴリズムと共に、AES-GCMを使用する。
    これらのAEADアルゴリズムはGCMと共に128ビット認証タグを使用する。
    (具体的には、[RFC4366]セクション3.5の記述のとおり、"truncated_hmac"拡張は
    HMACを使用しないサイファースイートへの影響を持たない)
    "nonce"は以下のように2つの部分からなる12バイトである。
-   (これは"partially explicit" nonceの例であり、[RFC5116]セクション3.2.1を見よ)
+   (これは"partially explicit" nonceの例、[RFC5116]セクション3.2.1を見よ)
 
              struct {
                 opaque salt[4];
@@ -154,7 +154,7 @@ RFC 5288                 AES-GCM Cipher suites               August 2008
    sending) or the server_write_IV (when the server is sending).  The
    salt length (SecurityParameters.fixed_iv_length) is 4 octets.
 
-   saltはnonceの"implicit"な部分で送信はされない。代わりに、saltは
+   saltはnonceの"implicit"な部分であり送信されない。代わりに、saltは
    ハンドシェークのプロセスの中で生成される。それはclient_write_IVか
    server_write_IVのどちらかである。saltの長さ(SecurityParameters.fixed_iv_length)
    は4オクテット(4バイト)である。
@@ -259,8 +259,14 @@ RFC 5288                 AES-GCM Cipher suites               August 2008
    AES-GCM security requires that the counter is never reused.  The IV
    construction in Section 3 is designed to prevent counter reuse.
 
+   AES-GCMの安全にはカウンタを再利用しないことが求められる。
+   セクション3のIV構築はカウンタの再利用を防ぐために設計されている。
+
    Implementers should also understand the practical considerations of
    IV handling outlined in Section 9 of [GCM].
+
+   実装は[GCM]セクション9で述べられているIVハンドリングの実践検討も
+   理解すべきである。
 
 6.2.  Recommendations for Multiple Encryption Processors
 
