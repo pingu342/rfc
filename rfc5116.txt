@@ -128,8 +128,9 @@ RFC 5116                Authenticated Encryption            January 2008
 
    認証付き暗号[BNOO]は、暗号化される平文に対して機密性を提供し、加えて
    その完全性と認証性を確認する方法を提供する暗号の1つの形である。
-   認証付き暗号AEAD[R02]は、暗号化されない"additional authenticated data"
-   と呼ばれるAssociated Data(AD)の完全性と認証性を確認する能力を追加する。
+   関連データを伴った認証付き暗号AEAD[R02]は、暗号化されない"additional
+   authenticated data"と呼ばれるAssociated Data(AD)の完全性と認証性を
+   確認する能力を追加する。
 
 1.1.  Background
 
@@ -255,6 +256,7 @@ RFC 5116                Authenticated Encryption            January 2008
    are defined below in terms of octet strings.
 
    AEADアルゴリズムは認証付き暗号と認証付き復号の2つのオペレーションを持つ。
+   アルゴリズムの入出力はオクテットストリング表現で以下に定義される。
 
    An implementation MAY accept additional inputs.  For example, an
    input could be provided to allow the user to select between different
@@ -266,8 +268,13 @@ RFC 5116                Authenticated Encryption            January 2008
    The authenticated encryption operation has four inputs, each of which
    is an octet string:
 
+   認証付き暗号オペレーションは4つの入力を持ち、それぞれがオクテットストリングである。
+
       A secret key K, which MUST be generated in a way that is uniformly
       random or pseudorandom.
+
+      秘密鍵K
+      これは均一な乱数か擬似乱数によって生成されなければならない。
 
       A nonce N.  Each nonce provided to distinct invocations of the
       Authenticated Encryption operation MUST be distinct, for any
@@ -277,11 +284,21 @@ RFC 5116                Authenticated Encryption            January 2008
       other method that meets the uniqueness requirement.  Other
       applications SHOULD use zero-length nonces.
 
+	  ノンスN
+      認証付き暗号オペレーションの起動を区別するため、ノンスはそれぞれ
+      違ったものでなければならない。
+
       A plaintext P, which contains the data to be encrypted and
       authenticated.
 
+      平文P
+      認証と暗号化の両方がなされるデータ
+
       The associated data A, which contains the data to be
       authenticated, but not encrypted.
+
+	  関連データA
+      認証の対象であるが、暗号化の対象ではないデータ
 
    There is a single output:
 
@@ -290,8 +307,13 @@ RFC 5116                Authenticated Encryption            January 2008
       an indication that the requested encryption operation could not be
       performed.
 
+      暗号文C
+      少なくとも平文と同じ長さの暗号文か、暗号化を行えないことの印
+
    All of the inputs and outputs are variable-length octet strings,
    whose lengths obey the following restrictions:
+
+   入出力は全て、以下の制約に従った長さを持つ可変長のオクテットストリングである。
 
       The number of octets in the key K is between 1 and 255.  For each
       AEAD algorithm, the length of K MUST be fixed.
