@@ -1,3 +1,12 @@
+## AEAD
+
+AEAD(authenticated encryption with additional data)
+
+authenticated encryption：認証付き暗号
+
+additional data：認証の対象であるが暗号化はされないデータ。
+
+
 ## RFC
 
 * [RFC5116: An Interface and Algorithms for Authenticated Encryption](https://tools.ietf.org/html/rfc5116) ([txt](rfc5116.txt))
@@ -7,7 +16,7 @@
 
 * [RFC5246: The Transport Layer Security (TLS) Protocol Version 1.2](https://tools.ietf.org/html/rfc5246) ([txt](rfc5246.txt))
 
-	* TLS1.2に認証付き暗号(AEAD: authenticated encryption with additional data)を追加
+	* TLS1.2にAEADを追加
 
 * [RFC5288: AES Galois Counter Mode (GCM) Cipher Suites for TLS](https://tools.ietf.org/html/rfc5288) ([txt](rfc5288.txt))
 
