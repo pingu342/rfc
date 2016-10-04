@@ -11,6 +11,7 @@
 	* [NIST Special Publication 800-56A](http://nvlpubs.nist.gov/nistpubs/SpecialPublications/NIST.SP.800-56Ar2.pdf) | [Japanese(途中)](NIST.SP.800-56Ar2.md)
 	* [CAVP TESTING: KEY ESTABLISHMENT - KEY AGREEMENT SCHEMES (KAS) AND KEY CONFIRMATION (SP800-56A)](http://csrc.nist.gov/groups/STM/cavp/key-establishment.html)
 		* The Key Agreement Schemes Validation System (KASVS) | [Japanese(途中)](The Key Agreement Schemes Validation System (KASVS).md)
+	* [DHグループ](DH group.md)
 
 
 # IPsec (IKE)
@@ -50,9 +51,9 @@
 		* 3つのMODPグループはOpensslでサポート予定 (2016/5/21時点)
 			* [RFC 5114 defines 3 standard sets of parameters for use with Diffie-Hellman (OpenSSL will have built-in support for these parameters from OpenSSL 1.0.2 - not yet released)](https://wiki.openssl.org/index.php/Diffie_Hellman)
 * **TLS1.2**
-	* [RFC5246](https://tools.ietf.org/html/rfc5246) | [Japanese(セッション再開部分のみ)](rfc5246.txt)
+	* [RFC5246](https://tools.ietf.org/html/rfc5246) | [Japanese](rfc5246.txt)
 * **認証付き暗号(AEAD)**
-	* [まとめ](AEAD.md)
+	* [AEAD](AEAD.md)
 * **TLSとDTLSの安全な利用に関する推奨事項**
 	* [RFC7525](https://tools.ietf.org/html/rfc7525) | [Japanese](rfc7525.txt)
 		* TLS1.2以前に対する推奨事項。本RFCはTLS1.3でUpdateされるだろう。

@@ -895,6 +895,10 @@ RFC 5246                          TLS                        August 2008
    implementation receives an unexpected record type, it MUST send an
    unexpected_message alert.
 
+   このドキュメントで定義されていないレコードタイプを送信してはならない。
+   もし予期しないレコードタイプを受信した場合はunexpected_messageアラート
+   を送信しなければならない。
+
    Any protocol designed for use over TLS must be carefully designed to
    deal with all possible attacks against it.  As a practical matter,
    this means that the protocol designer must be aware of what security
@@ -1334,6 +1338,11 @@ RFC 5246                          TLS                        August 2008
       MUST check this padding and MUST use the bad_record_mac alert to
       indicate padding errors.
 
+	  平文の長さを暗号ブロック長の整数倍に強制するために追加されるパディング。
+
+	  受信側はこのパディングをチェックし、パディングエラーを示すbad_record_macを
+	  使用しなければならない。
+
    padding_length
       The padding length MUST be such that the total size of the
       GenericBlockCipher structure is a multiple of the cipher's block
@@ -1663,6 +1672,14 @@ RFC 5246                          TLS                        August 2008
    connections.  Like other messages, alert messages are encrypted and
    compressed, as specified by the current connection state.
 
+   アラートタイプはTLSレコードレイヤーがサポートするコンテンツタイプの1つである。
+   アラートメッセージはメッセージの重大度(warningまたはfatal)とアラートの説明を
+   運ぶ。fatalレベルのアラートメッセージは接続の即時終了に至る。この場合、
+   そのセッションに対応する他のコネクションは継続してもよいが、そのセッション識別子は、
+   新しいコネクションの確立にfailedセッションが使用されないようにするために、
+   無効化されなければならない。他のメッセージ同様に、現在のコネクションステートに応じて、
+   アラートメッセージは暗号化と圧縮がなされる。
+
       enum { warning(1), fatal(2), (255) } AlertLevel;
 
       enum {
@@ -1712,6 +1729,10 @@ RFC 5246                          TLS                        August 2008
    The client and the server must share knowledge that the connection is
    ending in order to avoid a truncation attack.  Either party may
    initiate the exchange of closing messages.
+
+   クライアントとサーバーは、コネクションが切捨て攻撃を避けるために終了している
+   ことを共有しなければならない。クロージングメッセージの交換はどちらのパーティ
+   も開始できる。
 
    close_notify
       This message notifies the recipient that the sender will not send
@@ -1765,6 +1786,12 @@ RFC 5246                          TLS                        August 2008
    failed connection.  Thus, any connection terminated with a fatal
    alert MUST NOT be resumed.
 
+   TLSハンドシェークプロトコルにおけるエラーハンドリングはとても単純である。
+   エラー検出時、検出したパーティはもう一方のパーティにメッセージを送信する。
+   alertメッセージを送信または受信すると、両方のパーティはコネクションを即
+   クローズする。エラーとなったコネクションに関連するセッション識別子、鍵、
+   秘密をサーバーとクライアントは忘れなければならない。
+
    Whenever an implementation encounters a condition which is defined as
    a fatal alert, it MUST send the appropriate alert prior to closing
    the connection.  For all errors where an alert level is not
@@ -1773,6 +1800,12 @@ RFC 5246                          TLS                        August 2008
    implementation chooses to send an alert but intends to close the
    connection immediately afterwards, it MUST send that alert at the
    fatal alert level.
+
+   fatalアラートとして定義される状況に遭遇したらいつでも、コネクションを
+   クローズする前に適切なalertを送信しなければならない。alertレベルが明確に
+   規定されてないエラーについて、それをfatalエラーとして扱うか否かは、
+   それを送信するパーティが決定してよい。もしalert送信後にすぐコネクションを
+   クロースするつもりなら、fatalレベルのalertを送信しなければならない。
 
    If an alert with a level of warning is sent and received, generally
    the connection can continue normally.  If the receiving party decides
@@ -1786,6 +1819,15 @@ RFC 5246                          TLS                        August 2008
    expired certificate (perhaps after confirming this with the user) and
    wants to continue the connection, it would not generally send a
    certificate_expired alert.
+
+   warningレベルのalertが送受信された場合、コネクションは普通に継続させる
+   ことができる。もし受信側のパーティがコネクションを続行しないことを決めた
+   場合、コネクションを終了するためにfatalアラートを送信すべきである。
+   このように、送信側のパーティは通常、受信側のパーティがどのように振舞うか
+   を知ることができない。従って、warningアラートは、送信側のパーティが
+   コネクションを継続したいと思っているときには有用ではない。故にそれは
+   たびたび省略される。例えば、もしピアが期限切れ証明書を許容すると判断し、
+   コネクションを継続したい場合は、certificate_expiredアラートを送信しない。
 
    The following error alerts are defined:
 
