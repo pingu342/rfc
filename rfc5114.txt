@@ -29,9 +29,9 @@ Abstract
    (SSH), Transport Layer Security (TLS), and Internet Key Exchange
    (IKE).
 
-   このドキュメントは、インターネット通信にセキュリティをもたらすIETFプロトコル
-   で使用可能な8つのDHグループを記述する。例えばSMIME、 SSH、TLS、IKEなどの
-   様々なセキュリティプロトコルの実装者が同一のグループを使用することを可能にする。
+   このドキュメントは、インターネット通信にセキュリティをもたらすため、IETFプロトコル
+   に使用できる8つのDHグループを記述する。例えばSMIME、SSH、TLS、IKEなどの、
+   様々なセキュリティプロトコルの実装者が、同一のグループを使用することを可能にする。
 
    All of these groups comply in form and structure with relevant
    standards from ISO, ANSI, NIST, and the IEEE.  These groups are
