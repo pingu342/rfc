@@ -5240,12 +5240,22 @@ E.1.  Compatibility with TLS 1.0/1.1 and SSL 3.0
    built-in mechanism for version negotiation so as not to bother other
    protocol components with the complexities of version selection.
 
+   様々なTLSバージョンが存在するため、使用するバージョンを交渉するための
+   方法が必要とされる。TLSプロトコルは、バージョン選択の複雑さに思い悩むと
+   いけないから、バージョン交渉のためのビルトイン・メカニズムを提供する。
+
    TLS versions 1.0, 1.1, and 1.2, and SSL 3.0 are very similar, and use
    compatible ClientHello messages; thus, supporting all of them is
    relatively easy.  Similarly, servers can easily handle clients trying
    to use future versions of TLS as long as the ClientHello format
    remains compatible, and the client supports the highest protocol
    version available in the server.
+
+   各TLSバージョンはとても似ており、互換のClientHelloメッセージを使用する。
+   従って、それらを全てサポートすることは、比較的簡単だ。同様に、サーバーは
+   ClientHelloフォーマットが互換である限り、TLSの将来バージョンの使用を
+   試みるクライアントを、容易にハンドリングできる。クライアントはサーバーが
+   利用可能な最高の場^ジョンをサポートする。
 
    A TLS 1.2 client who wishes to negotiate with such older servers will
    send a normal TLS 1.2 ClientHello, containing { 3, 3 } (TLS 1.2) in
@@ -5254,13 +5264,27 @@ E.1.  Compatibility with TLS 1.0/1.1 and SSL 3.0
    version number.  If the client agrees to use this version, the
    negotiation will proceed as appropriate for the negotiated protocol.
 
+   古いサーバーとの交渉を望むTLS1.2クライアントは、普通のTLS1.2 ClientHello
+   を送信する。つまりClientHello.client_versionに{3, 3}を含める。
+   もしサーバーがこのバージョンをサポートしないなら、古いバージョンを
+   含んだServerHelloで応答する。もしクライアントがこのバージョンに同意する
+   なら、交渉されたプロトコルで適切に交渉が進む。
+
    If the version chosen by the server is not supported by the client
    (or not acceptable), the client MUST send a "protocol_version" alert
    message and close the connection.
 
+   もしサーバーが選んだバージョンをクライアントがサポートしてないなら
+   (または受け入れられないなら)、クライアントは "protocol_version"アラート
+   を送信し、接続をクローズしなければならない。
+
    If a TLS server receives a ClientHello containing a version number
    greater than the highest version supported by the server, it MUST
    reply according to the highest version supported by the server.
+
+   もしTLSサーバーが、サポートするバージョン番号より高いバージョンを含んだ
+   ClientHelloを受けたら、サーバーがサポートする最高のバージョンに従って
+   応答しなければならない。
 
    A TLS server can also receive a ClientHello containing a version
    number smaller than the highest supported version.  If the server
@@ -5280,9 +5304,18 @@ RFC 5246                          TLS                        August 2008
    willing to use) only versions greater than client_version, it MUST
    send a "protocol_version" alert message and close the connection.
 
+   TLSサーバーは、サポートする最高バージョンより低いバージョンを含んだ
+   ClientHelloを受け取ることもできる。例えば、もしサーバーがTLS1.0, 1.1, 1.2を
+   サポートし、client_versionがTLS1.0なら、サーバーはTLS1.0 ServerHelloで進めて
+   もよい。もしサーバーがclient_versionよりおおきなバージョンのみサポートする
+   なら、protocol_versionアラートを送信し、接続をクローズしなければならない。
+
    Whenever a client already knows the highest protocol version known to
    a server (for example, when resuming a session), it SHOULD initiate
    the connection in that native protocol.
+
+   クライアントが、サーバーの最高バージョンを既にしっているならいつでも、
+   そのネイティブ・プロトコルで接続を開始すべき。
 
    Note: some server implementations are known to implement version
    negotiation incorrectly.  For example, there are buggy TLS 1.0
@@ -5293,6 +5326,14 @@ RFC 5246                          TLS                        August 2008
    topic beyond the scope of this document, and may require multiple
    connection attempts by the client.
 
+   バージョン交渉を不正に実装したサーバーがいくつか知られている。
+   例えば、クライアントがTLS1.0より新しいバージョンを提示したとき、
+   ただ単に接続をクローズするバグのあるTLS1.0サーバーが存在する。
+   また、ClientHelloに拡張が含まれていると、接続を拒否するサーバーも
+   知られている。そのようなバグのあるサーバーとの相互接続は、この
+   ドキュメントのスコープを超えた難しいトピックであり、クライアントによって
+   複数の接続が試みられる必要かもしれない。
+
    Earlier versions of the TLS specification were not fully clear on
    what the record layer version number (TLSPlaintext.version) should
    contain when sending ClientHello (i.e., before it is known which
@@ -5300,12 +5341,23 @@ RFC 5246                          TLS                        August 2008
    compliant with this specification MUST accept any value {03,XX} as
    the record layer version number for ClientHello.
 
+   TLSの古いバージョンは、ClientHelloを送信するときにレコード・レイヤーに
+   含めるべきバージョン番号について明確ではなかった。
+   従って、この使用に準拠するTLSサーバーは、ClientHelloのレコード・レイヤーの
+   バージョン番号として任意の{03,XX}を受け入れなければならない。
+
    TLS clients that wish to negotiate with older servers MAY send any
    value {03,XX} as the record layer version number.  Typical values
    would be {03,00}, the lowest version number supported by the client,
    and the value of ClientHello.client_version.  No single value will
    guarantee interoperability with all old servers, but this is a
    complex topic beyond the scope of this document.
+
+   古いサーバーと交渉を望むTLSクライアントは、任意の{03,XX}を、レコードレイヤーの
+   バージョン番号として送信してよい。典型的には{03,00}で、これはクライアントがサポート
+   している最低のバージョン番号であり、ClientHello.client_versionの値である。
+   すべての古いサーバーとの接続を保証する値は無いが、これはこのドキュメントの
+   スコープを超えた難しいトピックである。
 
 E.2.  Compatibility with SSL 2.0
 
