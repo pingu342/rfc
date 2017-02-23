@@ -3087,10 +3087,18 @@ RFC 5246                          TLS                        August 2008
       message (or the ServerHello message, if this is an anonymous
       negotiation).
 
+      このメッセージはサーバーSertificateメッセージ(もし匿名なら、
+      ServerHelloメッセージ)の直後に送信される。
+
       The ServerKeyExchange message is sent by the server only when the
       server Certificate message (if sent) does not contain enough data
       to allow the client to exchange a premaster secret.  This is true
       for the following key exchange methods:
+
+      ServerKeyExchangeメッセージは、サーバーCertificateメッセージ内に、
+      クライアントがプリマスターシークレットを交換するためのデータが
+      十分に含まれない場合にのみ、サーバーによって送信される。これは、
+      以下の鍵交換メソッドにおいて真である。
 
          DHE_DSS
          DHE_RSA
@@ -3098,6 +3106,9 @@ RFC 5246                          TLS                        August 2008
 
       It is not legal to send the ServerKeyExchange message for the
       following key exchange methods:
+
+      以下の鍵交換メソッドにおいてServerKeyExchangeメッセージを送信する
+      ことは合法でない。
 
          RSA
          DH_DSS
@@ -3997,6 +4008,9 @@ RFC 5246                          TLS                        August 2008
    Note: Diffie-Hellman parameters are specified by the server and may
    be either ephemeral or contained within the server's certificate.
 
+   Diffie-Hellmanパラメーターはサーバーによって指定され、それは一時的であるか
+   またはサーバーの証明書に含まれる。
+
 9.  Mandatory Cipher Suites
 
    In the absence of an application profile standard specifying
@@ -4581,6 +4595,16 @@ A.5.  The Cipher Suite
    certificate.  Any Diffie-Hellman certificate provided by the client
    must use the parameters (group and generator) described by the
    server.
+
+   以下のサイファースイートはサーバー認証あり(任意でクライアント認証あり)の
+   Diffie-Hellmanにおいて使用される。DHは、サーバーの証明書の中に、CA証明書
+   によって署名されたDiffie-Hellmanパラメーターが含まれていることを示す印である。
+   DHEは、一時的なDiffie-Hellmanであることを示す印であり、Diffie-Hellmanパラメーター
+   は、署名可能な証明書によって署名される。サーバーが使用する署名アルゴリズムは、
+   サイファースイート名のDHEの後ろで指定される。サーバーはクライアント認証の
+   のためにクライアントに署名可能な証明書を要求できる。またはDiffie-Hellman
+   証明書を要求しても良い。クライアントが提供するDiffie-Hellman証明書は、
+   サーバーが決めたパラメーター（グループとジェネレーター）を仕様しなければならない。
 
 
 
@@ -5603,7 +5627,7 @@ F.1.1.3.  Diffie-Hellman Key Exchange with Authentication
    ServerKeyExchangeメッセージを使用できる。一時的なパラメーターは、古いパラ
    メーターを再利用する攻撃をさせないために、署名の前にhello.randomの値で
    ハッシュされる。どちらの場合でもクライアントは、そのパラメーターがその
-   サーバーに属することを確かめるため、証明書か署名を検証できる。
+   サーバーに属することを、証明書か署名を検証することで確かめられる。
 
    If the client has a certificate containing fixed Diffie-Hellman
    parameters, its certificate contains the information required to
