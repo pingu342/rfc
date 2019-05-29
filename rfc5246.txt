@@ -929,25 +929,37 @@ RFC 5246                          TLS                        August 2008
    parameters a current state.  The initial current state always
    specifies that no encryption, compression, or MAC will be used.
 
-   TLSコネクション状態はTLSレコードプロトコルの動作環境である。それは、圧縮ア
-   ルゴリズム、暗号化アルゴリズム、MACアルゴリズムを規定する。加えて、これらの
-   アルゴリズムのパラメーターである。具体的にはreadとwriteの両方向のコネク
-   ション用のMAC鍵、バルク暗号化鍵である。理論的に常時4つのコネクション状
-   態が存在する。具体的には現在のreadとwriteの状態と、保留中のreadとwriteの状態であ
-   る。全てのレコードは現在のreadとwriteの状態の下で処理される。保留中の状態の
-   セキュリティパラメータはTLSハンドシェークプロトコルにより設定可能である。そ
-   してChangeCipherSpecは保留中の状態を選択的に現在のにすることができる。
+   TLS接続状態は、TLS Record Protocolの動作環境です。圧縮アルゴリズム、
+   暗号化アルゴリズム、およびMACアルゴリズムを指定します。さらに、これら
+   のアルゴリズムのパラメータ、つまり、読み取り方向と書き込み方向の両方
+   での接続のMACキーとバルク暗号化キーが知られています。論理的には、未解
+   決の接続状態は常に4つあります。現在の読み取りおよび書き込み状態、およ
+   び保留中の読み取りおよび書き込み状態です。すべてのレコードは現在の読
+   み書き状態で処理されます。保留状態のセキュリティパラメータはTLSハンド
+   シェイクプロトコルによって設定でき、ChangeCipherSpecは保留状態のいず
+   れかを選択的に最新にすることができます。その場合、適切な現在の状態は
+   破棄され保留状態に置き換えられます。その後、保留状態は空の状態に再初
+   期化されます。セキュリティパラメータで初期化されていない状態を現在の
+   状態にすることは違法です。初期の現在の状態は、暗号化、圧縮、またはMAC
+   が使用されないことを常に指定します。
 
    The security parameters for a TLS Connection read and write state are
    set by providing the following values:
+
+   TLS接続の読み取りおよび書き込み状態のセキュリティパラメータは、次の値
+   を指定して設定されます。
 
    connection end
       Whether this entity is considered the "client" or the "server" in
       this connection.
 
+	  この接続でこのエンティティはクライアントまたはサーバのどちらか。
+
    PRF algorithm
       An algorithm used to generate keys from the master secret (see
       Sections 5 and 6.3).
+
+	  マスターシークレットから鍵を生成するアルゴリズム。
 
 
 
@@ -966,9 +978,10 @@ RFC 5246                          TLS                        August 2008
       appropriate), and the lengths of explicit and implicit
       initialization vectors (or nonces).
 
-	  バルク暗号のアルゴリズム。
-	  アルゴリズムの鍵長、ブロック暗号かストリーム暗号かAEAD暗号かどうか、
-	  暗号のブロックサイズ、IV(またはnonce)の長さ。
+	  バルク暗号化に使用されるアルゴリズム。この仕様には、このアルゴリズム
+	  の鍵サイズ、それがブロック、ストリーム、またはAEAD暗号であるかどうか、
+	  暗号のブロックサイズ（該当する場合）、および明示的および暗黙的な初期
+	  化ベクトル（またはナンス）の長さが含まれます。
 
    MAC algorithm
       An algorithm to be used for message authentication.  This
@@ -1057,6 +1070,11 @@ RFC 5246                          TLS                        August 2008
    the current states.  These current states MUST be updated for each
    record processed.  Each connection state includes the following
    elements:
+
+   セキュリティパラメータを設定してキーを生成したら、それらを現在の状態に
+   することで接続状態をインスタンス化できます。これらの現在の状態は、処理
+   された各レコードに対して更新されなければなりません。各接続状態には、以
+   下の要素が含まれています。
 
    compression state
       The current state of the compression algorithm.
@@ -2749,9 +2767,10 @@ RFC 5246                          TLS                        August 2008
    digital signatures.  The "extension_data" field of this extension
    contains a "supported_signature_algorithms" value.
 
-   クライアントは"signature_algorithms"拡張を使用し、デジタル署名に使用して良い
-   署名とハッシュのアルゴリズムをサーバーに指定する。この拡張の"extension_data"フィールドには
-   "supported_signature_algorithms"の値を含める。
+   クライアントは "signature_algorithms"拡張を使用して、どの署名/ハッシュ
+   アルゴリズムのペアをデジタル署名に使用できるかをサーバーに示します。こ
+   の拡張の "extension_data"フィールドは "supported_signature_algorithms"
+   値を含みます。
 
 
 
@@ -2780,12 +2799,18 @@ RFC 5246                          TLS                        August 2008
    pair that the client is willing to verify.  The values are indicated
    in descending order of preference.
 
-   SignatureAndHashAlgorithmは、クライアントが検証することができる
-   ハッシュと署名のペアの1つである。この値は優先度順に記載される。
+   各SignatureAndHashAlgorithm値はクライアントが検証しても構わないと思っ
+   ている単一のハッシュ/署名ペアをリストします。値は優先順位の降順で示さ
+   れています。
 
    Note: Because not all signature algorithms and hash algorithms may be
    accepted by an implementation (e.g., DSA with SHA-1, but not
    SHA-256), algorithms here are listed in pairs.
+
+   注：すべての署名アルゴリズムとハッシュアルゴリズムが実装によって受け入
+   れられるとは限らないため（たとえば、SHA-1とDSAの組み合わせは使用できま
+   すが、SHA-256は使用できません）、ここでのアルゴリズムはペアで表示され
+   ます。
 
    hash
       This field indicates the hash algorithm which may be used.  The
@@ -2794,10 +2819,11 @@ RFC 5246                          TLS                        August 2008
       "none" value is provided for future extensibility, in case of a
       signature algorithm which does not require hashing before signing.
 
-	  このフィールドは使用可能はハッシュアルゴリズムを示す。
-	  その値は、ハッシュされないデータ、MD5、SHA-1、SHA-224、SHA-256、SHA-384、
-	  SHA-512のサポートしているかどうかを示す。"none"という値は、例えば
-	  署名の前にハッシュする必要がないといった将来の拡張のために用意されている。
+	  このフィールドは使用されるかもしれないハッシュアルゴリズムを示します。
+	  値はそれぞれ、ハッシュされていないデータ、MD5 [MD5]、SHA-1、SHA-224、
+	  SHA-256、SHA-384、およびSHA-512 [SHS]のサポートを示します。署名の前
+	  にハッシュを必要としない署名アルゴリズムの場合には、「none」の値が将
+	  来の拡張性のために提供されます。
 
    signature
       This field indicates the signature algorithm that may be used.
@@ -2806,17 +2832,19 @@ RFC 5246                          TLS                        August 2008
       "anonymous" value is meaningless in this context but used in
       Section 7.4.3.  It MUST NOT appear in this extension.
 
-	  このフィールドは使用可能な署名アルゴリズムを示す。
-	  その値は"anonymous"、PKCS1、DSA、ECDSAを示す。
-	  "anonymous"はセクション7.4.3で使用される。この拡張に使用してはならない。
+	  このフィールドは使用されるかもしれない署名アルゴリズムを示します。値
+	  はそれぞれ匿名署名、RSASSA-PKCS1-v1_5 [PKCS1]およびDSA [DSS]、および
+	  ECDSA [ECDSA]を示します。 「匿名」の値はこの文脈では無意味ですが、セ
+	  クション7.4.3で使用されます。それはこの拡張に現れてはいけません。
 
    The semantics of this extension are somewhat complicated because the
    cipher suite indicates permissible signature algorithms but not hash
    algorithms.  Sections 7.4.2 and 7.4.3 describe the appropriate rules.
 
-   この拡張の意味は、サイファースイートは使用可能な署名アルゴリズムを指定するが
-   ハッシュアルゴリズムを指定しないことが原因で、少々込み入っている。
-   セクション7.4.2(Server Certificate)と7.4.3(Server Key Exchange Message)に適切なルールを記載する。
+   暗号スイートは許容される署名アルゴリズムを示しているがハッシュアルゴリズ
+   ムを示していないため、この拡張の意味はやや複雑です。セクション7.4.2
+   (Server Certificate)と7.4.3(Server Key Exchange Message)は適切な規則につ
+   いて説明します。
 
    If the client supports only the default hash and signature algorithms
    (listed in this section), it MAY omit the signature_algorithms
@@ -2835,17 +2863,19 @@ RFC 5246                          TLS                        August 2008
    signature_algorithms extension, listing the algorithms it is willing
    to accept.
 
-   もしクライアントがデフォルトのハッシュと署名アルゴリズムのみをサポートするのなら、
-   signature_algorithms拡張を省略しても良い。もしクライアントがデフォルトのアルゴリズムを
-   サポートしていない場合や、他のアルゴリズムをサポートしている場合(そしてそれらを、
-   サーバーが送信するCertificateやServerKeyExchangeのメッセージの検証にしようするつもり
-   である場合)は、受け入れ可能なアルゴリズムがリストされたこの拡張を送信しなければならない。
+   クライアントがデフォルトのハッシュと署名アルゴリズム（このセクションに
+   リストされている）だけをサポートするなら、それはsignature_algorithms拡
+   張を省略するかもしれません。クライアントがデフォルトのアルゴリズムをサ
+   ポートしていないか、または他のハッシュと署名のアルゴリズムをサポートし
+   ているなら（そしてそれはサーバによって送られたメッセージを検証するため
+   に使うことを望んでいます、すなわち、サーバ証明書とサーバ鍵交換）。それ
+   が受け入れても構わないと思っているアルゴリズムをリストアップすること。
 
    If the client does not send the signature_algorithms extension, the
    server MUST do the following:
 
-   もしクライアントがsignature_algorithms拡張を送信しない場合、
-   サーバーは以下を行わなければならない。
+   もしクライアントがsignature_algorithms拡張を送信しない場合、 サーバーは
+   以下を行わなければならない。
 
    -  If the negotiated key exchange algorithm is one of (RSA, DHE_RSA,
       DH_RSA, RSA_PSK, ECDH_RSA, ECDHE_RSA), behave as if client had
@@ -4650,6 +4680,14 @@ RFC 5246                          TLS                        August 2008
    complex security protocols that have other means to ensure
    authentication.)
 
+   次の暗号スイートは、どちらの当事者も認証されていない、完全に匿名のDiffie-
+   Hellman通信に使用されます。このモードは中間者攻撃に対して脆弱です。そのた
+   め、このモードの使用は限られた用途しかありません。アプリケーション層が特に
+   匿名鍵交換を許可することを要求していない限り、これらの暗号スイートをTLS 1.2
+   実装で使用してはなりません（MUST NOT）。 （匿名鍵交換は、認証の設定が行われ
+   ていないとき、または認証を保証するための他の手段を持つより複雑なセキュリティ
+   プロトコルの一部としてTLSが使用されているときなどに便利です。）
+
       CipherSuite TLS_DH_anon_WITH_RC4_128_MD5          = { 0x00,0x18 };
       CipherSuite TLS_DH_anon_WITH_3DES_EDE_CBC_SHA     = { 0x00,0x1B };
       CipherSuite TLS_DH_anon_WITH_AES_128_CBC_SHA      = { 0x00,0x34 };
@@ -4664,6 +4702,12 @@ RFC 5246                          TLS                        August 2008
    cost than anonymous key exchange, it may be in the interest of
    interoperability not to disable non-anonymous key exchange when the
    application layer is allowing anonymous key exchange.
+
+   実際に鍵交換を検証せずに非匿名鍵交換を使用することは、本質的に匿名鍵交
+   換と同等であり、同じ予防措置が適用されることに注意してください。非匿名
+   鍵交換は一般に匿名鍵交換よりも高い計算上および通信上のコストを伴うが、
+   アプリケーション層が匿名鍵交換を許可しているときに非匿名鍵交換を無効に
+   しないことが相互運用性の利益になるかもしれない。
 
 
 
@@ -4927,6 +4971,12 @@ RFC 5246                          TLS                        August 2008
       set of cryptographic security parameters that can be shared among
       multiple connections.  Sessions are used to avoid the expensive
       negotiation of new security parameters for each connection.
+
+	  TLSセッションは、クライアントとサーバー間の関連付けです。セッション
+	  はハンドシェイクプロトコルによって作成されます。セッションは、複数の
+	  接続間で共有できる一連の暗号化セキュリティパラメータを定義します。セ
+	  ッションは、各接続に対する新しいセキュリティパラメータの高価なネゴシ
+	  エーションを回避するために使用されます。
 
    session identifier
       A session identifier is a value generated by a server that
@@ -5551,6 +5601,17 @@ F.1.1.  Authentication and Key Exchange
    server.  Each party is responsible for verifying that the other's
    certificate is valid and has not expired or been revoked.
 
+   TLSは3つの認証モードをサポートしています：両方の当事者の認証、未認証
+   クライアントによるサーバー認証、および完全な匿名性。サーバーが認証さ
+   れるときはいつでも、チャンネルは中間者攻撃に対して安全ですが、完全に
+   匿名のセッションは本質的にそのような攻撃に対して脆弱です。匿名サーバ
+   ーはクライアントを認証できません。サーバーが認証されている場合、その
+   証明書メッセージは、許容できる認証局につながる有効な証明書チェーンを
+   提供する必要があります。同様に、認証されたクライアントは許容可能な証
+   明書をサーバーに提供しなければなりません。各当事者は、相手の証明書が
+   有効であり、有効期限が切れていない、または失効していないことを確認す
+   る責任があります。
+
    The general goal of the key exchange process is to create a
    pre_master_secret known to the communicating parties and not to
    attackers.  The pre_master_secret will be used to generate the
@@ -5558,6 +5619,14 @@ F.1.1.  Authentication and Key Exchange
    generate the Finished messages, encryption keys, and MAC keys (see
    Sections 7.4.9 and 6.3).  By sending a correct Finished message,
    parties thus prove that they know the correct pre_master_secret.
+
+   鍵交換プロセスの一般的な目標は、攻撃者にではなく通信相手に知られてい
+   るpre_master_secretを作成することです。 pre_master_secretはmaster_secret
+   を生成するために使用されます（セクション8.1を参照）。 master_secretは
+   Finishedメッセージ、暗号化キー、およびMACキーを生成するために必要です
+   （セクション7.4.9と6.3を参照）。したがって、正しいFinishedメッセージを
+   送信することによって、当事者は正しいpre_master_secretを知っていることを
+   証明します。
 
 F.1.1.1.  Anonymous Key Exchange
 
@@ -5577,16 +5646,22 @@ RFC 5246                          TLS                        August 2008
    private values should not be able to find the Diffie-Hellman result
    (i.e., the pre_master_secret).
 
-   鍵交換にDHを使用して完全に匿名なセッションを確立することができる。
-   サーバーの公開パラメーターはServerKeyExchangeメッセージに含まれ、クライアン
-   トのそれはClientKeyExchangeメッセージで送信される。秘密値を知らない盗聴者が
-   DHの結果を見つけることができないようにすべきである。
+   鍵交換にDiffie-Hellmanを使用すると、完全に匿名のセッションを確立でき
+   ます。サーバーの公開パラメーターはサーバー鍵交換メッセージに含まれ、
+   クライアントのものはクライアント鍵交換メッセージで送信されます。秘密の
+   値を知らない盗聴者は、Diffie-Hellmanの結果（すなわちpre_master_secret）
+   を見つけることができないはずです。
 
    Warning: Completely anonymous connections only provide protection
    against passive eavesdropping.  Unless an independent tamper-proof
    channel is used to verify that the Finished messages were not
    replaced by an attacker, server authentication is required in
    environments where active man-in-the-middle attacks are a concern.
+
+   警告：完全な匿名接続は、受動的な盗聴に対する保護だけを提供します。独立
+   した改ざん防止チャネルを使用してFinishedメッセージが攻撃者に置き換えら
+   れていないことを確認しない限り、アクティブな介在者攻撃が懸念される環境
+   ではサーバ認証が必要です。
 
 F.1.1.2.  RSA Key Exchange and Authentication
 
